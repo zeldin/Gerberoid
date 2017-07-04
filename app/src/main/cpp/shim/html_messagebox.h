@@ -17,8 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <AlertDialogBuilder.h>
+
 class HTML_MESSAGE_BOX
 {
+ private:
+  android::AlertDialogBuilder dialogBuilder;
+
  public:
   HTML_MESSAGE_BOX( wxWindow* parent, const wxString& aTitle );
   void ListSet( const wxArrayString& aList );

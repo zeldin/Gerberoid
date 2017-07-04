@@ -17,33 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <wx/wx.h>
-#include <html_messagebox.h>
-#include <Html.h>
+#ifndef DIALOGINTERFACEONCLICKLISTENER_H__
+#define DIALOGINTERFACEONCLICKLISTENER_H__ 1
 
-HTML_MESSAGE_BOX::HTML_MESSAGE_BOX( wxWindow* parent, const wxString& aTitle )
-  : dialogBuilder(parent->getView().getContext())
+#include "jniref.h"
+
+namespace android
 {
-  dialogBuilder.setTitle(aTitle).setNegativeButton(_("Close"));
+
+class DialogInterfaceOnClickListener : public JNIRef
+{
+  using JNIRef::JNIRef;
+};
+
 }
 
-void HTML_MESSAGE_BOX::ListSet( const wxArrayString& aList )
-{
-  wxString msg = wxT( "<ul>" );
-
-  for( unsigned ii = 0; ii < aList.GetCount(); ii++ )
-  {
-    msg += wxT( "<li>" );
-    msg += aList.Item( ii ) + wxT( "</li>" );
-  }
-
-  msg += wxT( "</ul>" );
-
-  dialogBuilder.setMessage(android::Html::fromHtml(msg));
-}
-
-int HTML_MESSAGE_BOX::ShowModal()
-{
-  dialogBuilder.show();
-  return 0;
-}
+#endif // DIALOGINTERFACEONCLICKLISTENER_H__

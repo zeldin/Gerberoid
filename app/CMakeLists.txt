@@ -31,7 +31,9 @@ set(GERBVIEW_SRCS
 	src/main/cpp/shim/wx/string.cpp
 	src/main/cpp/shim/wx/utils.cpp
 
+	src/main/cpp/jni/AlertDialogBuilder.cpp
 	src/main/cpp/jni/GerbviewFrame.cpp
+	src/main/cpp/jni/Html.cpp
 	src/main/cpp/jni/Toast.cpp
 	src/main/cpp/jni/View.cpp
 	src/main/cpp/jni/inithook.cpp
