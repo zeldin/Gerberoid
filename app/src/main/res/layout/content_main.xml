@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="se.pp.mc.android.Gerberoid.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <se.pp.mc.android.Gerberoid.GerbviewFrame
+        android:id="@+id/gerbview_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+    />
+
+</FrameLayout>
