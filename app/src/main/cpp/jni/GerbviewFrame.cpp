@@ -24,6 +24,7 @@
 
 #include <jni.h>
 #include "inithook.h"
+#include "threadscopedcontext.h"
 
 class GerbviewFrame {
 
@@ -45,6 +46,16 @@ private:
   static void NativeDestroy(JNIEnv *env, jobject objectOrClass, jlong handle);
   static jboolean NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName);
 
+  class FrameHolder {
+  private:
+    GERBVIEW_FRAME *frame, *oldframe;
+  public:
+    FrameHolder(jlong handle);
+    ~FrameHolder();
+    GERBVIEW_FRAME* operator->() { return frame; }
+    operator bool() { return frame != 0; }
+  };
+
   static class Hook : InitHook {
     virtual bool init(JNIEnv *env);
     virtual void deinit(JNIEnv *env);
@@ -61,6 +72,17 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeRead_GERBER_File", "(JLjava/lang/String;Ljava/lang/String;)Z", (void*)&NativeRead_GERBER_File },
 };
 
+GerbviewFrame::FrameHolder::FrameHolder(jlong handle)
+  : frame(FromHandle(handle))
+{
+  oldframe = ThreadScopedContext::Swap(frame);
+}
+
+GerbviewFrame::FrameHolder::~FrameHolder()
+{
+  ThreadScopedContext::Swap(oldframe);
+}
+
 jlong GerbviewFrame::NativeCreate(JNIEnv *env, jobject objectOrClass)
 {
   return ToHandle(new(std::nothrow) GERBVIEW_FRAME(objectOrClass));
@@ -75,7 +97,7 @@ void GerbviewFrame::NativeDestroy(JNIEnv *env, jobject objectOrClass, jlong hand
 
 jboolean GerbviewFrame::NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName)
 {
-  GERBVIEW_FRAME *frame = FromHandle(handle);
+  FrameHolder frame(handle);
   if (frame && GERBER_FullFileName && D_Code_FullFileName) {
     const char *utf_GERBER_FullFileName = env->GetStringUTFChars(GERBER_FullFileName, NULL);
     const char *utf_D_Code_FullFileName = env->GetStringUTFChars(D_Code_FullFileName, NULL);

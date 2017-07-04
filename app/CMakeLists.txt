@@ -24,6 +24,7 @@ set(GERBVIEW_SRCS
 	src/main/cpp/shim/gr_basic.cpp
 	src/main/cpp/shim/html_messagebox.cpp
 	src/main/cpp/shim/msgpanel.cpp
+	src/main/cpp/shim/threadscopedcontext.cpp
 	src/main/cpp/shim/worksheet.cpp
 	src/main/cpp/shim/wx/debug.cpp
 	src/main/cpp/shim/wx/filefn.cpp

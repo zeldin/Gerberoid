@@ -17,18 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "wx/string.h"
+#include <Context.h>
 
-#include <Toast.h>
-#include <threadscopedcontext.h>
+class GERBVIEW_FRAME;
 
-using android::Toast;
-
-int wxMessageBox(const wxString& message)
+class ThreadScopedContext
 {
-  Toast toast = Toast::makeText(ThreadScopedContext::Get(),
-				message, Toast::LENGTH_LONG);
-  toast.show();
-  return 0;
-}
-
+public:
+  static GERBVIEW_FRAME *Swap(GERBVIEW_FRAME *frame);
+  static android::Context Get();
+};
