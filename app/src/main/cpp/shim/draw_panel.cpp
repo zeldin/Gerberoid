@@ -17,21 +17,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <common.h>
+#include "class_drawpanel.h"
 
-LOCALE_IO::LOCALE_IO() {}
-LOCALE_IO::~LOCALE_IO() {}
-
-EDA_UNITS_T    g_UserUnit;
-
-void wxStringSplit( const wxString& aText, wxArrayString& aStrings, wxChar aSplitter )
+void EDA_DRAW_PANEL::SetPrintMirrored(bool mode)
 {
-  unsigned start = 0, pos = 0, len = aText.Length();
-  while(pos < len)
-    if (aText[pos++] == aSplitter) {
-      aStrings.Add(wxString(aText, start, pos-start-1));
-      start = pos;
-    }
-  if (start != len)
-    aStrings.Add(wxString(aText, start));
+  /* Stub */
 }
+
+void EDA_DRAW_PANEL::DoPrepareDC(wxDC& DC)
+{
+  /* Stub */
+}
+
+void EDA_DRAW_PANEL::DrawBackGround(wxDC* DC)
+{
+  /* Stub */
+}
+
+void EDA_DRAW_PANEL::DrawCrossHair(wxDC* DC)
+{
+  /* Stub */
+}
+
+bool EDA_DRAW_PANEL::IsMouseCaptured()
+{
+  /* Stub */
+  return false;
+}
+
+void EDA_DRAW_PANEL::CallMouseCapture( wxDC* aDC, const wxPoint& aPosition, bool aErase )
+{
+  /* Stub */
+}
+
+void EDA_DRAW_PANEL::GetClientSize( int *w, int *h ) const
+{
+  /* Stub */
+  *w = 0;
+  *h = 0;
+}
+

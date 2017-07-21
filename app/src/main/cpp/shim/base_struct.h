@@ -33,6 +33,12 @@ enum KICAD_T
 
 typedef unsigned STATUS_FLAGS;
 
+enum FILL_T {
+  NO_FILL,
+  FILLED_SHAPE,
+  FILLED_WITH_BG_BODYCOLOR
+};
+
 class EDA_ITEM
 {
  private:

@@ -17,21 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <common.h>
+#ifndef MATRIX3X3_H_
+#define MATRIX3X3_H_
 
-LOCALE_IO::LOCALE_IO() {}
-LOCALE_IO::~LOCALE_IO() {}
-
-EDA_UNITS_T    g_UserUnit;
-
-void wxStringSplit( const wxString& aText, wxArrayString& aStrings, wxChar aSplitter )
+struct MATRIX3x3D
 {
-  unsigned start = 0, pos = 0, len = aText.Length();
-  while(pos < len)
-    if (aText[pos++] == aSplitter) {
-      aStrings.Add(wxString(aText, start, pos-start-1));
-      start = pos;
-    }
-  if (start != len)
-    aStrings.Add(wxString(aText, start));
-}
+  double m_data[3][3];
+};
+
+VECTOR2D const operator*( MATRIX3x3D const& aA, VECTOR2D const& aB );
+
+#endif // MATRIX3X3_H_

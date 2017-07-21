@@ -90,8 +90,20 @@ wxString& wxString::MakeUpper()
   return *this;
 }
 
-namespace {
-  wxMBConv conv;
-};
+size_t wxString::Replace(const wxString& strOld,
+			 const wxString& strNew,
+			 bool bReplaceAll)
+{
+  size_t pos = 0, count = 0;
+  while((pos = find(strOld, pos)) != npos) {
+    replace(pos, strOld.Length(), strNew);
+    count++;
+    if (!bReplaceAll)
+      break;
+    pos += strNew.Length();
+  }
+  return count;
+}
 
-wxMBConv *wxConvCurrent = &conv;
+wxMBConv wxConvUTF8;
+wxMBConv *wxConvCurrent = &wxConvUTF8;

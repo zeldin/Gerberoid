@@ -17,32 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PANEL_WXSTRUCT_H
-#define PANEL_WXSTRUCT_H
+#ifndef _WX_DC_H_
+#define _WX_DC_H_
 
-#include <base_struct.h>
-#include <class_base_screen.h>
-
-class GERBVIEW_FRAME;
-
-class EDA_DRAW_PANEL
+enum wxRasterOperationMode
 {
- private:
-  EDA_RECT        m_ClipBox;
-  GERBVIEW_FRAME *m_Parent;
-
- public:
-  EDA_DRAW_PANEL(GERBVIEW_FRAME *parent) : m_Parent(parent) {}
-  GERBVIEW_FRAME* GetParent() const { return m_Parent; };
-  EDA_RECT* GetClipBox() { return &m_ClipBox; }
-  void SetClipBox( const EDA_RECT& aRect ) { m_ClipBox = aRect; }
-  void SetPrintMirrored(bool mode);
-  void DoPrepareDC(wxDC& DC);
-  void DrawBackGround(wxDC* DC);
-  void DrawCrossHair(wxDC* DC);
-  bool IsMouseCaptured();
-  void CallMouseCapture( wxDC* aDC, const wxPoint& aPosition, bool aErase );
-  void GetClientSize( int *w, int *h ) const;
+  wxCOPY,
+  wxOR
 };
 
-#endif // PANEL_WXSTRUCT_H
+class wxDC
+{
+ public:
+  wxPoint GetDeviceOrigin() const;
+  wxPoint GetLogicalOrigin() const;
+  void SetDeviceOrigin(wxCoord x, wxCoord y);
+  void SetLogicalOrigin(wxCoord x, wxCoord y);
+  void SetUserScale(double x, double y);
+  void GetUserScale(double *x, double *y) const;
+  void SetBackground(const wxBrush& brush);
+  void SetBackgroundMode(int mode);
+  void Clear();
+  bool Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
+	    wxDC *source, wxCoord xsrc, wxCoord ysrc,
+	    wxRasterOperationMode rop = wxCOPY, bool useMask = false);
+  wxCoord LogicalToDeviceYRel(wxCoord y) const;
+};
+
+class wxMemoryDC : public wxDC
+{
+ public:
+  void SelectObject(wxBitmap& bmp);
+};
+
+#endif // _WX_DC_H_

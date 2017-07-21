@@ -24,23 +24,28 @@
 
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 typedef char wxChar;
 
 typedef std::string wxStdString;
 typedef wxStdString wxStringBase;
 
+class wxMBConv;
+
 class wxString : public wxStringBase
 {
  public:
   wxString() : wxStringBase() {}
   wxString(const wxChar *str) : wxStringBase(str ? str : wxT("")) { }
+  inline wxString(const char *str, const wxMBConv &conv);
   wxString(const wxChar *psz, size_t nLength) : wxStringBase(psz, nLength) { }
   wxString(const wxString& str) : wxStringBase(str) {}
   wxString(const wxString& str, size_t pos, size_t count = npos) : wxStringBase(str, pos, count) {}
 
   bool IsEmpty() const { return empty(); }
   void Empty() { clear(); }
+  size_t Length() const { return length(); }
   int Cmp(const wxString &str) const;
   int CmpNoCase(const wxString& s) const;
   int Printf(const wxChar *pszFormat, ...) __attribute__((__format__(__printf__, 2, 3)));
@@ -54,6 +59,11 @@ class wxString : public wxStringBase
   const wxChar* GetData() const { return c_str(); }
   const char *utf8_str() const { return c_str(); }
   wxChar& operator[](int n) { return wxStringBase::at(n); }
+  wxChar GetChar(size_t n) const { return wxStringBase::at(n); }
+  size_t Replace(const wxString& strOld,
+                 const wxString& strNew,
+                 bool bReplaceAll = true);
+  wxString Left(size_t nCount) { return wxString(*this, 0, nCount); }
 
   operator const wxChar*() const { return c_str(); }
 
@@ -78,8 +88,13 @@ class wxMBConv {
   const wxString cMB2WC(const char *in) const {
     return wxString::FromUTF8(in);
   }
+  int WC2MB(char *ptr, const wchar_t *txt, int n) const {
+    return std::wcstombs(ptr, txt, n);
+  }
 };
 
-extern wxMBConv *wxConvCurrent;
+inline wxString::wxString(const char *str, const wxMBConv &conv) : wxStringBase(conv.cMB2WC(str? str : "")) {}
+
+extern wxMBConv wxConvUTF8, *wxConvCurrent;
 
 #endif  // _WX_WXSTRINGH__

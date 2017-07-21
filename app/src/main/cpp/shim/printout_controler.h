@@ -17,21 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <common.h>
+#ifndef PRINTOUT_CONTROLLER_H
+#define PRINTOUT_CONTROLLER_H
 
-LOCALE_IO::LOCALE_IO() {}
-LOCALE_IO::~LOCALE_IO() {}
-
-EDA_UNITS_T    g_UserUnit;
-
-void wxStringSplit( const wxString& aText, wxArrayString& aStrings, wxChar aSplitter )
+struct PRINT_PARAMETERS
 {
-  unsigned start = 0, pos = 0, len = aText.Length();
-  while(pos < len)
-    if (aText[pos++] == aSplitter) {
-      aStrings.Add(wxString(aText, start, pos-start-1));
-      start = pos;
-    }
-  if (start != len)
-    aStrings.Add(wxString(aText, start));
-}
+  int m_Flags;
+  bool m_Print_Black_and_White;
+};
+
+#endif // PRINTOUT_CONTROLLER_H

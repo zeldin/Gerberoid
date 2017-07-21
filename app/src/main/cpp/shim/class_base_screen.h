@@ -17,21 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <common.h>
+#ifndef CLASS_BASE_SCREEN_H_
+#define CLASS_BASE_SCREEN_H_
 
-LOCALE_IO::LOCALE_IO() {}
-LOCALE_IO::~LOCALE_IO() {}
+class BASE_SCREEN {};
 
-EDA_UNITS_T    g_UserUnit;
-
-void wxStringSplit( const wxString& aText, wxArrayString& aStrings, wxChar aSplitter )
-{
-  unsigned start = 0, pos = 0, len = aText.Length();
-  while(pos < len)
-    if (aText[pos++] == aSplitter) {
-      aStrings.Add(wxString(aText, start, pos-start-1));
-      start = pos;
-    }
-  if (start != len)
-    aStrings.Add(wxString(aText, start));
-}
+#endif // CLASS_BASE_SCREEN_H_

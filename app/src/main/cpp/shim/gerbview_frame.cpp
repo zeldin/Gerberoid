@@ -27,6 +27,15 @@ GERBVIEW_FRAME::GERBVIEW_FRAME(android::View&& view)
   : wxWindow(std::move(view))
 {
   m_gerberLayout = NULL;
+  m_canvas = new EDA_DRAW_PANEL(this);
+  m_displayMode = 0;
+  m_DisplayOptions.m_DisplayDCodes = true;
+  m_DisplayOptions.m_DisplayFlashedItemsFill = true;
+  m_DisplayOptions.m_DisplayLinesFill = true;
+  m_DisplayOptions.m_DisplayNegativeObjects = false;
+  m_DisplayOptions.m_DisplayPolarCood = false;
+  m_DisplayOptions.m_DisplayPolygonsFill = true;
+  m_DisplayOptions.m_IsPrinting = false;
   SetLayout( new GBR_LAYOUT() );
 }
 
@@ -48,28 +57,27 @@ EDA_COLOR_T GERBVIEW_FRAME::GetLayerColor( int aLayer ) const
   return BLACK;
 }
 
-EDA_COLOR_T GERBVIEW_FRAME::GetNegativeItemsColor() const
+EDA_COLOR_T GERBVIEW_FRAME::GetVisibleElementColor( GERBER_VISIBLE_ID aItemIdVisible ) const
 {
   /* Stub */
   return BLACK;
 }
 
-bool GERBVIEW_FRAME::DisplayLinesSolidMode() const
+void GERBVIEW_FRAME::SetLayerColor( int aLayer, EDA_COLOR_T aColor )
 {
   /* Stub */
-  return false;
 }
 
-bool GERBVIEW_FRAME::DisplayPolygonsSolidMode() const
+EDA_COLOR_T GERBVIEW_FRAME::GetDrawBgColor() const
 {
   /* Stub */
-  return false;
+  return BLACK;
 }
 
-bool GERBVIEW_FRAME::DisplayFlashedItemsSolidMode() const
+EDA_COLOR_T GERBVIEW_FRAME::GetNegativeItemsColor() const
 {
   /* Stub */
-  return false;
+  return BLACK;
 }
 
 void GERBVIEW_FRAME::AppendMsgPanel( const wxString& textUpper, const wxString& textLower,
@@ -79,6 +87,23 @@ void GERBVIEW_FRAME::AppendMsgPanel( const wxString& textUpper, const wxString& 
 }
 
 void GERBVIEW_FRAME::ClearMsgPanel( void )
+{
+  /* Stub */
+}
+
+bool GERBVIEW_FRAME::IsElementVisible( GERBER_VISIBLE_ID aItemIdVisible ) const
+{
+  /* Stub */
+  return true;
+}
+
+void GERBVIEW_FRAME::DrawWorkSheet( wxDC* aDC, BASE_SCREEN* aScreen, int aLineWidth,
+				    double aScale, const wxString &aFilename )
+{
+  /* Stub */
+}
+
+void GERBVIEW_FRAME::UpdateTitleAndInfo()
 {
   /* Stub */
 }

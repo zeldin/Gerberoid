@@ -19,25 +19,49 @@
 
 #include <gerbview.h>
 #include <class_gbr_layout.h>
+#include <class_drawpanel.h>
 
 #include <map>
+
+struct GBR_DISPLAY_OPTIONS
+{
+  bool m_DisplayDCodes;
+  bool m_DisplayFlashedItemsFill;
+  bool m_DisplayLinesFill;
+  bool m_DisplayNegativeObjects;
+  bool m_DisplayPolarCood;
+  bool m_DisplayPolygonsFill;
+  bool m_IsPrinting;
+};
+
+class GBR_SCREEN : public BASE_SCREEN {};
 
 class GERBVIEW_FRAME : public wxWindow
 {
 private:
     GBR_LAYOUT*     m_gerberLayout;
     wxArrayString   m_Messages;
+    int             m_displayMode;
+    EDA_DRAW_PANEL* m_canvas;
+
+    BASE_SCREEN* GetScreen() const { return NULL; }
 
 public:
     GERBVIEW_FRAME(android::View&& view);
 
+    GBR_DISPLAY_OPTIONS m_DisplayOptions;
+
     int getActiveLayer();
+    void UpdateTitleAndInfo();
     bool IsLayerVisible( int aLayer ) const;
+    EDA_COLOR_T GetVisibleElementColor( GERBER_VISIBLE_ID aItemIdVisible ) const;
     EDA_COLOR_T GetLayerColor( int aLayer ) const;
+    void SetLayerColor( int aLayer, EDA_COLOR_T aColor );
     EDA_COLOR_T GetNegativeItemsColor() const;
-    bool DisplayLinesSolidMode() const;
-    bool DisplayPolygonsSolidMode() const;
-    bool DisplayFlashedItemsSolidMode() const;
+    bool DisplayLinesSolidMode() const { return m_DisplayOptions.m_DisplayLinesFill; }
+    bool DisplayPolygonsSolidMode() const { return m_DisplayOptions.m_DisplayPolygonsFill; }
+    bool DisplayFlashedItemsSolidMode() const { return m_DisplayOptions.m_DisplayFlashedItemsFill; }
+    EDA_COLOR_T GetDrawBgColor() const;
 
     void ReportMessage( const wxString aMessage )
     {
@@ -75,4 +99,16 @@ public:
                                           const wxString&   D_Code_FullFileName );
 
     void                CopyDCodesSizeToItems();
+
+    void    PrintPage( wxDC* aDC, LSET aPrintMasklayer, bool aPrintMirrorMode,
+		       void* aData = NULL );
+
+    int GetDisplayMode() { return m_displayMode; }
+    bool    IsElementVisible( GERBER_VISIBLE_ID aItemIdVisible ) const;
+
+    void    RedrawActiveWindow( wxDC* DC, bool EraseBg );
+    void    DrawItemsDCodeID( wxDC* aDC, GR_DRAWMODE aDrawMode );
+
+    void DrawWorkSheet( wxDC* aDC, BASE_SCREEN* aScreen, int aLineWidth,
+                         double aScale, const wxString &aFilename );
 };

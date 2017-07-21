@@ -21,6 +21,7 @@
 #define _WX_GDICMNH__
 
 typedef int wxCoord;
+enum {  wxDefaultCoord = -1 };
 
 class wxSize
 {
@@ -70,5 +71,7 @@ class wxRect
   wxRect(const wxPoint& aPoint, const wxSize& aSize)
     : x(aPoint.x), y(aPoint.y), width(aSize.x), height(aSize.y) { }
 };
+
+extern wxPoint wxDefaultPosition;
 
 #endif // _WX_GDICMNH__

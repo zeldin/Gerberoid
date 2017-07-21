@@ -26,18 +26,24 @@
 #include <cstring>
 #include <ctime>
 
+#include "wx/defs.h"
 #include "wx/string.h"
 #include "wx/arrstr.h"
 #include "wx/gdicmn.h"
 #include "wx/window.h"
 #include "wx/log.h"
 #include "wx/debug.h"
+#include "wx/colour.h"
+#include "wx/brush.h"
+#include "wx/bitmap.h"
+#include "wx/dc.h"
 
 class wxTextCtrl;
 class wxStaticText;
 class wxProcess;
 class wxFileName;
 class wxConfigBase;
+class wxImage;
 
 class wxDateTime
 {
@@ -59,32 +65,12 @@ class wxDateTime
   }
 };
 
-class wxDC
+class wxBusyCursor
 {
-};
-
-class wxColour
-{
- private:
-  uint32_t m_ARGB;
-
- public:
-  wxColour(unsigned char aRed, unsigned char aGreen, unsigned char aBlue, unsigned char aAlpha = wxALPHA_OPAQUE) :
-    m_ARGB(aAlpha << 24 | aRed << 16 | aGreen << 8 | aBlue) {}
-    unsigned char Red() const { return (m_ARGB >> 16) & 0xff; }
-    unsigned char Green() const { return (m_ARGB >> 8) & 0xff; }
-    unsigned char Blue() const { return m_ARGB & 0xff; }
-    unsigned char Alpha() const { return (m_ARGB >> 24) & 0xff; }
-};
-
-class wxBrush
-{
- public:
-  void SetColour(unsigned char aRed, unsigned char aGreen, unsigned char aBlue);
 };
 
 typedef enum {
-  wxPENSTYLE_SOLID
+  wxPENSTYLE_SOLID = wxSOLID
 } wxPenStyle;
 
 wxString wxPathOnly(const wxString& path);

@@ -31,4 +31,6 @@
 
 #define wxDefaultDateTimeFormat "%c"
 
+#define wxSOLID 100
+
 #endif // _WX_DEFS_H_

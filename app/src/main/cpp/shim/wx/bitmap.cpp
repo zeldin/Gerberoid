@@ -17,21 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <common.h>
+#include <wx/wx.h>
 
-LOCALE_IO::LOCALE_IO() {}
-LOCALE_IO::~LOCALE_IO() {}
-
-EDA_UNITS_T    g_UserUnit;
-
-void wxStringSplit( const wxString& aText, wxArrayString& aStrings, wxChar aSplitter )
+wxMask::wxMask(const wxBitmap& bitmap, const wxColour& colour)
 {
-  unsigned start = 0, pos = 0, len = aText.Length();
-  while(pos < len)
-    if (aText[pos++] == aSplitter) {
-      aStrings.Add(wxString(aText, start, pos-start-1));
-      start = pos;
-    }
-  if (start != len)
-    aStrings.Add(wxString(aText, start));
+  /* Stub */
 }
+
+wxBitmap::wxBitmap(int width, int height)
+{
+  /* Stub */
+}
+
+void wxBitmap::SetMask(wxMask *mask)
+{
+  /* Stub */
+}
+
+wxBitmap wxNullBitmap(0, 0);
+

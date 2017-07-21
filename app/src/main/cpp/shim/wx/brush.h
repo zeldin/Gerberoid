@@ -17,21 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <common.h>
+#ifndef _WX_BRUSH_H_
+#define _WX_BRUSH_H_
 
-LOCALE_IO::LOCALE_IO() {}
-LOCALE_IO::~LOCALE_IO() {}
-
-EDA_UNITS_T    g_UserUnit;
-
-void wxStringSplit( const wxString& aText, wxArrayString& aStrings, wxChar aSplitter )
+enum wxBrushStyle
 {
-  unsigned start = 0, pos = 0, len = aText.Length();
-  while(pos < len)
-    if (aText[pos++] == aSplitter) {
-      aStrings.Add(wxString(aText, start, pos-start-1));
-      start = pos;
-    }
-  if (start != len)
-    aStrings.Add(wxString(aText, start));
-}
+  wxBRUSHSTYLE_SOLID = wxSOLID,
+};
+
+class wxBrush
+{
+ private:
+  wxColour colour;
+  wxBrushStyle style;
+ public:
+  wxBrush(wxColour c, wxBrushStyle s) : colour(c), style(s) {}
+  void SetColour(wxColour c) { colour = c; }
+  void SetColour(unsigned char aRed, unsigned char aGreen, unsigned char aBlue) { SetColour(wxColour(aRed, aGreen, aBlue)); }
+};
+
+#endif // _WX_BRUSH_H_

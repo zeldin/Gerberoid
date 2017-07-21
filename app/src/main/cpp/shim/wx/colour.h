@@ -17,21 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <common.h>
+#ifndef _WX_COLOUR_H_
+#define _WX_COLOUR_H_
 
-LOCALE_IO::LOCALE_IO() {}
-LOCALE_IO::~LOCALE_IO() {}
-
-EDA_UNITS_T    g_UserUnit;
-
-void wxStringSplit( const wxString& aText, wxArrayString& aStrings, wxChar aSplitter )
+class wxColour
 {
-  unsigned start = 0, pos = 0, len = aText.Length();
-  while(pos < len)
-    if (aText[pos++] == aSplitter) {
-      aStrings.Add(wxString(aText, start, pos-start-1));
-      start = pos;
-    }
-  if (start != len)
-    aStrings.Add(wxString(aText, start));
-}
+ private:
+  uint32_t m_ARGB;
+
+ public:
+  wxColour(unsigned char aRed, unsigned char aGreen, unsigned char aBlue, unsigned char aAlpha = wxALPHA_OPAQUE) :
+    m_ARGB(aAlpha << 24 | aRed << 16 | aGreen << 8 | aBlue) {}
+    unsigned char Red() const { return (m_ARGB >> 16) & 0xff; }
+    unsigned char Green() const { return (m_ARGB >> 8) & 0xff; }
+    unsigned char Blue() const { return m_ARGB & 0xff; }
+    unsigned char Alpha() const { return (m_ARGB >> 24) & 0xff; }
+};
+
+#endif // _WX_COLOUR_H_

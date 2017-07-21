@@ -40,6 +40,11 @@ bool EDA_RECT::Contains( const wxPoint& aPoint ) const
   return true;
 }
 
+bool EDA_RECT::Contains( const EDA_RECT& aRect ) const
+{
+  return Contains(aRect.GetOrigin()) && Contains(aRect.GetEnd());
+}
+
 namespace {
   inline void InflateCoord(wxCoord &size, wxCoord &pos, wxCoord delta)
   {
@@ -58,6 +63,11 @@ EDA_RECT& EDA_RECT::Inflate( wxCoord dx, wxCoord dy )
   return *this;
 }
 
+EDA_RECT& EDA_RECT::Inflate(int aDelta)
+{
+  return Inflate(aDelta, aDelta);
+}
+
 void EDA_RECT::Merge(const EDA_RECT& aRect)
 {
   wxCoord x1 = m_Pos.x;
@@ -72,6 +82,36 @@ void EDA_RECT::Merge(const EDA_RECT& aRect)
   m_Pos.y = std::min(std::min(y1, y2), std::min(y3, y4));
   m_Size.x = std::max(std::max(x1, x2), std::max(x3, x4)) - m_Pos.x;
   m_Size.y = std::max(std::max(y1, y2), std::max(y3, y4)) - m_Pos.y;
+}
+
+void EDA_RECT::Normalize()
+{
+  if (m_Size.y < 0) {
+    m_Size.y = -m_Size.y;
+    m_Pos.y -= m_Size.y;
+  }
+  if (m_Size.x < 0)
+  {
+    m_Size.x = -m_Size.x;
+    m_Pos.x -= m_Size.x;
+  }
+}
+
+void EDA_RECT::Move( const wxPoint& aMoveVector )
+{
+    m_Pos += aMoveVector;
+}
+
+bool EDA_RECT::Intersects( const EDA_RECT& aRect ) const
+{
+  EDA_RECT self(*this);
+  EDA_RECT other(aRect);
+  self.Normalize();
+  other.Normalize();
+  return std::max(self.m_Pos.x, other.m_Pos.x) <=
+    std::min(self.m_Pos.x + self.m_Size.x, other.m_Pos.x + other.m_Size.x) &&
+    std::max(self.m_Pos.y, other.m_Pos.y) <=
+    std::min(self.m_Pos.y + self.m_Size.y, other.m_Pos.y + other.m_Size.y);
 }
 
 EDA_ITEM::EDA_ITEM( EDA_ITEM* parent, KICAD_T idType )

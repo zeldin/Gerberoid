@@ -29,6 +29,7 @@ class wxArrayString : public std::vector<wxString>
  public:
   void Add(const wxString &aItem, size_t aNInsert = 1) { insert(end(), aNInsert, aItem); }
   size_t GetCount() const { return size(); }
+  size_t Count() const { return size(); }
   void Clear() { clear(); }
   wxString& Item(size_t aIndex) const { return (wxString&)vector::operator[](aIndex); }
 };

@@ -24,6 +24,10 @@ struct IO_ERROR
     IO_ERROR() {}
 };
 
+struct OUTPUTFORMATTER
+{
+};
+
 inline int StrPrintf( std::string* aResult, const char* aFormat, ...)
   __attribute__((__format__(__printf__, 2, 3)));
 inline int StrPrintf( std::string* aResult, const char* aFormat, ...)
