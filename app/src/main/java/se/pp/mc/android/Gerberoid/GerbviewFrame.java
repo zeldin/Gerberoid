@@ -47,6 +47,7 @@ public class GerbviewFrame extends View {
     protected void onDraw (Canvas canvas)
     {
         super.onDraw(canvas);
+	NativeRedrawActiveWindow(nativeHandle, canvas, false);
 	Paint paint = new Paint();
 	paint.setAntiAlias(true);
 	paint.setTextSize(30);
@@ -87,4 +88,5 @@ public class GerbviewFrame extends View {
     private native long NativeCreate();
     private native void NativeDestroy(long handle);
     private native boolean NativeRead_GERBER_File(long handle, String GERBER_FullFileName, String D_Code_FullFileName);
+    private native void NativeRedrawActiveWindow(long handle, Canvas canvas, boolean eraseBg);
 };

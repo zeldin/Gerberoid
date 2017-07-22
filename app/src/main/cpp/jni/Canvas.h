@@ -17,28 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _WX_BITMAP_H_
-#define _WX_BITMAP_H_
+#ifndef CANVAS_H__
+#define CANVAS_H__ 1
 
-#include <Bitmap.h>
+#include "jniref.h"
+#include <Context.h>
 
-class wxBitmap;
-
-class wxMask
+namespace android
 {
+
+class Bitmap;
+
+class Canvas : public JNIRef
+{
+  using JNIRef::JNIRef;
+
+ private:
+  class Native;
+
  public:
-  wxMask(const wxBitmap& bitmap, const wxColour& colour);
+  Canvas();
+  void setBitmap(Bitmap &bitmap);
 };
 
-class wxBitmap : android::Bitmap
-{
-  friend class wxMemoryDC;
+}
 
- public:
-  wxBitmap(int width, int height);
-  void SetMask(wxMask *mask);
-};
-
-extern wxBitmap wxNullBitmap;
-
-#endif // _WX_BITMAP_H_
+#endif // CANVAS_H__

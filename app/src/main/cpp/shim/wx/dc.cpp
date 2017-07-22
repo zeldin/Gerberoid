@@ -84,5 +84,5 @@ wxCoord wxDC::LogicalToDeviceYRel(wxCoord y) const
 
 void wxMemoryDC::SelectObject(wxBitmap& bmp)
 {
-  /* Stub */
+  setBitmap(bmp);
 }

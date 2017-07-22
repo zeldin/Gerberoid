@@ -25,8 +25,8 @@ wxMask::wxMask(const wxBitmap& bitmap, const wxColour& colour)
 }
 
 wxBitmap::wxBitmap(int width, int height)
+  : android::Bitmap(android::Bitmap::createBitmap(width, height, android::Bitmap::Config::ARGB_8888))
 {
-  /* Stub */
 }
 
 void wxBitmap::SetMask(wxMask *mask)

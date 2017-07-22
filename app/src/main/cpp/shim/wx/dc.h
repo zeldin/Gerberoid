@@ -20,15 +20,19 @@
 #ifndef _WX_DC_H_
 #define _WX_DC_H_
 
+#include <Canvas.h>
+
 enum wxRasterOperationMode
 {
   wxCOPY,
   wxOR
 };
 
-class wxDC
+class wxDC : protected android::Canvas
 {
  public:
+  wxDC(android::Canvas&& canvas) : android::Canvas(std::move(canvas)) {}
+
   wxPoint GetDeviceOrigin() const;
   wxPoint GetLogicalOrigin() const;
   void SetDeviceOrigin(wxCoord x, wxCoord y);
@@ -47,6 +51,8 @@ class wxDC
 class wxMemoryDC : public wxDC
 {
  public:
+  wxMemoryDC() : wxDC(android::Canvas()) {}
+
   void SelectObject(wxBitmap& bmp);
 };
 

@@ -45,6 +45,7 @@ private:
   static jlong NativeCreate(JNIEnv *env, jobject objectOrClass);
   static void NativeDestroy(JNIEnv *env, jobject objectOrClass, jlong handle);
   static jboolean NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName);
+  static void NativeRedrawActiveWindow(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
 
   class FrameHolder {
   private:
@@ -70,6 +71,7 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeCreate", "()J", (void *)&NativeCreate },
   { "NativeDestroy", "(J)V", (void *)&NativeDestroy },
   { "NativeRead_GERBER_File", "(JLjava/lang/String;Ljava/lang/String;)Z", (void*)&NativeRead_GERBER_File },
+  { "NativeRedrawActiveWindow", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeRedrawActiveWindow },
 };
 
 GerbviewFrame::FrameHolder::FrameHolder(jlong handle)
@@ -107,6 +109,15 @@ jboolean GerbviewFrame::NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClas
     return result;
   } else {
     return false;
+  }
+}
+
+void GerbviewFrame::NativeRedrawActiveWindow(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg)
+{
+  FrameHolder frame(handle);
+  if (frame && canvas) {
+    wxDC dc(canvas);
+    frame->RedrawActiveWindow(&dc, eraseBg);
   }
 }
 
