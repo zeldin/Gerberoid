@@ -49,7 +49,7 @@ namespace {
   inline void InflateCoord(wxCoord &size, wxCoord &pos, wxCoord delta)
   {
     pos -= delta;
-    if (size += 2*delta < 0) {
+    if ((size += 2*delta) < 0) {
       pos += size/2;
       size = 0;
     }
