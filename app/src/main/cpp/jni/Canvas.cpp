@@ -20,6 +20,7 @@
 #include <jni.h>
 #include "Canvas.h"
 #include "Bitmap.h"
+#include "Paint.h"
 #include "inithook.h"
 #include "localframe.h"
 
@@ -37,6 +38,12 @@ private:
   static jclass class_Canvas;
   static jmethodID method_init;
   static jmethodID method_setBitmap;
+  static jmethodID method_save;
+  static jmethodID method_restore;
+  static jmethodID method_scale;
+  static jmethodID method_translate;
+  static jmethodID method_clipRect;
+  static jmethodID method_drawCircle;
 
   static JNIRef createCanvas();
 };
@@ -45,6 +52,12 @@ Canvas::Native Canvas::Native::hook;
 jclass Canvas::Native::class_Canvas = 0;
 jmethodID Canvas::Native::method_init = 0;
 jmethodID Canvas::Native::method_setBitmap = 0;
+jmethodID Canvas::Native::method_save = 0;
+jmethodID Canvas::Native::method_restore = 0;
+jmethodID Canvas::Native::method_scale = 0;
+jmethodID Canvas::Native::method_translate = 0;
+jmethodID Canvas::Native::method_clipRect = 0;
+jmethodID Canvas::Native::method_drawCircle = 0;
 
 Canvas::Canvas() : JNIRef(Native::createCanvas()) {}
 
@@ -54,6 +67,58 @@ void Canvas::setBitmap(Bitmap &bitmap)
   if (!env || !get() || !bitmap) return;
   env->CallVoidMethod(*this, Native::method_setBitmap,
 		      static_cast<jobject>(bitmap));
+}
+
+int Canvas::save()
+{
+  LocalFrame env;
+  if (!env || !get()) return 0;
+  return env->CallIntMethod(*this, Native::method_save);
+}
+
+void Canvas::restore()
+{
+  LocalFrame env;
+  if (!env || !get()) return;
+  env->CallVoidMethod(*this, Native::method_restore);
+}
+
+void Canvas::scale(float sx, float sy)
+{
+  LocalFrame env;
+  if (!env || !get()) return;
+  env->CallVoidMethod(*this, Native::method_scale,
+		      static_cast<jfloat>(sx), static_cast<jfloat>(sy));
+}
+
+void Canvas::translate(float dx, float dy)
+{
+  LocalFrame env;
+  if (!env || !get()) return;
+  env->CallVoidMethod(*this, Native::method_translate,
+		      static_cast<jfloat>(dx), static_cast<jfloat>(dy));
+}
+
+bool Canvas::clipRect(int left, int top, int right, int bottom)
+{
+  LocalFrame env;
+  if (!env || !get()) return false;
+  return env->CallBooleanMethod(*this, Native::method_clipRect,
+				static_cast<jint>(left),
+				static_cast<jint>(top),
+				static_cast<jint>(right),
+				static_cast<jint>(bottom));
+}
+
+void Canvas::drawCircle(float cx, float cy, float radius, const Paint& paint)
+{
+  LocalFrame env;
+  if (!env || !get() || !paint) return;
+  env->CallVoidMethod(*this, Native::method_drawCircle,
+				static_cast<jfloat>(cx),
+				static_cast<jfloat>(cy),
+				static_cast<jfloat>(radius),
+				static_cast<jobject>(paint));
 }
 
 JNIRef Canvas::Native::createCanvas()
@@ -74,13 +139,26 @@ bool Canvas::Native::init(JNIEnv *env)
     return false;
   method_init = env->GetMethodID(class_Canvas, "<init>", "()V");
   method_setBitmap = env->GetMethodID(class_Canvas, "setBitmap", "(Landroid/graphics/Bitmap;)V");
-  return method_init && method_setBitmap;
+  method_save = env->GetMethodID(class_Canvas, "save", "()I");
+  method_restore = env->GetMethodID(class_Canvas, "restore", "()V");
+  method_scale = env->GetMethodID(class_Canvas, "scale", "(FF)V");
+  method_translate = env->GetMethodID(class_Canvas, "translate", "(FF)V");
+  method_clipRect = env->GetMethodID(class_Canvas, "clipRect", "(IIII)Z");
+  method_drawCircle = env->GetMethodID(class_Canvas, "drawCircle", "(FFFLandroid/graphics/Paint;)V");
+  return method_init && method_setBitmap && method_save && method_restore &&
+    method_scale && method_translate && method_clipRect && method_drawCircle;
 }
 
 void Canvas::Native::deinit(JNIEnv *env)
 {
   method_init = 0;
   method_setBitmap = 0;
+  method_save = 0;
+  method_restore = 0;
+  method_scale = 0;
+  method_translate = 0;
+  method_clipRect = 0;
+  method_drawCircle = 0;
   if (class_Canvas) {
     env->DeleteGlobalRef(class_Canvas);
     class_Canvas = 0;

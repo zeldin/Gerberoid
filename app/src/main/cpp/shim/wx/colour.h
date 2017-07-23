@@ -32,6 +32,7 @@ class wxColour
     unsigned char Green() const { return (m_ARGB >> 8) & 0xff; }
     unsigned char Blue() const { return m_ARGB & 0xff; }
     unsigned char Alpha() const { return (m_ARGB >> 24) & 0xff; }
+    uint32_t ARGB() const { return m_ARGB; }
 };
 
 #endif // _WX_COLOUR_H_

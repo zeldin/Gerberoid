@@ -115,4 +115,6 @@ public:
 
     void DrawWorkSheet( wxDC* aDC, BASE_SCREEN* aScreen, int aLineWidth,
                          double aScale, const wxString &aFilename );
+
+    void onDraw( wxDC& DC, bool EraseBg );
 };

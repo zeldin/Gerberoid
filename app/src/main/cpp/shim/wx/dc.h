@@ -30,8 +30,13 @@ enum wxRasterOperationMode
 
 class wxDC : protected android::Canvas
 {
+ private:
+  float scalex, scaley;
+  float logorgx, logorgy;
+
  public:
-  wxDC(android::Canvas&& canvas) : android::Canvas(std::move(canvas)) {}
+  wxDC(android::Canvas&& canvas);
+  android::Canvas &GetCanvas() { return *this; }
 
   wxPoint GetDeviceOrigin() const;
   wxPoint GetLogicalOrigin() const;
@@ -46,6 +51,10 @@ class wxDC : protected android::Canvas
 	    wxDC *source, wxCoord xsrc, wxCoord ysrc,
 	    wxRasterOperationMode rop = wxCOPY, bool useMask = false);
   wxCoord LogicalToDeviceYRel(wxCoord y) const;
+  wxCoord DeviceToLogicalX(wxCoord x) const;
+  wxCoord DeviceToLogicalY(wxCoord y) const;
+  wxCoord DeviceToLogicalXRel(wxCoord x) const;
+  wxCoord DeviceToLogicalYRel(wxCoord y) const;
 };
 
 class wxMemoryDC : public wxDC

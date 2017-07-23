@@ -47,7 +47,7 @@ int GERBVIEW_FRAME::getActiveLayer()
 bool GERBVIEW_FRAME::IsLayerVisible( int aLayer ) const
 {
   /* Stub */
-  return false;
+  return true;
 }
 
 EDA_COLOR_T GERBVIEW_FRAME::GetLayerColor( int aLayer ) const
@@ -105,4 +105,10 @@ void GERBVIEW_FRAME::DrawWorkSheet( wxDC* aDC, BASE_SCREEN* aScreen, int aLineWi
 void GERBVIEW_FRAME::UpdateTitleAndInfo()
 {
   /* Stub */
+}
+
+void GERBVIEW_FRAME::onDraw(wxDC& DC, bool eraseBg)
+{
+  m_canvas->DoPrepareDC(DC);
+  RedrawActiveWindow(&DC, eraseBg);
 }

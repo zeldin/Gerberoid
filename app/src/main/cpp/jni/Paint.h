@@ -17,21 +17,39 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _WX_DEFS_H_
-#define _WX_DEFS_H_
+#ifndef PAINT_H__
+#define PAINT_H__ 1
 
-#define wxT(s) s
-#define _(s) (wxT(s))
+#include "jniref.h"
+#include <cstdint>
 
-#define wxFopen fopen
+namespace android
+{
 
-#define wxALPHA_OPAQUE 0xff
+class Paint : public JNIRef
+{
+  using JNIRef::JNIRef;
 
-#define wxEXEC_ASYNC 0
+ private:
+  class Native;
 
-#define wxDefaultDateTimeFormat "%c"
+ public:
+  class Style {
+    friend class Paint;
+  private:
+    const jfieldID &field;
+    Style(const jfieldID& field) : field(field) {}
+  public:
+    static const Style FILL;
+    static const Style FILL_AND_STROKE;
+    static const Style STROKE;
+  };
 
-#define wxSOLID 100
-#define wxTRANSPARENT 106
+  Paint();
+  void setColor(uint32_t color);
+  void setStyle(const Style &style);
+};
 
-#endif // _WX_DEFS_H_
+}
+
+#endif // PAINT_H__

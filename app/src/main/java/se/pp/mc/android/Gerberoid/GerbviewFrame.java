@@ -21,8 +21,6 @@ package se.pp.mc.android.Gerberoid;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.View;
@@ -47,13 +45,7 @@ public class GerbviewFrame extends View {
     protected void onDraw (Canvas canvas)
     {
         super.onDraw(canvas);
-	NativeRedrawActiveWindow(nativeHandle, canvas, false);
-	Paint paint = new Paint();
-	paint.setAntiAlias(true);
-	paint.setTextSize(30);
-	paint.setTypeface(Typeface.SERIF);
-	paint.setColor(0xff0000ff);
-        canvas.drawText("GerbviewFrame", 100, 100, paint);
+	NativeOnDraw(nativeHandle, canvas, false);
     }
 
     void onCreate()
@@ -88,5 +80,5 @@ public class GerbviewFrame extends View {
     private native long NativeCreate();
     private native void NativeDestroy(long handle);
     private native boolean NativeRead_GERBER_File(long handle, String GERBER_FullFileName, String D_Code_FullFileName);
-    private native void NativeRedrawActiveWindow(long handle, Canvas canvas, boolean eraseBg);
+    private native void NativeOnDraw(long handle, Canvas canvas, boolean eraseBg);
 };

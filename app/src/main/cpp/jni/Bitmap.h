@@ -21,7 +21,6 @@
 #define BITMAP_H__ 1
 
 #include "jniref.h"
-#include <Context.h>
 
 namespace android
 {

@@ -18,15 +18,26 @@
  */
 
 #include "class_drawpanel.h"
+#include "gr_basic.h"
 
 void EDA_DRAW_PANEL::SetPrintMirrored(bool mode)
 {
   /* Stub */
 }
 
-void EDA_DRAW_PANEL::DoPrepareDC(wxDC& DC)
+void EDA_DRAW_PANEL::DoPrepareDC(wxDC& dc)
 {
-  /* Stub */
+  dc.SetUserScale(5e-5f, 5e-5f);
+  dc.SetLogicalOrigin(0, 0);
+  EDA_RECT clipBox;
+  clipBox.SetSize( GetClientSize() );
+  clipBox.Inflate( 2 );
+  m_ClipBox.SetOrigin( wxPoint( dc.DeviceToLogicalX( clipBox.GetX() ),
+				dc.DeviceToLogicalY( clipBox.GetY() ) ) );
+  m_ClipBox.SetSize( wxSize( dc.DeviceToLogicalXRel( clipBox.GetWidth() ),
+			     dc.DeviceToLogicalYRel( clipBox.GetHeight() ) ) );
+  GRResetPenAndBrush( &dc );
+  dc.SetBackgroundMode(wxTRANSPARENT);
 }
 
 void EDA_DRAW_PANEL::DrawBackGround(wxDC* DC)

@@ -19,6 +19,12 @@
 
 #include <wx/wx.h>
 
+wxDC::wxDC(android::Canvas&& canvas) : android::Canvas(std::move(canvas))
+{
+  scalex = scaley = 1.0;
+  logorgx = logorgy = 0.0;
+}
+
 wxPoint wxDC::GetDeviceOrigin() const
 {
   /* Stub */
@@ -27,8 +33,7 @@ wxPoint wxDC::GetDeviceOrigin() const
 
 wxPoint wxDC::GetLogicalOrigin() const
 {
-  /* Stub */
-  return wxPoint();
+  return wxPoint(logorgx, logorgy);
 }
 
 void wxDC::SetDeviceOrigin(wxCoord x, wxCoord y)
@@ -38,19 +43,28 @@ void wxDC::SetDeviceOrigin(wxCoord x, wxCoord y)
 
 void wxDC::SetLogicalOrigin(wxCoord x, wxCoord y)
 {
-  /* Stub */
+  if (x != logorgx || y != logorgy) {
+    translate(logorgx-x, logorgy-y);
+    logorgx = x;
+    logorgy = y;
+  }
 }
 
 void wxDC::SetUserScale(double x, double y)
 {
-  /* Stub */
+  if (x != scalex || y != scaley) {
+    logorgx *= x/scalex;
+    logorgy *= y/scaley;
+    scale(x/scalex, y/scaley);
+    scalex = x;
+    scaley = y;
+  }
 }
 
 void wxDC::GetUserScale(double *x, double *y) const
 {
-  /* Stub */
-  *x = 1;
-  *y = 1;
+  *x = scalex;
+  *y = scaley;
 }
 
 void wxDC::SetBackground(const wxBrush& brush)
@@ -78,8 +92,27 @@ bool wxDC::Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
 
 wxCoord wxDC::LogicalToDeviceYRel(wxCoord y) const
 {
-  /* Stub */
-  return y;
+  return y * scaley;
+}
+
+wxCoord wxDC::DeviceToLogicalX(wxCoord x) const
+{
+  return x / scalex + logorgx;
+}
+
+wxCoord wxDC::DeviceToLogicalY(wxCoord y) const
+{
+  return y / scaley + logorgy;
+}
+
+wxCoord wxDC::DeviceToLogicalXRel(wxCoord x) const
+{
+  return x / scalex;
+}
+
+wxCoord wxDC::DeviceToLogicalYRel(wxCoord y) const
+{
+  return y / scaley;
 }
 
 void wxMemoryDC::SelectObject(wxBitmap& bmp)

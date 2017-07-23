@@ -18,6 +18,10 @@
  */
 
 #include <gr_basic.h>
+#include <class_eda_rect.h>
+
+#include <Canvas.h>
+#include <Paint.h>
 
 void GRSetDrawMode( wxDC* DC, GR_DRAWMODE mode )
 {
@@ -36,7 +40,15 @@ void GRCircle( EDA_RECT* aClipBox, wxDC* aDC, wxPoint aPos, int aRadius, int aWi
 
 void GRFilledCircle( EDA_RECT* aClipBox, wxDC* aDC, wxPoint aPos, int aRadius, EDA_COLOR_T aColor )
 {
-  /* Stub */
+  android::Canvas &canvas = aDC->GetCanvas();
+  android::Paint paint;
+  paint.setColor(MakeColour(aColor).ARGB());
+  paint.setStyle(android::Paint::Style::FILL);
+  canvas.save();
+  if (aClipBox)
+    canvas.clipRect(aClipBox->GetX(), aClipBox->GetY(), aClipBox->GetRight(), aClipBox->GetBottom());
+  canvas.drawCircle(aPos.x, aPos.y, aRadius, paint);
+  canvas.restore();
 }
 
 void GRArc1( EDA_RECT* aClipBox, wxDC* aDC, wxPoint aStart, wxPoint aEnd,
@@ -99,6 +111,11 @@ void GRFilledRect( EDA_RECT* ClipBox, wxDC* DC, int x1, int y1,
 
 void GRDrawAnchor( EDA_RECT *aClipBox, wxDC *aDC, int x, int y,
                    int aSize, EDA_COLOR_T aColor )
+{
+  /* Stub */
+}
+
+void GRResetPenAndBrush(wxDC*)
 {
   /* Stub */
 }

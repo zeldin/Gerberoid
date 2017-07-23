@@ -21,12 +21,12 @@
 #define CANVAS_H__ 1
 
 #include "jniref.h"
-#include <Context.h>
 
 namespace android
 {
 
 class Bitmap;
+class Paint;
 
 class Canvas : public JNIRef
 {
@@ -38,6 +38,12 @@ class Canvas : public JNIRef
  public:
   Canvas();
   void setBitmap(Bitmap &bitmap);
+  int save();
+  void restore();
+  void scale(float sx, float sy);
+  void translate(float dx, float dy);
+  bool clipRect(int left, int top, int right, int bottom);
+  void drawCircle(float cx, float cy, float radius, const Paint& paint);
 };
 
 }
