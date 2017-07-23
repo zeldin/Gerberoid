@@ -31,9 +31,12 @@ class EDA_DRAW_PANEL : public wxWindow
  private:
   EDA_RECT        m_ClipBox;
   GERBVIEW_FRAME *m_Parent;
+  int             m_logicalOriginX;
+  int             m_logicalOriginY;
+  float           m_userScale;
 
  public:
-  EDA_DRAW_PANEL(GERBVIEW_FRAME *parent, android::View&& view) : wxWindow(std::move(view)), m_Parent(parent) {}
+  EDA_DRAW_PANEL(GERBVIEW_FRAME *parent, android::View&& view) : wxWindow(std::move(view)), m_Parent(parent), m_logicalOriginX(0), m_logicalOriginY(0), m_userScale(1.0) {}
   GERBVIEW_FRAME* GetParent() const { return m_Parent; }
   EDA_RECT* GetClipBox() { return &m_ClipBox; }
   void SetClipBox( const EDA_RECT& aRect ) { m_ClipBox = aRect; }
@@ -43,6 +46,7 @@ class EDA_DRAW_PANEL : public wxWindow
   void DrawCrossHair(wxDC* DC);
   bool IsMouseCaptured();
   void CallMouseCapture( wxDC* aDC, const wxPoint& aPosition, bool aErase );
+  void SetOriginAndScale(int logicalOriginX, int logicalOriginY, float userScale);
 };
 
 #endif // PANEL_WXSTRUCT_H

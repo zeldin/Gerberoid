@@ -46,6 +46,7 @@ private:
   static void NativeDestroy(JNIEnv *env, jobject objectOrClass, jlong handle);
   static jboolean NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName);
   static void NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
+  static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
 
   class FrameHolder {
   private:
@@ -73,6 +74,7 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeDestroy", "(J)V", (void *)&NativeDestroy },
   { "NativeRead_GERBER_File", "(JLjava/lang/String;Ljava/lang/String;)Z", (void*)&NativeRead_GERBER_File },
   { "NativeOnDraw", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeOnDraw },
+  { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
 };
 
 GerbviewFrame::FrameHolder::FrameHolder(jlong handle)
@@ -119,6 +121,14 @@ void GerbviewFrame::NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handl
   if (frame && canvas) {
     wxDC dc(canvas);
     frame->onDraw(dc, eraseBg);
+  }
+}
+
+void GerbviewFrame::NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    frame->m_canvas->SetOriginAndScale(logicalOriginX, logicalOriginY, userScale);
   }
 }
 

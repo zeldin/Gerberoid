@@ -27,8 +27,8 @@ void EDA_DRAW_PANEL::SetPrintMirrored(bool mode)
 
 void EDA_DRAW_PANEL::DoPrepareDC(wxDC& dc)
 {
-  dc.SetUserScale(5e-5f, 5e-5f);
-  dc.SetLogicalOrigin(0, 0);
+  dc.SetUserScale(m_userScale, m_userScale);
+  dc.SetLogicalOrigin(m_logicalOriginX, m_logicalOriginY);
   EDA_RECT clipBox;
   clipBox.SetSize( GetClientSize() );
   clipBox.Inflate( 2 );
@@ -59,4 +59,11 @@ bool EDA_DRAW_PANEL::IsMouseCaptured()
 void EDA_DRAW_PANEL::CallMouseCapture( wxDC* aDC, const wxPoint& aPosition, bool aErase )
 {
   /* Stub */
+}
+
+void EDA_DRAW_PANEL::SetOriginAndScale(int logicalOriginX, int logicalOriginY, float userScale)
+{
+  m_logicalOriginX = logicalOriginX;
+  m_logicalOriginY = logicalOriginY;
+  m_userScale = userScale;
 }
