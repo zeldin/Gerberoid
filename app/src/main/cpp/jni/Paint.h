@@ -26,6 +26,8 @@
 namespace android
 {
 
+class Xfermode;
+
 class Paint : public JNIRef
 {
   using JNIRef::JNIRef;
@@ -48,6 +50,7 @@ class Paint : public JNIRef
   Paint();
   void setColor(uint32_t color);
   void setStyle(const Style &style);
+  const Xfermode &setXfermode(const Xfermode &xfermode);
 };
 
 }

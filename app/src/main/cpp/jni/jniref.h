@@ -21,6 +21,7 @@
 #define JNIREF_H__ 1
 
 #include <jni.h>
+#include <utility>
 
 class JNIRef
 {
@@ -36,6 +37,8 @@ protected:
   JNIRef(JNIRef&& other) : ref(other.ref) { other.ref=0; }
   JNIRef(const JNIRef& other) : JNIRef(other.ref) {}
   ~JNIRef();
+
+  void swap(JNIRef& other) { std::swap(ref, other.ref); }
 
   operator jobject() const { return get(); }
   operator bool() { return ref != 0; }

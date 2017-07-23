@@ -19,6 +19,7 @@
 
 #include <jni.h>
 #include "Paint.h"
+#include "Xfermode.h"
 #include "inithook.h"
 #include "localframe.h"
 
@@ -38,6 +39,7 @@ private:
   static jmethodID method_init;
   static jmethodID method_setColor;
   static jmethodID method_setStyle;
+  static jmethodID method_setXfermode;
   static jfieldID field_FILL;
   static jfieldID field_FILL_AND_STROKE;
   static jfieldID field_STROKE;
@@ -51,6 +53,7 @@ jclass Paint::Native::class_Paint_Style = 0;
 jmethodID Paint::Native::method_init = 0;
 jmethodID Paint::Native::method_setColor = 0;
 jmethodID Paint::Native::method_setStyle = 0;
+jmethodID Paint::Native::method_setXfermode = 0;
 jfieldID Paint::Native::field_FILL = 0;
 jfieldID Paint::Native::field_FILL_AND_STROKE = 0;
 jfieldID Paint::Native::field_STROKE = 0;
@@ -77,6 +80,15 @@ void Paint::setStyle(const Style &style)
 		      env->GetStaticObjectField(Native::class_Paint_Style, style.field));
 }
 
+const Xfermode &Paint::setXfermode(const Xfermode &xfermode)
+{
+  LocalFrame env;
+  if (!env || !get()) return xfermode;
+  env->CallObjectMethod(*this, Native::method_setXfermode,
+			static_cast<jobject>(xfermode));
+  return xfermode;
+}
+
 JNIRef Paint::Native::createPaint()
 {
   LocalFrame env;
@@ -101,11 +113,12 @@ bool Paint::Native::init(JNIEnv *env)
   method_init = env->GetMethodID(class_Paint, "<init>", "()V");
   method_setColor = env->GetMethodID(class_Paint, "setColor", "(I)V");
   method_setStyle = env->GetMethodID(class_Paint, "setStyle", "(Landroid/graphics/Paint$Style;)V");
+  method_setXfermode = env->GetMethodID(class_Paint, "setXfermode", "(Landroid/graphics/Xfermode;)Landroid/graphics/Xfermode;");
   field_FILL = env->GetStaticFieldID(class_Paint_Style, "FILL", "Landroid/graphics/Paint$Style;");
   field_FILL_AND_STROKE = env->GetStaticFieldID(class_Paint_Style, "FILL_AND_STROKE", "Landroid/graphics/Paint$Style;");
   field_STROKE = env->GetStaticFieldID(class_Paint_Style, "STROKE", "Landroid/graphics/Paint$Style;");
-  return method_init && method_setColor && method_setStyle && field_FILL &&
-    field_FILL_AND_STROKE && field_STROKE;
+  return method_init && method_setColor && method_setStyle &&
+    method_setXfermode && field_FILL && field_FILL_AND_STROKE && field_STROKE;
 }
 
 void Paint::Native::deinit(JNIEnv *env)
@@ -113,6 +126,7 @@ void Paint::Native::deinit(JNIEnv *env)
   method_init = 0;
   method_setColor = 0;
   method_setStyle = 0;
+  method_setXfermode = 0;
   field_FILL = 0;
   field_FILL_AND_STROKE = 0;
   field_STROKE = 0;

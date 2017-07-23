@@ -19,6 +19,11 @@
 
 #include <wx/wx.h>
 
+#include <Rect.h>
+#include <Canvas.h>
+#include <Paint.h>
+#include <PorterDuff.h>
+
 wxDC::wxDC(android::Canvas&& canvas) : android::Canvas(std::move(canvas))
 {
   scalex = scaley = 1.0;
@@ -86,8 +91,19 @@ bool wxDC::Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
 		wxDC *source, wxCoord xsrc, wxCoord ysrc,
 		wxRasterOperationMode rop, bool useMask)
 {
-  /* Stub */
-  return true;
+  if (source->bitmap) {
+    android::Paint paint;
+    paint.setXfermode(android::PorterDuffXfermode(rop == wxOR?
+						  android::PorterDuff::Mode::LIGHTEN :
+						  (useMask? android::PorterDuff::Mode::SRC_OVER :
+						   android::PorterDuff::Mode::SRC)));
+    drawBitmap(source->bitmap,
+	       android::Rect(xsrc, ysrc, xsrc+width, ysrc+height),
+	       android::Rect(xdest, ydest, xdest+width, ydest+height),
+	       paint);
+    return true;
+  }
+  return false;
 }
 
 wxCoord wxDC::LogicalToDeviceYRel(wxCoord y) const
@@ -117,5 +133,7 @@ wxCoord wxDC::DeviceToLogicalYRel(wxCoord y) const
 
 void wxMemoryDC::SelectObject(wxBitmap& bmp)
 {
+  android::Bitmap tmpbmp(bmp);
+  bitmap.swap(tmpbmp);
   setBitmap(bmp);
 }

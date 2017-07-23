@@ -34,6 +34,9 @@ class wxDC : protected android::Canvas
   float scalex, scaley;
   float logorgx, logorgy;
 
+ protected:
+  android::Bitmap bitmap;
+
  public:
   wxDC(android::Canvas&& canvas);
   android::Canvas &GetCanvas() { return *this; }

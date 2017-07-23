@@ -17,19 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CANVAS_H__
-#define CANVAS_H__ 1
+#ifndef RECT_H__
+#define RECT_H__ 1
 
 #include "jniref.h"
+#include <cstdint>
 
 namespace android
 {
 
-class Bitmap;
-class Paint;
-class Rect;
-
-class Canvas : public JNIRef
+class Rect : public JNIRef
 {
   using JNIRef::JNIRef;
 
@@ -37,17 +34,9 @@ class Canvas : public JNIRef
   class Native;
 
  public:
-  Canvas();
-  void setBitmap(Bitmap &bitmap);
-  int save();
-  void restore();
-  void scale(float sx, float sy);
-  void translate(float dx, float dy);
-  bool clipRect(int left, int top, int right, int bottom);
-  void drawCircle(float cx, float cy, float radius, const Paint& paint);
-  void drawBitmap(const Bitmap &bitmap, const Rect &src, const Rect &dst, const Paint &paint);
+  Rect(int left, int top, int right, int bottom);
 };
 
 }
 
-#endif // CANVAS_H__
+#endif // RECT_H__
