@@ -20,6 +20,7 @@
 #include <gerbview.h>
 #include <class_gbr_layout.h>
 #include <class_drawpanel.h>
+#include <ContextProvider.h>
 
 #include <map>
 
@@ -36,8 +37,9 @@ struct GBR_DISPLAY_OPTIONS
 
 class GBR_SCREEN : public BASE_SCREEN {};
 
-class GERBVIEW_FRAME : public wxWindow
+class GERBVIEW_FRAME : ContextProvider
 {
+  friend class GerbviewFrame;
 private:
     GBR_LAYOUT*     m_gerberLayout;
     wxArrayString   m_Messages;
@@ -45,6 +47,8 @@ private:
     EDA_DRAW_PANEL* m_canvas;
 
     BASE_SCREEN* GetScreen() const { return NULL; }
+
+    android::Context getContext() { return m_canvas->getView().getContext(); }
 
 public:
     GERBVIEW_FRAME(android::View&& view);

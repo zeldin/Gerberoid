@@ -35,17 +35,35 @@ private:
 
   static jclass class_View;
   static jmethodID method_getContext;
+  static jmethodID method_getWidth;
+  static jmethodID method_getHeight;
 };
 View::Native View::Native::hook;
 
 jclass View::Native::class_View = 0;
 jmethodID View::Native::method_getContext = 0;
+jmethodID View::Native::method_getWidth = 0;
+jmethodID View::Native::method_getHeight = 0;
 
 Context View::getContext()
 {
   LocalFrame env;
   if (!env || !get()) return Context();
   return env->CallObjectMethod(*this, Native::method_getContext);
+}
+
+int View::getWidth() const
+{
+  LocalFrame env;
+  if (!env || !get()) return 0;
+  return env->CallIntMethod(*this, Native::method_getWidth);
+}
+
+int View::getHeight() const
+{
+  LocalFrame env;
+  if (!env || !get()) return 0;
+  return env->CallIntMethod(*this, Native::method_getHeight);
 }
 
 bool View::Native::init(JNIEnv *env)
@@ -58,12 +76,16 @@ bool View::Native::init(JNIEnv *env)
   if (!class_View)
     return false;
   method_getContext = env->GetMethodID(class_View, "getContext", "()Landroid/content/Context;");
-  return method_getContext;
+  method_getWidth = env->GetMethodID(class_View, "getWidth", "()I");
+  method_getHeight = env->GetMethodID(class_View, "getHeight", "()I");
+  return method_getContext && method_getWidth && method_getHeight;
 }
 
 void View::Native::deinit(JNIEnv *env)
 {
   method_getContext = 0;
+  method_getWidth = 0;
+  method_getHeight = 0;
   if (class_View) {
     env->DeleteGlobalRef(class_View);
     class_View = 0;

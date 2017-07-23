@@ -24,11 +24,14 @@
 
 class wxWindow : android::View
 {
+ protected:
+  android::View& getView() { return *this; }
+
  public:
   wxWindow(android::View&& view) : android::View(std::move(view)) {}
 
-  android::View& getView() { return *this; }
+  void GetClientSize( int *w, int *h ) const { *w = getWidth(); *h = getHeight(); }
+  wxSize GetClientSize() const { return wxSize(getWidth(), getHeight()); }
 };
-
 
 #endif // _WX_WINDOW_H_BASE_

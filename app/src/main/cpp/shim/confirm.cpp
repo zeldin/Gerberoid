@@ -17,15 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <wx/wx.h>
+#include "confirm.h"
 
+#include <wx/wx.h>
+#include <ContextProvider.h>
 #include <Toast.h>
 
 using android::Toast;
 
-void DisplayError( wxWindow* parent, const wxString& aMessage, int displaytime )
+void DisplayError( ContextProvider* parent, const wxString& aMessage, int displaytime )
 {
-  Toast toast = Toast::makeText(parent->getView().getContext(),
+  Toast toast = Toast::makeText(parent->getContext(),
 				aMessage, Toast::LENGTH_LONG);
   toast.show();
 }

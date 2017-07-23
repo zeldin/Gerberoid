@@ -20,10 +20,10 @@
 #include <fctsys.h>
 #include <common.h>
 #include <gerbview.h>
-#include <gerbview_frame.h>
 
 #include <jni.h>
 #include "threadscopedcontext.h"
+#include <ContextProvider.h>
 
 #include <pthread.h>
 
@@ -43,23 +43,23 @@ public:
   void set(T* value) { pthread_setspecific(key, value); }
 };
 
-static ThreadLocal<GERBVIEW_FRAME> ThreadLocalFrame;
+static ThreadLocal<ContextProvider> ThreadLocalProvider;
 
 }
 
 
-GERBVIEW_FRAME *ThreadScopedContext::Swap(GERBVIEW_FRAME *frame)
+ContextProvider *ThreadScopedContext::Swap(ContextProvider *provider)
 {
-  GERBVIEW_FRAME *otherframe = ThreadLocalFrame.get();
-  ThreadLocalFrame.set(frame);
-  return otherframe;
+  ContextProvider *otherprovider = ThreadLocalProvider.get();
+  ThreadLocalProvider.set(provider);
+  return otherprovider;
 }
 
 android::Context ThreadScopedContext::Get()
 {
-  GERBVIEW_FRAME *frame = ThreadLocalFrame.get();
-  if (frame)
-    return frame->getView().getContext();
+  ContextProvider *provider = ThreadLocalProvider.get();
+  if (provider)
+    return provider->getContext();
   else
     return android::Context();
 }

@@ -19,11 +19,11 @@
 
 #include <Context.h>
 
-class GERBVIEW_FRAME;
+class ContextProvider;
 
 class ThreadScopedContext
 {
 public:
-  static GERBVIEW_FRAME *Swap(GERBVIEW_FRAME *frame);
+  static ContextProvider *Swap(ContextProvider *provider);
   static android::Context Get();
 };

@@ -19,10 +19,11 @@
 
 #include <wx/wx.h>
 #include <html_messagebox.h>
+#include "ContextProvider.h"
 #include <Html.h>
 
-HTML_MESSAGE_BOX::HTML_MESSAGE_BOX( wxWindow* parent, const wxString& aTitle )
-  : dialogBuilder(parent->getView().getContext())
+HTML_MESSAGE_BOX::HTML_MESSAGE_BOX( ContextProvider* parent, const wxString& aTitle )
+  : dialogBuilder(parent->getContext())
 {
   dialogBuilder.setTitle(aTitle).setNegativeButton(_("Close"));
 }

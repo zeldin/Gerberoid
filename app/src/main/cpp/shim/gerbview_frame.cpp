@@ -24,10 +24,9 @@
 #include <class_gbr_layout.h>
 
 GERBVIEW_FRAME::GERBVIEW_FRAME(android::View&& view)
-  : wxWindow(std::move(view))
 {
   m_gerberLayout = NULL;
-  m_canvas = new EDA_DRAW_PANEL(this);
+  m_canvas = new EDA_DRAW_PANEL(this, std::move(view));
   m_displayMode = 0;
   m_DisplayOptions.m_DisplayDCodes = true;
   m_DisplayOptions.m_DisplayFlashedItemsFill = true;

@@ -35,6 +35,8 @@ class View : public JNIRef
 
  public:
   Context getContext();
+  int getWidth() const;
+  int getHeight() const;
 };
 
 }

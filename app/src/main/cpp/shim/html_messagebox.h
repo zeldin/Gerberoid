@@ -19,13 +19,15 @@
 
 #include <AlertDialogBuilder.h>
 
+class ContextProvider;
+
 class HTML_MESSAGE_BOX
 {
  private:
   android::AlertDialogBuilder dialogBuilder;
 
  public:
-  HTML_MESSAGE_BOX( wxWindow* parent, const wxString& aTitle );
+  HTML_MESSAGE_BOX( ContextProvider* parent, const wxString& aTitle );
   void ListSet( const wxArrayString& aList );
   int ShowModal();
 };

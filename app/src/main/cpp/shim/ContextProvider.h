@@ -17,35 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "class_drawpanel.h"
+#ifndef CONTEXT_PROVIDER_H
+#define CONTEXT_PROVIDER_H
 
-void EDA_DRAW_PANEL::SetPrintMirrored(bool mode)
+#include <Context.h>
+class ContextProvider
 {
-  /* Stub */
-}
+ public:
+  virtual android::Context getContext() = 0;
+};
 
-void EDA_DRAW_PANEL::DoPrepareDC(wxDC& DC)
-{
-  /* Stub */
-}
-
-void EDA_DRAW_PANEL::DrawBackGround(wxDC* DC)
-{
-  /* Stub */
-}
-
-void EDA_DRAW_PANEL::DrawCrossHair(wxDC* DC)
-{
-  /* Stub */
-}
-
-bool EDA_DRAW_PANEL::IsMouseCaptured()
-{
-  /* Stub */
-  return false;
-}
-
-void EDA_DRAW_PANEL::CallMouseCapture( wxDC* aDC, const wxPoint& aPosition, bool aErase )
-{
-  /* Stub */
-}
+#endif // CONTEXT_PROVIDER_H

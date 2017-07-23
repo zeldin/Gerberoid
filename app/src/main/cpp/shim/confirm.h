@@ -19,5 +19,6 @@
 
 class wxWindow;
 class wxString;
+class ContextProvider;
 
-void DisplayError( wxWindow* parent, const wxString& aMessage, int displaytime = 0 );
+void DisplayError( ContextProvider* parent, const wxString& aMessage, int displaytime = 0 );

@@ -25,15 +25,16 @@
 
 class GERBVIEW_FRAME;
 
-class EDA_DRAW_PANEL
+class EDA_DRAW_PANEL : public wxWindow
 {
+  friend class GERBVIEW_FRAME;
  private:
   EDA_RECT        m_ClipBox;
   GERBVIEW_FRAME *m_Parent;
 
  public:
-  EDA_DRAW_PANEL(GERBVIEW_FRAME *parent) : m_Parent(parent) {}
-  GERBVIEW_FRAME* GetParent() const { return m_Parent; };
+  EDA_DRAW_PANEL(GERBVIEW_FRAME *parent, android::View&& view) : wxWindow(std::move(view)), m_Parent(parent) {}
+  GERBVIEW_FRAME* GetParent() const { return m_Parent; }
   EDA_RECT* GetClipBox() { return &m_ClipBox; }
   void SetClipBox( const EDA_RECT& aRect ) { m_ClipBox = aRect; }
   void SetPrintMirrored(bool mode);
@@ -42,7 +43,6 @@ class EDA_DRAW_PANEL
   void DrawCrossHair(wxDC* DC);
   bool IsMouseCaptured();
   void CallMouseCapture( wxDC* aDC, const wxPoint& aPosition, bool aErase );
-  void GetClientSize( int *w, int *h ) const;
 };
 
 #endif // PANEL_WXSTRUCT_H

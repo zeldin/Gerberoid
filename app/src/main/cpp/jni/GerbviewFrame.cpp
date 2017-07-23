@@ -49,7 +49,8 @@ private:
 
   class FrameHolder {
   private:
-    GERBVIEW_FRAME *frame, *oldframe;
+    GERBVIEW_FRAME *frame;
+    ContextProvider *oldprovider;
   public:
     FrameHolder(jlong handle);
     ~FrameHolder();
@@ -77,12 +78,12 @@ const JNINativeMethod GerbviewFrame::methods[] = {
 GerbviewFrame::FrameHolder::FrameHolder(jlong handle)
   : frame(FromHandle(handle))
 {
-  oldframe = ThreadScopedContext::Swap(frame);
+  oldprovider = ThreadScopedContext::Swap(frame);
 }
 
 GerbviewFrame::FrameHolder::~FrameHolder()
 {
-  ThreadScopedContext::Swap(oldframe);
+  ThreadScopedContext::Swap(oldprovider);
 }
 
 jlong GerbviewFrame::NativeCreate(JNIEnv *env, jobject objectOrClass)
