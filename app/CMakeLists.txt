@@ -13,10 +13,12 @@ set(GERBVIEW_SRCS
 	src/main/cpp/gerbview/rs274d.cpp
 	src/main/cpp/gerbview/rs274x.cpp
 	src/main/cpp/gerbview/rs274_read_XY_and_IJ_coordinates.cpp
+	src/main/cpp/gerbview/common/bezier_curves.cpp
 	src/main/cpp/gerbview/common/colors.cpp
 	src/main/cpp/gerbview/common/dlist.cpp
 	src/main/cpp/gerbview/common/drawtxt.cpp
 	src/main/cpp/gerbview/common/eda_text.cpp
+	src/main/cpp/gerbview/common/gr_basic.cpp
 	src/main/cpp/gerbview/common/newstroke_font.cpp
 	src/main/cpp/gerbview/common/string.cpp
 	src/main/cpp/gerbview/common/trigo.cpp
@@ -28,7 +30,6 @@ set(GERBVIEW_SRCS
 	src/main/cpp/shim/confirm.cpp
 	src/main/cpp/shim/draw_panel.cpp
 	src/main/cpp/shim/gerbview_frame.cpp
-	src/main/cpp/shim/gr_basic.cpp
 	src/main/cpp/shim/html_messagebox.cpp
 	src/main/cpp/shim/msgpanel.cpp
 	src/main/cpp/shim/threadscopedcontext.cpp
@@ -47,6 +48,7 @@ set(GERBVIEW_SRCS
 	src/main/cpp/jni/GerbviewFrame.cpp
 	src/main/cpp/jni/Html.cpp
 	src/main/cpp/jni/Paint.cpp
+	src/main/cpp/jni/PathEffect.cpp
 	src/main/cpp/jni/PorterDuff.cpp
 	src/main/cpp/jni/Rect.cpp
 	src/main/cpp/jni/Toast.cpp

@@ -20,6 +20,7 @@
 #include <jni.h>
 #include "Paint.h"
 #include "Xfermode.h"
+#include "PathEffect.h"
 #include "inithook.h"
 #include "localframe.h"
 
@@ -38,8 +39,10 @@ private:
   static jclass class_Paint_Style;
   static jmethodID method_init;
   static jmethodID method_setColor;
+  static jmethodID method_setStrokeWidth;
   static jmethodID method_setStyle;
   static jmethodID method_setXfermode;
+  static jmethodID method_setPathEffect;
   static jfieldID field_FILL;
   static jfieldID field_FILL_AND_STROKE;
   static jfieldID field_STROKE;
@@ -52,8 +55,10 @@ jclass Paint::Native::class_Paint = 0;
 jclass Paint::Native::class_Paint_Style = 0;
 jmethodID Paint::Native::method_init = 0;
 jmethodID Paint::Native::method_setColor = 0;
+jmethodID Paint::Native::method_setStrokeWidth = 0;
 jmethodID Paint::Native::method_setStyle = 0;
 jmethodID Paint::Native::method_setXfermode = 0;
+jmethodID Paint::Native::method_setPathEffect = 0;
 jfieldID Paint::Native::field_FILL = 0;
 jfieldID Paint::Native::field_FILL_AND_STROKE = 0;
 jfieldID Paint::Native::field_STROKE = 0;
@@ -72,6 +77,14 @@ void Paint::setColor(uint32_t color)
 		      static_cast<jint>(color));
 }
 
+void Paint::setStrokeWidth(float width)
+{
+  LocalFrame env;
+  if (!env || !get()) return;
+  env->CallVoidMethod(*this, Native::method_setStrokeWidth,
+		      static_cast<jfloat>(width));
+}
+
 void Paint::setStyle(const Style &style)
 {
   LocalFrame env;
@@ -87,6 +100,15 @@ const Xfermode &Paint::setXfermode(const Xfermode &xfermode)
   env->CallObjectMethod(*this, Native::method_setXfermode,
 			static_cast<jobject>(xfermode));
   return xfermode;
+}
+
+const PathEffect &Paint::setPathEffect(const PathEffect &effect)
+{
+  LocalFrame env;
+  if (!env || !get()) return effect;
+  env->CallObjectMethod(*this, Native::method_setPathEffect,
+			static_cast<jobject>(effect));
+  return effect;
 }
 
 JNIRef Paint::Native::createPaint()
@@ -112,21 +134,26 @@ bool Paint::Native::init(JNIEnv *env)
     return false;
   method_init = env->GetMethodID(class_Paint, "<init>", "()V");
   method_setColor = env->GetMethodID(class_Paint, "setColor", "(I)V");
+  method_setStrokeWidth = env->GetMethodID(class_Paint, "setStrokeWidth", "(F)V");
   method_setStyle = env->GetMethodID(class_Paint, "setStyle", "(Landroid/graphics/Paint$Style;)V");
   method_setXfermode = env->GetMethodID(class_Paint, "setXfermode", "(Landroid/graphics/Xfermode;)Landroid/graphics/Xfermode;");
+  method_setPathEffect = env->GetMethodID(class_Paint, "setPathEffect", "(Landroid/graphics/PathEffect;)Landroid/graphics/PathEffect;");
   field_FILL = env->GetStaticFieldID(class_Paint_Style, "FILL", "Landroid/graphics/Paint$Style;");
   field_FILL_AND_STROKE = env->GetStaticFieldID(class_Paint_Style, "FILL_AND_STROKE", "Landroid/graphics/Paint$Style;");
   field_STROKE = env->GetStaticFieldID(class_Paint_Style, "STROKE", "Landroid/graphics/Paint$Style;");
-  return method_init && method_setColor && method_setStyle &&
-    method_setXfermode && field_FILL && field_FILL_AND_STROKE && field_STROKE;
+  return method_init && method_setColor && method_setStrokeWidth &&
+    method_setStyle && method_setXfermode && method_setPathEffect &&
+    field_FILL && field_FILL_AND_STROKE && field_STROKE;
 }
 
 void Paint::Native::deinit(JNIEnv *env)
 {
   method_init = 0;
   method_setColor = 0;
+  method_setStrokeWidth = 0;
   method_setStyle = 0;
   method_setXfermode = 0;
+  method_setPathEffect = 0;
   field_FILL = 0;
   field_FILL_AND_STROKE = 0;
   field_STROKE = 0;

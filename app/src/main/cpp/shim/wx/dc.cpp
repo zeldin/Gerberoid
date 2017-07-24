@@ -23,6 +23,7 @@
 #include <Canvas.h>
 #include <Paint.h>
 #include <PorterDuff.h>
+#include <PathEffect.h>
 
 wxDC::wxDC(android::Canvas&& canvas) : android::Canvas(std::move(canvas))
 {
@@ -129,6 +130,79 @@ wxCoord wxDC::DeviceToLogicalXRel(wxCoord x) const
 wxCoord wxDC::DeviceToLogicalYRel(wxCoord y) const
 {
   return y / scaley;
+}
+
+void wxDC::DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
+{
+  /* Stub */
+}
+
+void wxDC::DrawLine(const wxPoint& pt1, const wxPoint& pt2)
+{
+  /* Stub */
+}
+
+void wxDC::DrawPoint(wxCoord x, wxCoord y)
+{
+  /* Stub */
+}
+
+void wxDC::DrawArc(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2,
+		   wxCoord xc, wxCoord yc)
+{
+  /* Stub */
+}
+
+void wxDC::DrawArc(const wxPoint& pt1, const wxPoint& pt2, const wxPoint& centre)
+{
+  /* Stub */
+}
+
+void wxDC::DrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
+{
+  drawOval(android::RectF(x, y, x+width, y+height), paint);
+}
+
+void wxDC::DrawPolygon(int n, const wxPoint points[])
+{
+  /* Stub */
+}
+
+void wxDC::SetPen(const wxPen& pen)
+{
+  if (&pen == &this->pen)
+    return;
+
+  paint.setColor(pen.GetColour().ARGB());
+  float w = pen.GetWidth();
+  paint.setStrokeWidth(w);
+  if (pen.GetStyle() != this->pen.GetStyle())
+    switch(pen.GetStyle()) {
+    case wxPENSTYLE_INVALID:
+    case wxPENSTYLE_SOLID:
+      paint.setPathEffect(0);
+      break;
+    case wxPENSTYLE_SHORT_DASH:
+      paint.setPathEffect(android::DashPathEffect({w*10, w*10}, 0));
+      break;
+    case wxPENSTYLE_DOT_DASH:
+      paint.setPathEffect(android::DashPathEffect({w, w*10}, 0));
+      break;
+    }
+  this->pen = pen;
+}
+
+void wxDC::SetBrush(const wxBrush& brush)
+{
+  paint.setColor(brush.GetColour().ARGB());
+  paint.setStyle((brush.GetStyle() == wxBRUSHSTYLE_SOLID?
+		  android::Paint::Style::FILL_AND_STROKE :
+		  android::Paint::Style::STROKE));
+}
+
+void wxDC::SetLogicalFunction(wxRasterOperationMode function)
+{
+  /* Stub */
 }
 
 void wxMemoryDC::SelectObject(wxBitmap& bmp)

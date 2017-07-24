@@ -17,4 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* Empty */
+#ifndef MATH_FOR_GRAPHICS_H
+#define MATH_FOR_GRAPHICS_H
+
+#include <math.h>
+
+inline double Distance( double x1, double y1, double x2, double y2 )
+{
+    return hypot(x1-x2, y1-y2);
+}
+
+#endif // MATH_FOR_GRAPHICS_H

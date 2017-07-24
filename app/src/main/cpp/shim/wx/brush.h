@@ -23,6 +23,7 @@
 enum wxBrushStyle
 {
   wxBRUSHSTYLE_SOLID = wxSOLID,
+  wxBRUSHSTYLE_TRANSPARENT = wxTRANSPARENT
 };
 
 class wxBrush
@@ -32,8 +33,12 @@ class wxBrush
   wxBrushStyle style;
  public:
   wxBrush(wxColour c, wxBrushStyle s) : colour(c), style(s) {}
+  wxBrush() : colour(wxColour(0, 0, 0, 0)), style(wxBRUSHSTYLE_SOLID) {}
   void SetColour(wxColour c) { colour = c; }
   void SetColour(unsigned char aRed, unsigned char aGreen, unsigned char aBlue) { SetColour(wxColour(aRed, aGreen, aBlue)); }
+  void SetStyle(wxBrushStyle s) { style = s; }
+  wxColour GetColour() const { return colour; }
+  wxBrushStyle GetStyle() const { return style; }
 };
 
 #endif // _WX_BRUSH_H_

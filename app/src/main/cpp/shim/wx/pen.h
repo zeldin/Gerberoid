@@ -17,39 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CANVAS_H__
-#define CANVAS_H__ 1
+#ifndef _WX_PEN_H_
+#define _WX_PEN_H_
 
-#include "jniref.h"
+typedef enum {
+  wxPENSTYLE_INVALID = -1,
+  wxPENSTYLE_SOLID = wxSOLID,
+  wxPENSTYLE_SHORT_DASH = wxSHORT_DASH,
+  wxPENSTYLE_DOT_DASH = wxDOT_DASH
+} wxPenStyle;
 
-namespace android
+class wxPen
 {
-
-class Bitmap;
-class Paint;
-class Rect;
-class RectF;
-
-class Canvas : public JNIRef
-{
-  using JNIRef::JNIRef;
-
  private:
-  class Native;
+  int width;
+  wxPenStyle style;
+  wxColour colour;
 
  public:
-  Canvas();
-  void setBitmap(Bitmap &bitmap);
-  int save();
-  void restore();
-  void scale(float sx, float sy);
-  void translate(float dx, float dy);
-  bool clipRect(int left, int top, int right, int bottom);
-  void drawCircle(float cx, float cy, float radius, const Paint& paint);
-  void drawOval(const RectF &rect, const Paint& paint);
-  void drawBitmap(const Bitmap &bitmap, const Rect &src, const Rect &dst, const Paint &paint);
+  wxPen() : width(0), style(wxPENSTYLE_INVALID), colour(wxColour(0,0,0,0)) {}
+  bool IsOk() const { return style != wxPENSTYLE_INVALID; }
+  void SetColour(const wxColour& col) { colour = col; }
+  void SetWidth(int w) { width = w; }
+  void SetStyle(wxPenStyle sty) { style = sty; }
+  wxColour GetColour() const { return colour; }
+  int GetWidth() const { return width; }
+  wxPenStyle GetStyle() const { return style; }
 };
 
-}
-
-#endif // CANVAS_H__
+#endif // _WX_PEN_H_

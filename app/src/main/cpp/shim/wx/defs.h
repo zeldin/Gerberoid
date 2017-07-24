@@ -32,6 +32,10 @@
 #define wxDefaultDateTimeFormat "%c"
 
 #define wxSOLID 100
+#define wxSHORT_DASH 103
+#define wxDOT_DASH 104
 #define wxTRANSPARENT 106
+
+#define wxCHECK_VERSION(a,b,c) 0
 
 #endif // _WX_DEFS_H_

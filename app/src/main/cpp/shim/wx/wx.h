@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <math.h>
 
 #include "wx/defs.h"
 #include "wx/string.h"
@@ -36,6 +37,7 @@
 #include "wx/colour.h"
 #include "wx/brush.h"
 #include "wx/bitmap.h"
+#include "wx/pen.h"
 #include "wx/dc.h"
 
 class wxTextCtrl;
@@ -68,10 +70,6 @@ class wxDateTime
 class wxBusyCursor
 {
 };
-
-typedef enum {
-  wxPENSTYLE_SOLID = wxSOLID
-} wxPenStyle;
 
 wxString wxPathOnly(const wxString& path);
 void wxSetWorkingDirectory(const wxString& path);

@@ -28,6 +28,8 @@ namespace android
 
 class Rect : public JNIRef
 {
+  friend class RectF;
+
   using JNIRef::JNIRef;
 
  private:
@@ -35,6 +37,14 @@ class Rect : public JNIRef
 
  public:
   Rect(int left, int top, int right, int bottom);
+};
+
+class RectF : public JNIRef
+{
+  using JNIRef::JNIRef;
+
+ public:
+  RectF(float left, float top, float right, float bottom);
 };
 
 }

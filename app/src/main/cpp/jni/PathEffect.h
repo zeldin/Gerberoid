@@ -17,39 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CANVAS_H__
-#define CANVAS_H__ 1
+#ifndef PATHEFFECT_H__
+#define PATHEFFECT_H__ 1
 
 #include "jniref.h"
+#include <vector>
 
 namespace android
 {
 
-class Bitmap;
-class Paint;
-class Rect;
-class RectF;
-
-class Canvas : public JNIRef
+class PathEffect : public JNIRef
 {
   using JNIRef::JNIRef;
+};
+
+class DashPathEffect : public PathEffect
+{
+  using PathEffect::PathEffect;
 
  private:
   class Native;
 
  public:
-  Canvas();
-  void setBitmap(Bitmap &bitmap);
-  int save();
-  void restore();
-  void scale(float sx, float sy);
-  void translate(float dx, float dy);
-  bool clipRect(int left, int top, int right, int bottom);
-  void drawCircle(float cx, float cy, float radius, const Paint& paint);
-  void drawOval(const RectF &rect, const Paint& paint);
-  void drawBitmap(const Bitmap &bitmap, const Rect &src, const Rect &dst, const Paint &paint);
+  DashPathEffect(const std::vector<float>& intervals, float phase);
 };
 
 }
 
-#endif // CANVAS_H__
+#endif // PATHEFFECT_H__

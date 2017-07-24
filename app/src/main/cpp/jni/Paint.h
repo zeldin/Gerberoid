@@ -27,6 +27,7 @@ namespace android
 {
 
 class Xfermode;
+class PathEffect;
 
 class Paint : public JNIRef
 {
@@ -49,8 +50,10 @@ class Paint : public JNIRef
 
   Paint();
   void setColor(uint32_t color);
+  void setStrokeWidth(float width);
   void setStyle(const Style &style);
   const Xfermode &setXfermode(const Xfermode &xfermode);
+  const PathEffect &setPathEffect(const PathEffect &effect);
 };
 
 }

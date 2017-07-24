@@ -51,6 +51,9 @@ class wxPoint
 
   wxPoint operator+(const wxSize& s) const { return wxPoint(x + s.GetWidth(), y + s.GetHeight()); }
   wxPoint operator-(const wxSize& s) const { return wxPoint(x - s.GetWidth(), y - s.GetHeight()); }
+
+  friend inline bool operator==(const wxPoint& lhs, const wxPoint& rhs) { return lhs.x == rhs.x && lhs.y == rhs.y; }
+  friend inline bool operator!=(const wxPoint& lhs, const wxPoint& rhs) { return !(lhs == rhs); }
 };
 
 class wxRealPoint

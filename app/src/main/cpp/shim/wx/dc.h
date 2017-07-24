@@ -21,11 +21,16 @@
 #define _WX_DC_H_
 
 #include <Canvas.h>
+#include <Bitmap.h>
+#include <Paint.h>
 
 enum wxRasterOperationMode
 {
   wxCOPY,
-  wxOR
+  wxOR,
+  wxXOR,
+  wxEQUIV,
+  wxINVERT
 };
 
 class wxDC : protected android::Canvas
@@ -33,9 +38,11 @@ class wxDC : protected android::Canvas
  private:
   float scalex, scaley;
   float logorgx, logorgy;
+  wxPen pen;
 
  protected:
   android::Bitmap bitmap;
+  android::Paint paint;
 
  public:
   wxDC(android::Canvas&& canvas);
@@ -58,6 +65,18 @@ class wxDC : protected android::Canvas
   wxCoord DeviceToLogicalY(wxCoord y) const;
   wxCoord DeviceToLogicalXRel(wxCoord x) const;
   wxCoord DeviceToLogicalYRel(wxCoord y) const;
+  void DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2);
+  void DrawLine(const wxPoint& pt1, const wxPoint& pt2);
+  void DrawPoint(wxCoord x, wxCoord y);
+  void DrawArc(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2,
+	       wxCoord xc, wxCoord yc);
+  void DrawArc(const wxPoint& pt1, const wxPoint& pt2, const wxPoint& centre);
+  void DrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height);
+  void DrawPolygon(int n, const wxPoint points[]);
+  void SetPen(const wxPen& pen);
+  const wxPen& GetPen() { return pen; }
+  void SetBrush(const wxBrush& brush);
+  void SetLogicalFunction(wxRasterOperationMode function);
 };
 
 class wxMemoryDC : public wxDC
