@@ -48,6 +48,7 @@ set(GERBVIEW_SRCS
 	src/main/cpp/jni/GerbviewFrame.cpp
 	src/main/cpp/jni/Html.cpp
 	src/main/cpp/jni/Paint.cpp
+	src/main/cpp/jni/Path.cpp
 	src/main/cpp/jni/PathEffect.cpp
 	src/main/cpp/jni/PorterDuff.cpp
 	src/main/cpp/jni/Rect.cpp

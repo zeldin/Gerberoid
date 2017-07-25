@@ -48,10 +48,34 @@ class Paint : public JNIRef
     static const Style STROKE;
   };
 
+  class Cap {
+    friend class Paint;
+  private:
+    const jfieldID &field;
+    Cap(const jfieldID& field) : field(field) {}
+  public:
+    static const Cap BUTT;
+    static const Cap ROUND;
+    static const Cap SQUARE;
+  };
+
+  class Join {
+    friend class Paint;
+  private:
+    const jfieldID &field;
+    Join(const jfieldID& field) : field(field) {}
+  public:
+    static const Join BEVEL;
+    static const Join MITER;
+    static const Join ROUND;
+  };
+
   Paint();
   void setColor(uint32_t color);
   void setStrokeWidth(float width);
   void setStyle(const Style &style);
+  void setStrokeCap(const Cap &style);
+  void setStrokeJoin(const Join &style);
   const Xfermode &setXfermode(const Xfermode &xfermode);
   const PathEffect &setPathEffect(const PathEffect &effect);
 };

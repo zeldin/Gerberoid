@@ -159,6 +159,7 @@ public class GerbviewFrame extends View
 	isScaling = false;
 	scaleGestureDetector = new ScaleGestureDetector(getContext(), this);
 	gestureDetector = new GestureDetector(getContext(), this);
+	setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     void onDestroy()

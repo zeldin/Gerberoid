@@ -22,6 +22,7 @@
 #include <Rect.h>
 #include <Canvas.h>
 #include <Paint.h>
+#include <Path.h>
 #include <PorterDuff.h>
 #include <PathEffect.h>
 
@@ -134,17 +135,20 @@ wxCoord wxDC::DeviceToLogicalYRel(wxCoord y) const
 
 void wxDC::DrawLine(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2)
 {
-  /* Stub */
+  if (x1 == x2 && y1 == y2)
+    DrawPoint(x1, y1);
+  else
+    drawLine(x1, y1, x2, y2, paint);
 }
 
 void wxDC::DrawLine(const wxPoint& pt1, const wxPoint& pt2)
 {
-  /* Stub */
+  DrawLine(pt1.x, pt1.y, pt2.x, pt2.y);
 }
 
 void wxDC::DrawPoint(wxCoord x, wxCoord y)
 {
-  /* Stub */
+  drawPoint(x, y, paint);
 }
 
 void wxDC::DrawArc(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2,
@@ -165,7 +169,24 @@ void wxDC::DrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height)
 
 void wxDC::DrawPolygon(int n, const wxPoint points[])
 {
-  /* Stub */
+  if (n > 3 && points[0] == points[1]) {
+    --n;
+    points++;
+  }
+  if (n == 4 &&
+      points[0].x == points[1].x && points[1].y == points[2].y &&
+      points[2].x == points[3].x && points[0].y == points[3].y &&
+      points[3].x >= points[1].x && points[3].y >= points[1].y) {
+    /* Actually a rectangle... */
+    drawRect(points[1].x, points[1].y, points[3].x, points[3].y, paint);
+  } else if (n >= 2) {
+    android::Path path;
+    path.moveTo(points[0].x, points[0].y);
+    for(int i=1; i<n; i++)
+      path.lineTo(points[i].x, points[i].y);
+    path.close();
+    drawPath(path, paint);
+  }
 }
 
 void wxDC::SetPen(const wxPen& pen)
@@ -186,9 +207,13 @@ void wxDC::SetPen(const wxPen& pen)
       paint.setPathEffect(android::DashPathEffect({w*10, w*10}, 0));
       break;
     case wxPENSTYLE_DOT_DASH:
-      paint.setPathEffect(android::DashPathEffect({w, w*10}, 0));
+      paint.setPathEffect(android::DashPathEffect({w/10, w*10}, 0));
       break;
     }
+  if (!this->pen.IsOk()) {
+    paint.setStrokeCap(android::Paint::Cap::ROUND);
+    paint.setStrokeJoin(android::Paint::Join::ROUND);
+  }
   this->pen = pen;
 }
 

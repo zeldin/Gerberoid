@@ -21,6 +21,7 @@
 #include "Canvas.h"
 #include "Bitmap.h"
 #include "Paint.h"
+#include "Path.h"
 #include "Rect.h"
 #include "inithook.h"
 #include "localframe.h"
@@ -47,6 +48,10 @@ private:
   static jmethodID method_drawCircle;
   static jmethodID method_drawOval;
   static jmethodID method_drawBitmap;
+  static jmethodID method_drawLine;
+  static jmethodID method_drawPath;
+  static jmethodID method_drawRect;
+  static jmethodID method_drawPoint;
 
   static JNIRef createCanvas();
 };
@@ -63,6 +68,10 @@ jmethodID Canvas::Native::method_clipRect = 0;
 jmethodID Canvas::Native::method_drawCircle = 0;
 jmethodID Canvas::Native::method_drawOval = 0;
 jmethodID Canvas::Native::method_drawBitmap = 0;
+jmethodID Canvas::Native::method_drawLine = 0;
+jmethodID Canvas::Native::method_drawPath = 0;
+jmethodID Canvas::Native::method_drawRect = 0;
+jmethodID Canvas::Native::method_drawPoint = 0;
 
 Canvas::Canvas() : JNIRef(Native::createCanvas()) {}
 
@@ -146,6 +155,49 @@ void Canvas::drawBitmap(const Bitmap &bitmap, const Rect &src, const Rect &dst, 
 		      static_cast<jobject>(paint));
 }
 
+void Canvas::drawLine(float startX, float startY, float stopX, float stopY, const Paint &paint)
+{
+  LocalFrame env;
+  if (!env || !get() || !paint) return;
+  env->CallVoidMethod(*this, Native::method_drawLine,
+		      static_cast<jfloat>(startX),
+		      static_cast<jfloat>(startY),
+		      static_cast<jfloat>(stopX),
+		      static_cast<jfloat>(stopY),
+		      static_cast<jobject>(paint));
+}
+
+void Canvas::drawPoint(float x, float y, const Paint &paint)
+{
+  LocalFrame env;
+  if (!env || !get() || !paint) return;
+  env->CallVoidMethod(*this, Native::method_drawPoint,
+		      static_cast<jfloat>(x),
+		      static_cast<jfloat>(y),
+		      static_cast<jobject>(paint));
+}
+
+void Canvas::drawPath(const Path &path, const Paint &paint)
+{
+  LocalFrame env;
+  if (!env || !get() || !paint) return;
+  env->CallVoidMethod(*this, Native::method_drawPath,
+		      static_cast<jobject>(path),
+		      static_cast<jobject>(paint));
+}
+
+void Canvas::drawRect(float left, float top, float right, float bottom, const Paint &paint)
+{
+  LocalFrame env;
+  if (!env || !get() || !paint) return;
+  env->CallVoidMethod(*this, Native::method_drawRect,
+		      static_cast<jfloat>(left),
+		      static_cast<jfloat>(top),
+		      static_cast<jfloat>(right),
+		      static_cast<jfloat>(bottom),
+		      static_cast<jobject>(paint));
+}
+
 JNIRef Canvas::Native::createCanvas()
 {
   LocalFrame env;
@@ -172,9 +224,14 @@ bool Canvas::Native::init(JNIEnv *env)
   method_drawCircle = env->GetMethodID(class_Canvas, "drawCircle", "(FFFLandroid/graphics/Paint;)V");
   method_drawOval = env->GetMethodID(class_Canvas, "drawOval", "(Landroid/graphics/RectF;Landroid/graphics/Paint;)V");
   method_drawBitmap = env->GetMethodID(class_Canvas, "drawBitmap", "(Landroid/graphics/Bitmap;Landroid/graphics/Rect;Landroid/graphics/Rect;Landroid/graphics/Paint;)V");
+  method_drawLine = env->GetMethodID(class_Canvas, "drawLine", "(FFFFLandroid/graphics/Paint;)V");
+  method_drawPath = env->GetMethodID(class_Canvas, "drawPath", "(Landroid/graphics/Path;Landroid/graphics/Paint;)V");
+  method_drawRect = env->GetMethodID(class_Canvas, "drawRect", "(FFFFLandroid/graphics/Paint;)V");
+  method_drawPoint = env->GetMethodID(class_Canvas, "drawPoint", "(FFLandroid/graphics/Paint;)V");
   return method_init && method_setBitmap && method_save && method_restore &&
     method_scale && method_translate && method_clipRect && method_drawCircle &&
-    method_drawOval && method_drawBitmap;
+    method_drawOval && method_drawBitmap && method_drawLine &&
+    method_drawPath && method_drawRect && method_drawPoint;
 }
 
 void Canvas::Native::deinit(JNIEnv *env)
@@ -189,6 +246,10 @@ void Canvas::Native::deinit(JNIEnv *env)
   method_drawCircle = 0;
   method_drawOval = 0;
   method_drawBitmap = 0;
+  method_drawLine = 0;
+  method_drawPath = 0;
+  method_drawRect = 0;
+  method_drawPoint = 0;
   if (class_Canvas) {
     env->DeleteGlobalRef(class_Canvas);
     class_Canvas = 0;

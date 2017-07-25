@@ -26,6 +26,7 @@ namespace android
 {
 
 class Bitmap;
+class Path;
 class Paint;
 class Rect;
 class RectF;
@@ -48,6 +49,10 @@ class Canvas : public JNIRef
   void drawCircle(float cx, float cy, float radius, const Paint& paint);
   void drawOval(const RectF &rect, const Paint& paint);
   void drawBitmap(const Bitmap &bitmap, const Rect &src, const Rect &dst, const Paint &paint);
+  void drawLine(float startX, float startY, float stopX, float stopY, const Paint &paint);
+  void drawPath(const Path &path, const Paint &paint);
+  void drawRect(float left, float top, float right, float bottom, const Paint &paint);
+  void drawPoint(float x, float y, const Paint &paint);
 };
 
 }
