@@ -23,10 +23,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.Spinner;
 
 public class MainActivity extends Activity {
 
     private GerbviewFrame gerbviewFrame;
+    private Spinner layerSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +39,10 @@ public class MainActivity extends Activity {
         if (gerbviewFrame != null) {
 	    gerbviewFrame.onCreate();
 	    gerbviewFrame.onRestoreInstanceState(savedInstanceState);
+	}
+	layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
+	if (layerSpinner != null) {
+	    layerSpinner.setAdapter(new LayerSpinnerAdapter(this, gerbviewFrame));
 	}
     }
 
@@ -50,6 +56,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy ()
     {
+	layerSpinner = null;
 	if (gerbviewFrame != null) {
 	    gerbviewFrame.onDestroy();
 	    gerbviewFrame = null;

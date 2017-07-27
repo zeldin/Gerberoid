@@ -7,10 +7,25 @@
     tools:context="se.pp.mc.android.Gerberoid.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <se.pp.mc.android.Gerberoid.GerbviewFrame
-        android:id="@+id/gerbview_frame"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-    />
+    <LinearLayout
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
+
+	<se.pp.mc.android.Gerberoid.GerbviewFrame
+	    android:id="@+id/gerbview_frame"
+	    android:layout_width="match_parent"
+	    android:layout_height="0dp"
+	    android:layout_weight="1"
+	    android:gravity="center"
+	/>
+
+	<Spinner
+	    android:id="@+id/layer_spinner"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	/>
+
+    </LinearLayout>
 
 </FrameLayout>

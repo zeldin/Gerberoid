@@ -53,12 +53,18 @@ public class GerbviewFrame extends View
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
 
+    private Layer[] layers;
+
     public GerbviewFrame(Context context) {
 	super(context);
     }
 
     public GerbviewFrame(Context context, AttributeSet attrs) {
 	super(context, attrs);
+    }
+
+    public Layer[] getLayers() {
+	return layers;
     }
 
     @Override
@@ -152,6 +158,9 @@ public class GerbviewFrame extends View
     void onCreate()
     {
 	nativeHandle = NativeCreate();
+	layers = new Layer[32];
+	for (int i=0; i<32; i++)
+	    layers[i] = new Layer();
 	logicalOriginX = 0;
 	logicalOriginY = 0;
 	userScale = 5e-5f;

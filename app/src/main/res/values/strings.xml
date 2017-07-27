@@ -9,4 +9,6 @@
     <string name="action_zoom_out">Zoom out</string>
     <string name="action_zoom_fit">Zoom auto (Home)</string>
     <string name="action_about">About Gerberoid</string>
+
+    <string name="layer_name">Layer %1$d</string>
 </resources>
