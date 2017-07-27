@@ -258,6 +258,13 @@ public class GerbviewFrame extends View
 	return Read_GERBER_File(FullFileName, FullFileName);
     }
 
+    boolean Read_EXCELLON_File(String EXCELLON_FullFileName)
+    {
+	boolean result = NativeRead_EXCELLON_File(nativeHandle, EXCELLON_FullFileName);
+	invalidate();
+	return result;
+    }
+
     private void SetOriginAndScale()
     {
 	NativeSetOriginAndScale(nativeHandle, logicalOriginX, logicalOriginY, userScale);
@@ -270,6 +277,7 @@ public class GerbviewFrame extends View
     private native void NativeSetVisibleElementColor(long handle, int layer, int color);
     private native int NativeGetVisibleElementColor(long handle, int layer);
     private native boolean NativeRead_GERBER_File(long handle, String GERBER_FullFileName, String D_Code_FullFileName);
+    private native boolean NativeRead_EXCELLON_File(long handle, String EXCELLON_FullFileName);
     private native void NativeOnDraw(long handle, Canvas canvas, boolean eraseBg);
     private native void NativeSetOriginAndScale(long handle, int logicalOriginX, int logicalOriginY, float userScale);
     private native static int NativeMakeColour(int color);

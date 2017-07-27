@@ -28,6 +28,63 @@ struct OUTPUTFORMATTER
 {
 };
 
+#define LINE_READER_LINE_INITIAL_SIZE       5000
+#define LINE_READER_LINE_DEFAULT_MAX        100000
+
+class FILE_LINE_READER
+{
+ private:
+  FILE *fp;
+  unsigned capacity;
+  char* line;
+
+ public:
+  FILE_LINE_READER( FILE* aFile, const wxString& aFileName)
+    : fp(aFile), capacity(LINE_READER_LINE_INITIAL_SIZE)
+  {
+    if (ftell(aFile) == 0)
+      setvbuf(fp, NULL, _IOFBF, BUFSIZ*8);
+    line = new char[capacity+1];
+    line[0] = 0;
+  }
+
+  ~FILE_LINE_READER()
+  {
+    if (fp)
+      fclose(fp);
+    delete[] line;
+  }
+
+  char* Line() const { return line; }
+
+  char* ReadLine()
+  {
+    unsigned length = 0;
+    int c;
+    do {
+      if (length >= LINE_READER_LINE_DEFAULT_MAX) {
+	line[0] = 0;
+	return NULL;
+      }
+      if (length >= capacity) {
+	capacity *= 2;
+	if (capacity > LINE_READER_LINE_DEFAULT_MAX)
+	  capacity = LINE_READER_LINE_DEFAULT_MAX;
+	char *newline = new char[capacity+1];
+	memcpy(newline, line, length);
+	delete[] line;
+	line = newline;
+      }
+      c = getc_unlocked(fp);
+      if (c == EOF)
+	break;
+      line[length++] = c;
+    } while(c != '\n');
+    line[length] = 0;
+    return length? line : NULL;
+  }
+};
+
 inline int StrPrintf( std::string* aResult, const char* aFormat, ...)
   __attribute__((__format__(__printf__, 2, 3)));
 inline int StrPrintf( std::string* aResult, const char* aFormat, ...)

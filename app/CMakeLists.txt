@@ -9,6 +9,7 @@ set(GERBVIEW_SRCS
 	src/main/cpp/gerbview/class_X2_gerber_attributes.cpp
 	src/main/cpp/gerbview/dcode.cpp
 	src/main/cpp/gerbview/draw_gerber_screen.cpp
+	src/main/cpp/gerbview/excellon_read_drill_file.cpp
 	src/main/cpp/gerbview/readgerb.cpp
 	src/main/cpp/gerbview/rs274d.cpp
 	src/main/cpp/gerbview/rs274x.cpp

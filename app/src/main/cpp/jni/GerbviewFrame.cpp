@@ -49,6 +49,7 @@ private:
   static void NativeSetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item, jint color);
   static jint NativeGetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item);
   static jboolean NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName);
+  static jboolean NativeRead_EXCELLON_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring EXCELLON_FullFileName);
   static void NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
   static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
   static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
@@ -82,6 +83,7 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeSetVisibleElementColor", "(JII)V", (void*)&NativeSetVisibleElementColor },
   { "NativeGetVisibleElementColor", "(JI)I", (void*)&NativeGetVisibleElementColor },
   { "NativeRead_GERBER_File", "(JLjava/lang/String;Ljava/lang/String;)Z", (void*)&NativeRead_GERBER_File },
+  { "NativeRead_EXCELLON_File", "(JLjava/lang/String;)Z", (void*)&NativeRead_EXCELLON_File },
   { "NativeOnDraw", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeOnDraw },
   { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
   { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
@@ -151,6 +153,19 @@ jboolean GerbviewFrame::NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClas
     jboolean result = frame->Read_GERBER_File(utf_GERBER_FullFileName, utf_D_Code_FullFileName);
     env->ReleaseStringUTFChars(GERBER_FullFileName, utf_GERBER_FullFileName);
     env->ReleaseStringUTFChars(D_Code_FullFileName, utf_D_Code_FullFileName);
+    return result;
+  } else {
+    return false;
+  }
+}
+
+jboolean GerbviewFrame::NativeRead_EXCELLON_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring EXCELLON_FullFileName)
+{
+  FrameHolder frame(handle);
+  if (frame && EXCELLON_FullFileName) {
+    const char *utf_EXCELLON_FullFileName = env->GetStringUTFChars(EXCELLON_FullFileName, NULL);
+    jboolean result = frame->Read_EXCELLON_File(utf_EXCELLON_FullFileName);
+    env->ReleaseStringUTFChars(EXCELLON_FullFileName, utf_EXCELLON_FullFileName);
     return result;
   } else {
     return false;

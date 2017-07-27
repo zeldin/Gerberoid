@@ -105,6 +105,8 @@ public:
     bool                Read_GERBER_File( const wxString&   GERBER_FullFileName,
                                           const wxString&   D_Code_FullFileName );
 
+    bool                Read_EXCELLON_File( const wxString& aFullFileName );
+
     void                CopyDCodesSizeToItems();
 
     void    PrintPage( wxDC* aDC, LSET aPrintMasklayer, bool aPrintMirrorMode,

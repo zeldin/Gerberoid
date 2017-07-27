@@ -107,7 +107,7 @@ public class MainActivity extends Activity {
 
     private void LoadDrill(File file)
     {
-	/* Stub */
+	gerbviewFrame.Read_EXCELLON_File(file.getAbsolutePath());
     }
 
     private void SelectFile(int requestCode, int titleResource,
