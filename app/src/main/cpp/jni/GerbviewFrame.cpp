@@ -51,6 +51,7 @@ private:
   static jboolean NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName);
   static void NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
   static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
+  static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
 
   class FrameHolder {
   private:
@@ -83,6 +84,7 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeRead_GERBER_File", "(JLjava/lang/String;Ljava/lang/String;)Z", (void*)&NativeRead_GERBER_File },
   { "NativeOnDraw", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeOnDraw },
   { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
+  { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
 };
 
 GerbviewFrame::FrameHolder::FrameHolder(jlong handle)
@@ -170,6 +172,11 @@ void GerbviewFrame::NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, 
   if (frame) {
     frame->m_canvas->SetOriginAndScale(logicalOriginX, logicalOriginY, userScale);
   }
+}
+
+jint GerbviewFrame::NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color)
+{
+  return MakeColour(static_cast<EDA_COLOR_T>(color)).ARGB();
 }
 
 bool GerbviewFrame::Hook::init(JNIEnv *env)

@@ -21,4 +21,8 @@ package se.pp.mc.android.Gerberoid;
 
 class Layer
 {
+    private int color;
+
+    public void SetColor(int color) { this.color = color; }
+    public int GetColor() { return color; }
 }

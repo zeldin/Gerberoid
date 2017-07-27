@@ -2,9 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="3dp">
+    android:orientation="horizontal"
+    android:padding="1dp"
+    android:gravity="left|center_vertical"
+    android:baselineAligned="false">
+    <ImageButton
+	android:id="@+id/layer_color"
+	android:layout_width="30sp"
+        android:layout_height="30sp"
+	android:padding="5dp"
+	android:cropToPadding="true"/>
     <TextView
 	android:id="@+id/layer_name"
 	android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+	android:layout_marginLeft="4sp"/>
 </LinearLayout>

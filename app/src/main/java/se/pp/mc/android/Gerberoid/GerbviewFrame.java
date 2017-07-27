@@ -211,8 +211,10 @@ public class GerbviewFrame extends View
 
     private void SetLayerColors(int[] colors)
     {
-	for(int i=0; i<colors.length; i++)
+	for(int i=0; i<colors.length; i++) {
 	    NativeSetLayerColor(nativeHandle, i, colors[i]);
+	    layers[i].SetColor(NativeMakeColour(colors[i]));
+	}
     }
 
     private void GetLayerColors(int[] colors)
@@ -236,6 +238,7 @@ public class GerbviewFrame extends View
     void SetLayerColor(int layer, int color)
     {
 	NativeSetLayerColor(nativeHandle, layer, color);
+	layers[layer].SetColor(NativeMakeColour(color));
     }
 
     int GetLayerColor(int layer)
@@ -267,4 +270,5 @@ public class GerbviewFrame extends View
     private native boolean NativeRead_GERBER_File(long handle, String GERBER_FullFileName, String D_Code_FullFileName);
     private native void NativeOnDraw(long handle, Canvas canvas, boolean eraseBg);
     private native void NativeSetOriginAndScale(long handle, int logicalOriginX, int logicalOriginY, float userScale);
+    private native static int NativeMakeColour(int color);
 };

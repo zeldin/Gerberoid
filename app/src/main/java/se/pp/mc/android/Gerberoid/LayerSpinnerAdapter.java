@@ -21,9 +21,11 @@ package se.pp.mc.android.Gerberoid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 class LayerSpinnerAdapter extends BaseAdapter {
@@ -56,9 +58,11 @@ class LayerSpinnerAdapter extends BaseAdapter {
     public View getView(int position, View view, ViewGroup parent)
     {
 	if (view == null)
-	    view = ((Activity)context).getLayoutInflater().inflate(R.layout.layer_spinner_entry, null, false);
+	    view = ((Activity)context).getLayoutInflater().inflate(R.layout.layer_spinner_entry, parent, false);
 	TextView text = (TextView) view.findViewById(R.id.layer_name);
 	text.setText(text.getResources().getString(R.string.layer_name, position+1));
+	ImageButton button = (ImageButton) view.findViewById(R.id.layer_color);
+	button.setImageDrawable(new ColorDrawable(layers[position].GetColor()));
 	return view;
     }
 }
