@@ -265,6 +265,19 @@ public class GerbviewFrame extends View
 	return result;
     }
 
+    boolean Clear_DrawLayers()
+    {
+	boolean result = NativeClear_DrawLayers(nativeHandle);
+	invalidate();
+	return result;
+    }
+
+    void Erase_Current_DrawLayer()
+    {
+	NativeErase_Current_DrawLayer(nativeHandle);
+	invalidate();
+    }
+
     private void SetOriginAndScale()
     {
 	NativeSetOriginAndScale(nativeHandle, logicalOriginX, logicalOriginY, userScale);
@@ -278,6 +291,8 @@ public class GerbviewFrame extends View
     private native int NativeGetVisibleElementColor(long handle, int layer);
     private native boolean NativeRead_GERBER_File(long handle, String GERBER_FullFileName, String D_Code_FullFileName);
     private native boolean NativeRead_EXCELLON_File(long handle, String EXCELLON_FullFileName);
+    private native boolean NativeClear_DrawLayers(long handle);
+    private native void NativeErase_Current_DrawLayer(long handle);
     private native void NativeOnDraw(long handle, Canvas canvas, boolean eraseBg);
     private native void NativeSetOriginAndScale(long handle, int logicalOriginX, int logicalOriginY, float userScale);
     private native static int NativeMakeColour(int color);

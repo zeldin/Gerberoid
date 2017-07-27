@@ -115,3 +115,25 @@ void GERBVIEW_FRAME::onDraw(wxDC& DC, bool eraseBg)
   m_canvas->DoPrepareDC(DC);
   RedrawActiveWindow(&DC, eraseBg);
 }
+
+bool GERBVIEW_FRAME::Clear_DrawLayers()
+{
+  if( GetGerberLayout() == NULL )
+    return false;
+  GetGerberLayout()->m_Drawings.DeleteAll();
+  GetGerberLayout()->SetBoundingBox( EDA_RECT() );
+  return true;
+}
+
+void GERBVIEW_FRAME::Erase_Current_DrawLayer()
+{
+  int layer = getActiveLayer();
+  GERBER_DRAW_ITEM* item = GetGerberLayout()->m_Drawings;
+  GERBER_DRAW_ITEM* next;
+  for( ; item; item = next ) {
+    next = item->Next();
+    if( item->GetLayer() != layer )
+      continue;
+    item->DeleteStructure();
+  }
+}

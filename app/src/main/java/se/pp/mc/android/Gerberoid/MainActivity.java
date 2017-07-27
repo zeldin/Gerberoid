@@ -96,17 +96,22 @@ public class MainActivity extends Activity {
 	    SelectFile(REQUEST_DRILL, R.string.file_request_drill,
 		       "application/octet-stream");
 	    break;
+	case R.id.action_clear:
+	    gerbviewFrame.Clear_DrawLayers();
+	    break;
 	}
 	return true;
     }
 
     private void LoadGerber(File file)
     {
+	gerbviewFrame.Erase_Current_DrawLayer();
 	gerbviewFrame.Read_GERBER_File(file.getAbsolutePath());
     }
 
     private void LoadDrill(File file)
     {
+	gerbviewFrame.Erase_Current_DrawLayer();
 	gerbviewFrame.Read_EXCELLON_File(file.getAbsolutePath());
     }
 

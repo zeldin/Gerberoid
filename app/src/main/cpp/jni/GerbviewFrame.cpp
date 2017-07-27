@@ -50,6 +50,8 @@ private:
   static jint NativeGetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item);
   static jboolean NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName);
   static jboolean NativeRead_EXCELLON_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring EXCELLON_FullFileName);
+  static jboolean NativeClear_DrawLayers(JNIEnv *env, jobject objectOrClass, jlong handle);
+  static void NativeErase_Current_DrawLayer(JNIEnv *env, jobject objectOrClass, jlong handle);
   static void NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
   static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
   static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
@@ -84,6 +86,8 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeGetVisibleElementColor", "(JI)I", (void*)&NativeGetVisibleElementColor },
   { "NativeRead_GERBER_File", "(JLjava/lang/String;Ljava/lang/String;)Z", (void*)&NativeRead_GERBER_File },
   { "NativeRead_EXCELLON_File", "(JLjava/lang/String;)Z", (void*)&NativeRead_EXCELLON_File },
+  { "NativeClear_DrawLayers", "(J)Z", (void*)&NativeClear_DrawLayers },
+  { "NativeErase_Current_DrawLayer", "(J)V", (void*)&NativeErase_Current_DrawLayer },
   { "NativeOnDraw", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeOnDraw },
   { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
   { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
@@ -169,6 +173,24 @@ jboolean GerbviewFrame::NativeRead_EXCELLON_File(JNIEnv *env, jobject objectOrCl
     return result;
   } else {
     return false;
+  }
+}
+
+jboolean GerbviewFrame::NativeClear_DrawLayers(JNIEnv *env, jobject objectOrClass, jlong handle)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    return frame->Clear_DrawLayers();
+  } else {
+    return false;
+  }
+}
+
+void GerbviewFrame::NativeErase_Current_DrawLayer(JNIEnv *env, jobject objectOrClass, jlong handle)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    frame->Erase_Current_DrawLayer();
   }
 }
 

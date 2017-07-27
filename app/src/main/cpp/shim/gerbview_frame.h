@@ -122,4 +122,7 @@ public:
                          double aScale, const wxString &aFilename );
 
     void onDraw( wxDC& DC, bool EraseBg );
+
+    bool Clear_DrawLayers();
+    void Erase_Current_DrawLayer();
 };
