@@ -248,7 +248,9 @@ public class GerbviewFrame extends View
 
     boolean Read_GERBER_File(String GERBER_FullFileName, String D_Code_FullFileName)
     {
-	return NativeRead_GERBER_File(nativeHandle, GERBER_FullFileName, D_Code_FullFileName);
+	boolean result = NativeRead_GERBER_File(nativeHandle, GERBER_FullFileName, D_Code_FullFileName);
+	invalidate();
+	return result;
     }
 
     boolean Read_GERBER_File(String FullFileName)
