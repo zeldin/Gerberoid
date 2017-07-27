@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
         gerbviewFrame = (GerbviewFrame) findViewById(R.id.gerbview_frame);
         if (gerbviewFrame != null) {
 	    gerbviewFrame.onCreate();
-	    gerbviewFrame.onRestoreInstanceState(savedInstanceState);
+	    gerbviewFrame.onRestoreInstanceState((savedInstanceState == null? new Bundle() : savedInstanceState));
 	}
 	layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
 	if (layerSpinner != null) {

@@ -1,0 +1,83 @@
+<resources>
+    <integer name="number_of_layers">32</integer>
+    <integer name="number_of_colors">30</integer>
+    <integer name="number_of_visible_elements">3</integer>
+
+    <integer name="DCODES_VISIBLE">1</integer>
+    <integer name="GERBER_GRID_VISIBLE">2</integer>
+    <integer name="NEGATIVE_OBJECTS_VISIBLE">3</integer>
+
+    <integer name="UNSPECIFIED_COLOR">-1</integer>
+    <integer name="BLACK">0</integer>
+    <integer name="DARKDARKGRAY">1</integer>
+    <integer name="DARKGRAY">2</integer>
+    <integer name="LIGHTGRAY">3</integer>
+    <integer name="WHITE">4</integer>
+    <integer name="LIGHTYELLOW">5</integer>
+    <integer name="DARKBLUE">6</integer>
+    <integer name="DARKGREEN">7</integer>
+    <integer name="DARKCYAN">8</integer>
+    <integer name="DARKRED">9</integer>
+    <integer name="DARKMAGENTA">10</integer>
+    <integer name="DARKBROWN">11</integer>
+    <integer name="BLUE">12</integer>
+    <integer name="GREEN">13</integer>
+    <integer name="CYAN">14</integer>
+    <integer name="RED">15</integer>
+    <integer name="MAGENTA">16</integer>
+    <integer name="BROWN">17</integer>
+    <integer name="LIGHTBLUE">18</integer>
+    <integer name="LIGHTGREEN">19</integer>
+    <integer name="LIGHTCYAN">20</integer>
+    <integer name="LIGHTRED">21</integer>
+    <integer name="LIGHTMAGENTA">22</integer>
+    <integer name="YELLOW">23</integer>
+    <integer name="PUREBLUE">24</integer>
+    <integer name="PUREGREEN">25</integer>
+    <integer name="PURECYAN">26</integer>
+    <integer name="PURERED">27</integer>
+    <integer name="PUREMAGENTA">28</integer>
+    <integer name="PUREYELLOW">29</integer>
+
+    <integer-array name="default_visible_element_colors">
+	<item>@integer/WHITE</item>
+	<item>@integer/DARKGRAY</item>
+	<item>@integer/DARKGRAY</item>
+    </integer-array>
+
+    <integer-array name="default_layer_colors">
+	<item>@integer/GREEN</item>
+	<item>@integer/BLUE</item>
+	<item>@integer/LIGHTGRAY</item>
+	<item>@integer/MAGENTA</item>
+	<item>@integer/RED</item>
+	<item>@integer/DARKGREEN</item>
+	<item>@integer/BROWN</item>
+	<item>@integer/MAGENTA</item>
+	<item>@integer/LIGHTGRAY</item>
+	<item>@integer/BLUE</item>
+	<item>@integer/GREEN</item>
+	<item>@integer/CYAN</item>
+	<item>@integer/LIGHTRED</item>
+	<item>@integer/LIGHTMAGENTA</item>
+	<item>@integer/YELLOW</item>
+	<item>@integer/RED</item>
+	<item>@integer/BLUE</item>
+	<item>@integer/BROWN</item>
+	<item>@integer/LIGHTCYAN</item>
+	<item>@integer/RED</item>
+	<item>@integer/MAGENTA</item>
+	<item>@integer/CYAN</item>
+	<item>@integer/BROWN</item>
+	<item>@integer/MAGENTA</item>
+	<item>@integer/LIGHTGRAY</item>
+	<item>@integer/BLUE</item>
+	<item>@integer/GREEN</item>
+	<item>@integer/DARKCYAN</item>
+	<item>@integer/YELLOW</item>
+	<item>@integer/LIGHTMAGENTA</item>
+	<item>@integer/YELLOW</item>
+	<item>@integer/LIGHTGRAY</item>
+    </integer-array>
+
+</resources>

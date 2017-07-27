@@ -65,6 +65,11 @@ void GERBVIEW_FRAME::SetLayerColor( int aLayer, EDA_COLOR_T aColor )
   m_colorsSettings.SetLayerColor(aLayer, aColor);
 }
 
+void GERBVIEW_FRAME::SetVisibleElementColor( GERBER_VISIBLE_ID aItemIdVisible, EDA_COLOR_T aColor )
+{
+  m_colorsSettings.SetItemColor(aItemIdVisible, aColor);
+}
+
 EDA_COLOR_T GERBVIEW_FRAME::GetDrawBgColor() const
 {
   /* Stub */

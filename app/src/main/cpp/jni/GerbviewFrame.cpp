@@ -44,6 +44,10 @@ private:
 
   static jlong NativeCreate(JNIEnv *env, jobject objectOrClass);
   static void NativeDestroy(JNIEnv *env, jobject objectOrClass, jlong handle);
+  static void NativeSetLayerColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jint color);
+  static jint NativeGetLayerColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
+  static void NativeSetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item, jint color);
+  static jint NativeGetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item);
   static jboolean NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName);
   static void NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
   static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
@@ -72,6 +76,10 @@ jclass GerbviewFrame::class_GerbviewFrame = 0;
 const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeCreate", "()J", (void *)&NativeCreate },
   { "NativeDestroy", "(J)V", (void *)&NativeDestroy },
+  { "NativeSetLayerColor", "(JII)V", (void*)&NativeSetLayerColor },
+  { "NativeGetLayerColor", "(JI)I", (void*)&NativeGetLayerColor },
+  { "NativeSetVisibleElementColor", "(JII)V", (void*)&NativeSetVisibleElementColor },
+  { "NativeGetVisibleElementColor", "(JI)I", (void*)&NativeGetVisibleElementColor },
   { "NativeRead_GERBER_File", "(JLjava/lang/String;Ljava/lang/String;)Z", (void*)&NativeRead_GERBER_File },
   { "NativeOnDraw", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeOnDraw },
   { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
@@ -98,6 +106,38 @@ void GerbviewFrame::NativeDestroy(JNIEnv *env, jobject objectOrClass, jlong hand
   GERBVIEW_FRAME *frame = FromHandle(handle);
   if (frame)
     delete frame;
+}
+
+void GerbviewFrame::NativeSetLayerColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jint color)
+{
+  FrameHolder frame(handle);
+  if (frame)
+    frame->SetLayerColor(layer, static_cast<EDA_COLOR_T>(color));
+}
+
+jint GerbviewFrame::NativeGetLayerColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer)
+{
+  FrameHolder frame(handle);
+  if (frame)
+    return frame->GetLayerColor(layer);
+  else
+    return -1;
+}
+
+void GerbviewFrame::NativeSetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item, jint color)
+{
+  FrameHolder frame(handle);
+  if (frame)
+    frame->SetVisibleElementColor(static_cast<GERBER_VISIBLE_ID>(item), static_cast<EDA_COLOR_T>(color));
+}
+
+jint GerbviewFrame::NativeGetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item)
+{
+  FrameHolder frame(handle);
+  if (frame)
+    return frame->GetVisibleElementColor(static_cast<GERBER_VISIBLE_ID>(item));
+  else
+    return -1;
 }
 
 jboolean GerbviewFrame::NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName)

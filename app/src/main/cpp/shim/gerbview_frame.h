@@ -61,6 +61,7 @@ public:
     void UpdateTitleAndInfo();
     bool IsLayerVisible( int aLayer ) const;
     EDA_COLOR_T GetVisibleElementColor( GERBER_VISIBLE_ID aItemIdVisible ) const;
+    void    SetVisibleElementColor( GERBER_VISIBLE_ID aItemIdVisible, EDA_COLOR_T aColor );
     EDA_COLOR_T GetLayerColor( int aLayer ) const;
     void SetLayerColor( int aLayer, EDA_COLOR_T aColor );
     EDA_COLOR_T GetNegativeItemsColor() const;

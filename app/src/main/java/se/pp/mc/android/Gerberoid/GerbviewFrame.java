@@ -20,6 +20,7 @@
 package se.pp.mc.android.Gerberoid;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -158,8 +159,8 @@ public class GerbviewFrame extends View
     void onCreate()
     {
 	nativeHandle = NativeCreate();
-	layers = new Layer[32];
-	for (int i=0; i<32; i++)
+	layers = new Layer[getContext().getResources().getInteger(R.integer.number_of_layers)];
+	for (int i=0; i<layers.length; i++)
 	    layers[i] = new Layer();
 	logicalOriginX = 0;
 	logicalOriginY = 0;
@@ -175,14 +176,71 @@ public class GerbviewFrame extends View
     {
 	NativeDestroy(nativeHandle);
 	nativeHandle = 0;
+	layers = null;
     }
 
     void onRestoreInstanceState(Bundle savedInstanceState)
     {
+	Resources resources = getContext().getResources();
+	int[] layerColors = savedInstanceState.getIntArray("layerColors");
+	if (layerColors == null)
+	    layerColors = resources.getIntArray(R.array.default_layer_colors);
+	if (layerColors != null)
+	    SetLayerColors(layerColors);
+	int[] visibleElementColors = savedInstanceState.getIntArray("visibleElementColors");
+	if (visibleElementColors == null)
+	    visibleElementColors = resources.getIntArray(R.array.default_visible_element_colors);
+	if (visibleElementColors != null)
+	    SetVisibleElementColors(visibleElementColors);
 	android.util.Log.i("GerbviewFram", "RGF => "+Read_GERBER_File("/sdcard/Download/riser-B.Cu.gbr"));
     }
 
     void onSaveInstanceState(Bundle savedInstanceState) {
+	if (layers != null) {
+	    int[] layerColors = new int[layers.length];
+	    GetLayerColors(layerColors);
+	    savedInstanceState.putIntArray("layerColors", layerColors);
+	}
+	if (nativeHandle != 0) {
+	    Resources resources = getContext().getResources();
+	    int[] visibleElementColors = new int[resources.getInteger(R.integer.number_of_visible_elements)];
+	    GetVisibleElementColors(visibleElementColors);
+	    savedInstanceState.putIntArray("visibleElementColors", visibleElementColors);
+	}
+    }
+
+    private void SetLayerColors(int[] colors)
+    {
+	for(int i=0; i<colors.length; i++)
+	    NativeSetLayerColor(nativeHandle, i, colors[i]);
+    }
+
+    private void GetLayerColors(int[] colors)
+    {
+	for(int i=0; i<colors.length; i++)
+	    colors[i] = NativeGetLayerColor(nativeHandle, i);
+    }
+
+    private void SetVisibleElementColors(int[] colors)
+    {
+	for(int i=0; i<colors.length; i++)
+	    NativeSetVisibleElementColor(nativeHandle, i+1, colors[i]);
+    }
+
+    private void GetVisibleElementColors(int[] colors)
+    {
+	for(int i=0; i<colors.length; i++)
+	    colors[i] = NativeGetVisibleElementColor(nativeHandle, i+1);
+    }
+
+    void SetLayerColor(int layer, int color)
+    {
+	NativeSetLayerColor(nativeHandle, layer, color);
+    }
+
+    int GetLayerColor(int layer)
+    {
+	return NativeGetLayerColor(nativeHandle, layer);
     }
 
     boolean Read_GERBER_File(String GERBER_FullFileName, String D_Code_FullFileName)
@@ -202,6 +260,10 @@ public class GerbviewFrame extends View
 
     private native long NativeCreate();
     private native void NativeDestroy(long handle);
+    private native void NativeSetLayerColor(long handle, int layer, int color);
+    private native int NativeGetLayerColor(long handle, int layer);
+    private native void NativeSetVisibleElementColor(long handle, int layer, int color);
+    private native int NativeGetVisibleElementColor(long handle, int layer);
     private native boolean NativeRead_GERBER_File(long handle, String GERBER_FullFileName, String D_Code_FullFileName);
     private native void NativeOnDraw(long handle, Canvas canvas, boolean eraseBg);
     private native void NativeSetOriginAndScale(long handle, int logicalOriginX, int logicalOriginY, float userScale);
