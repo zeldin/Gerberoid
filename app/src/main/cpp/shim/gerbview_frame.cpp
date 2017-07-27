@@ -52,19 +52,17 @@ bool GERBVIEW_FRAME::IsLayerVisible( int aLayer ) const
 
 EDA_COLOR_T GERBVIEW_FRAME::GetLayerColor( int aLayer ) const
 {
-  /* Stub */
-  return BLACK;
+  return m_colorsSettings.GetLayerColor(aLayer);
 }
 
 EDA_COLOR_T GERBVIEW_FRAME::GetVisibleElementColor( GERBER_VISIBLE_ID aItemIdVisible ) const
 {
-  /* Stub */
-  return BLACK;
+  return m_colorsSettings.GetItemColor(aItemIdVisible);
 }
 
 void GERBVIEW_FRAME::SetLayerColor( int aLayer, EDA_COLOR_T aColor )
 {
-  /* Stub */
+  m_colorsSettings.SetLayerColor(aLayer, aColor);
 }
 
 EDA_COLOR_T GERBVIEW_FRAME::GetDrawBgColor() const

@@ -20,6 +20,7 @@
 #include <gerbview.h>
 #include <class_gbr_layout.h>
 #include <class_drawpanel.h>
+#include <class_colors_design_settings.h>
 #include <ContextProvider.h>
 
 #include <map>
@@ -45,6 +46,7 @@ private:
     wxArrayString   m_Messages;
     int             m_displayMode;
     EDA_DRAW_PANEL* m_canvas;
+    COLORS_DESIGN_SETTINGS m_colorsSettings;
 
     BASE_SCREEN* GetScreen() const { return NULL; }
 

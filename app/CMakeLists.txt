@@ -14,6 +14,7 @@ set(GERBVIEW_SRCS
 	src/main/cpp/gerbview/rs274x.cpp
 	src/main/cpp/gerbview/rs274_read_XY_and_IJ_coordinates.cpp
 	src/main/cpp/gerbview/common/bezier_curves.cpp
+	src/main/cpp/gerbview/common/class_colors_design_settings.cpp
 	src/main/cpp/gerbview/common/colors.cpp
 	src/main/cpp/gerbview/common/dlist.cpp
 	src/main/cpp/gerbview/common/drawtxt.cpp
