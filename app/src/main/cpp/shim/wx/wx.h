@@ -74,7 +74,7 @@ class wxBusyCursor
 wxString wxPathOnly(const wxString& path);
 void wxSetWorkingDirectory(const wxString& path);
 
-int wxMessageBox(const wxString& message);
+int wxMessageBox(const wxString& message, const wxString& caption = "Message");
 void wxBell();
 
 #endif // _WX_WX_H_

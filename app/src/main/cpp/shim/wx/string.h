@@ -79,6 +79,13 @@ class wxString : public wxStringBase
   }
 
   static wxString FromUTF8(const char *str) { return wxString(str); }
+  template<typename ...Ts>
+  static inline wxString Format(const wxString& format, Ts... argsrest)
+  {
+    wxString s;
+    s.Printf(format, argsrest...);
+    return s;
+  }
 };
 
 extern const wxChar* wxEmptyString;

@@ -24,7 +24,7 @@
 
 using android::Toast;
 
-int wxMessageBox(const wxString& message)
+int wxMessageBox(const wxString& message, const wxString& caption)
 {
   Toast toast = Toast::makeText(ThreadScopedContext::Get(),
 				message, Toast::LENGTH_LONG);
