@@ -48,6 +48,7 @@ private:
     EDA_DRAW_PANEL* m_canvas;
     COLORS_DESIGN_SETTINGS m_colorsSettings;
     uint32_t        m_visibleLayers;
+    int             m_Active_Layer;
 
     BASE_SCREEN* GetScreen() const { return NULL; }
 
@@ -58,6 +59,7 @@ public:
 
     GBR_DISPLAY_OPTIONS m_DisplayOptions;
 
+    void setActiveLayer( int aLayer );
     int getActiveLayer();
     void UpdateTitleAndInfo();
     bool IsLayerVisible( int aLayer ) const;

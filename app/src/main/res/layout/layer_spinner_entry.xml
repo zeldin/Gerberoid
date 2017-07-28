@@ -5,7 +5,8 @@
     android:orientation="horizontal"
     android:padding="1dp"
     android:gravity="left|center_vertical"
-    android:baselineAligned="false">
+    android:baselineAligned="false"
+    android:descendantFocusability="blocksDescendants">
     <ToggleButton
 	android:id="@+id/layer_visible"
 	android:layout_width="24sp"

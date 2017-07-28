@@ -58,6 +58,7 @@ public class GerbviewFrame extends View
     private GestureDetector gestureDetector;
 
     private Layer[] layers;
+    private int activeLayer;
 
     public GerbviewFrame(Context context) {
 	super(context);
@@ -201,6 +202,8 @@ public class GerbviewFrame extends View
 	    visibleElementColors = resources.getIntArray(R.array.default_visible_element_colors);
 	if (visibleElementColors != null)
 	    SetVisibleElementColors(visibleElementColors);
+	activeLayer = savedInstanceState.getInt("activeLayer", 0);
+	NativesetActiveLayer(nativeHandle, activeLayer);
 	android.util.Log.i("GerbviewFram", "RGF => "+Read_GERBER_File("/sdcard/Download/riser-B.Cu.gbr"));
     }
 
@@ -219,6 +222,7 @@ public class GerbviewFrame extends View
 	    GetVisibleElementColors(visibleElementColors);
 	    savedInstanceState.putIntArray("visibleElementColors", visibleElementColors);
 	}
+	savedInstanceState.putInt("activeLayer", activeLayer);
     }
 
     private void SetLayerColors(int[] colors)
@@ -319,6 +323,18 @@ public class GerbviewFrame extends View
 	}
     }
 
+    void setActiveLayer(int layer)
+    {
+	activeLayer = layer;
+	NativesetActiveLayer(nativeHandle, layer);
+	invalidate();
+    }
+
+    int getActiveLayer()
+    {
+	return activeLayer;
+    }
+
     static Pair<int[], String[]> getColors(Context context)
     {
 	Resources resources = context.getResources();
@@ -346,6 +362,7 @@ public class GerbviewFrame extends View
     private native void NativeSetOriginAndScale(long handle, int logicalOriginX, int logicalOriginY, float userScale);
     private native boolean NativeIsLayerVisible(long handle, int layer);
     private native void NativeSetLayerVisible(long handle, int layer, boolean visible);
+    private native void NativesetActiveLayer(long handle, int layer);
     private native static int NativeMakeColour(int color);
     private native static String NativeColorGetName(int color);
 };

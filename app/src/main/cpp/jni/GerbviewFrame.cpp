@@ -56,6 +56,7 @@ private:
   static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
   static jboolean NativeIsLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static void NativeSetLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jboolean visible);
+  static void NativesetActiveLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
   static jstring NativeColorGetName(JNIEnv *env, jobject objectOrClass, jint color);
 
@@ -95,6 +96,7 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
   { "NativeIsLayerVisible", "(JI)Z", (void*)&NativeIsLayerVisible },
   { "NativeSetLayerVisible", "(JIZ)V", (void*)&NativeSetLayerVisible },
+  { "NativesetActiveLayer", "(JI)V", (void*)&NativesetActiveLayer },
   { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
   { "NativeColorGetName", "(I)Ljava/lang/String;", (void*)&NativeColorGetName },
 };
@@ -232,6 +234,14 @@ void GerbviewFrame::NativeSetLayerVisible(JNIEnv *env, jobject objectOrClass, jl
   FrameHolder frame(handle);
   if (frame) {
     frame->SetLayerVisible(layer, visible);
+  }
+}
+
+void GerbviewFrame::NativesetActiveLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    frame->setActiveLayer(layer);
   }
 }
 

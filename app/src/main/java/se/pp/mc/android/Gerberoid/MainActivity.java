@@ -26,6 +26,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.ipaulpro.afilechooser.utils.FileUtils;
@@ -55,6 +57,18 @@ public class MainActivity extends Activity {
 	layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
 	if (layerSpinner != null) {
 	    layerSpinner.setAdapter(new LayerSpinnerAdapter(this, gerbviewFrame));
+	    layerSpinner.setSelection(gerbviewFrame.getActiveLayer());
+	    layerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+		    @Override
+		    public void onItemSelected(AdapterView<?> parent, View view,
+					       int pos, long id) {
+			gerbviewFrame.setActiveLayer(pos);
+		    }
+
+		    @Override
+		    public void onNothingSelected(AdapterView<?> parent) {
+		    }
+		});
 	}
     }
 
