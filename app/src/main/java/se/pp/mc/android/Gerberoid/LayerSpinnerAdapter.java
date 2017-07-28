@@ -25,8 +25,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 class LayerSpinnerAdapter extends BaseAdapter {
 
@@ -76,6 +78,16 @@ class LayerSpinnerAdapter extends BaseAdapter {
 			}
 		    }.show(((Activity)context).getFragmentManager(),
 			   "layerColor");
+		}
+	    });
+	ToggleButton toggle = (ToggleButton) view.findViewById(R.id.layer_visible);
+	toggle.setOnCheckedChangeListener(null);
+	toggle.setChecked(layers[position].IsVisible());
+	toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		    gerber.SetLayerVisible(position, isChecked);
+		    notifyDataSetChanged();
 		}
 	    });
 	return view;

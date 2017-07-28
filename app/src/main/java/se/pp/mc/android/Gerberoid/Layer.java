@@ -22,7 +22,10 @@ package se.pp.mc.android.Gerberoid;
 class Layer
 {
     private int color;
+    private boolean visible;
 
     public void SetColor(int color) { this.color = color; }
     public int GetColor() { return color; }
+    public void SetVisible(boolean visible) { this.visible = visible; }
+    public boolean IsVisible() { return visible; }
 }

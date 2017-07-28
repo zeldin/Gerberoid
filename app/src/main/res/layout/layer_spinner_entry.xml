@@ -6,6 +6,13 @@
     android:padding="1dp"
     android:gravity="left|center_vertical"
     android:baselineAligned="false">
+    <ToggleButton
+	android:id="@+id/layer_visible"
+	android:layout_width="24sp"
+	android:layout_height="24sp"
+	android:background="@drawable/visibility_toggle"
+	android:textOn=""
+	android:textOff=""/>
     <ImageButton
 	android:id="@+id/layer_color"
 	android:layout_width="30sp"

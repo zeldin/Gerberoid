@@ -30,6 +30,8 @@ import android.view.GestureDetector;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import java.util.Arrays;
+
 public class GerbviewFrame extends View
     implements ScaleGestureDetector.OnScaleGestureListener,
 	       GestureDetector.OnGestureListener
@@ -188,6 +190,12 @@ public class GerbviewFrame extends View
 	    layerColors = resources.getIntArray(R.array.default_layer_colors);
 	if (layerColors != null)
 	    SetLayerColors(layerColors);
+	boolean[] layerVisibilities = savedInstanceState.getBooleanArray("layerVisibilities");
+	if (layerVisibilities == null) {
+	    layerVisibilities = new boolean[layers.length];
+	    Arrays.fill(layerVisibilities, true);
+	}
+	SetLayerVisibilities(layerVisibilities);
 	int[] visibleElementColors = savedInstanceState.getIntArray("visibleElementColors");
 	if (visibleElementColors == null)
 	    visibleElementColors = resources.getIntArray(R.array.default_visible_element_colors);
@@ -201,6 +209,9 @@ public class GerbviewFrame extends View
 	    int[] layerColors = new int[layers.length];
 	    GetLayerColors(layerColors);
 	    savedInstanceState.putIntArray("layerColors", layerColors);
+	    boolean[] layerVisibilities = new boolean[layers.length];
+	    GetLayerVisibilities(layerVisibilities);
+	    savedInstanceState.putBooleanArray("layerVisibilities", layerVisibilities);
 	}
 	if (nativeHandle != 0) {
 	    Resources resources = getContext().getResources();
@@ -222,6 +233,20 @@ public class GerbviewFrame extends View
     {
 	for(int i=0; i<colors.length; i++)
 	    colors[i] = NativeGetLayerColor(nativeHandle, i);
+    }
+
+    private void SetLayerVisibilities(boolean[] visibilities)
+    {
+	for(int i=0; i<visibilities.length; i++) {
+	    NativeSetLayerVisible(nativeHandle, i, visibilities[i]);
+	    layers[i].SetVisible(visibilities[i]);
+	}
+    }
+
+    private void GetLayerVisibilities(boolean[] visibilities)
+    {
+	for(int i=0; i<visibilities.length; i++)
+	    visibilities[i] = NativeIsLayerVisible(nativeHandle, i);
     }
 
     private void SetVisibleElementColors(int[] colors)
@@ -285,6 +310,15 @@ public class GerbviewFrame extends View
 	NativeSetOriginAndScale(nativeHandle, logicalOriginX, logicalOriginY, userScale);
     }
 
+    void SetLayerVisible(int layer, boolean visible)
+    {
+	if (layers != null) {
+	    layers[layer].SetVisible(visible);
+	    NativeSetLayerVisible(nativeHandle, layer, visible);
+	    invalidate();
+	}
+    }
+
     static Pair<int[], String[]> getColors(Context context)
     {
 	Resources resources = context.getResources();
@@ -310,6 +344,8 @@ public class GerbviewFrame extends View
     private native void NativeErase_Current_DrawLayer(long handle);
     private native void NativeOnDraw(long handle, Canvas canvas, boolean eraseBg);
     private native void NativeSetOriginAndScale(long handle, int logicalOriginX, int logicalOriginY, float userScale);
+    private native boolean NativeIsLayerVisible(long handle, int layer);
+    private native void NativeSetLayerVisible(long handle, int layer, boolean visible);
     private native static int NativeMakeColour(int color);
     private native static String NativeColorGetName(int color);
 };

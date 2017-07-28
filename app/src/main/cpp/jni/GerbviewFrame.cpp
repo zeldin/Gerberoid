@@ -54,6 +54,8 @@ private:
   static void NativeErase_Current_DrawLayer(JNIEnv *env, jobject objectOrClass, jlong handle);
   static void NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
   static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
+  static jboolean NativeIsLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
+  static void NativeSetLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jboolean visible);
   static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
   static jstring NativeColorGetName(JNIEnv *env, jobject objectOrClass, jint color);
 
@@ -91,6 +93,8 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeErase_Current_DrawLayer", "(J)V", (void*)&NativeErase_Current_DrawLayer },
   { "NativeOnDraw", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeOnDraw },
   { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
+  { "NativeIsLayerVisible", "(JI)Z", (void*)&NativeIsLayerVisible },
+  { "NativeSetLayerVisible", "(JIZ)V", (void*)&NativeSetLayerVisible },
   { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
   { "NativeColorGetName", "(I)Ljava/lang/String;", (void*)&NativeColorGetName },
 };
@@ -210,6 +214,24 @@ void GerbviewFrame::NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, 
   FrameHolder frame(handle);
   if (frame) {
     frame->m_canvas->SetOriginAndScale(logicalOriginX, logicalOriginY, userScale);
+  }
+}
+
+jboolean GerbviewFrame::NativeIsLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    return frame->IsLayerVisible(layer);
+  } else {
+    return false;
+  }
+}
+
+void GerbviewFrame::NativeSetLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jboolean visible)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    frame->SetLayerVisible(layer, visible);
   }
 }
 

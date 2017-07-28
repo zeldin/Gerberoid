@@ -28,6 +28,7 @@ GERBVIEW_FRAME::GERBVIEW_FRAME(android::View&& view)
   m_gerberLayout = NULL;
   m_canvas = new EDA_DRAW_PANEL(this, std::move(view));
   m_displayMode = 0;
+  m_visibleLayers = ~static_cast<uint32_t>(0U);
   m_DisplayOptions.m_DisplayDCodes = true;
   m_DisplayOptions.m_DisplayFlashedItemsFill = true;
   m_DisplayOptions.m_DisplayLinesFill = true;
@@ -46,8 +47,13 @@ int GERBVIEW_FRAME::getActiveLayer()
 
 bool GERBVIEW_FRAME::IsLayerVisible( int aLayer ) const
 {
-  /* Stub */
-  return true;
+  return !!(m_visibleLayers & (static_cast<uint32_t>(1U) << aLayer));
+}
+
+void GERBVIEW_FRAME::SetLayerVisible( int aLayer, bool aVisible )
+{
+  if (IsLayerVisible( aLayer ) != aVisible)
+    m_visibleLayers ^= (static_cast<uint32_t>(1U) << aLayer);
 }
 
 EDA_COLOR_T GERBVIEW_FRAME::GetLayerColor( int aLayer ) const

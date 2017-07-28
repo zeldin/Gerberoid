@@ -47,6 +47,7 @@ private:
     int             m_displayMode;
     EDA_DRAW_PANEL* m_canvas;
     COLORS_DESIGN_SETTINGS m_colorsSettings;
+    uint32_t        m_visibleLayers;
 
     BASE_SCREEN* GetScreen() const { return NULL; }
 
@@ -60,6 +61,7 @@ public:
     int getActiveLayer();
     void UpdateTitleAndInfo();
     bool IsLayerVisible( int aLayer ) const;
+    void SetLayerVisible( int aLayer, bool aVisible );
     EDA_COLOR_T GetVisibleElementColor( GERBER_VISIBLE_ID aItemIdVisible ) const;
     void    SetVisibleElementColor( GERBER_VISIBLE_ID aItemIdVisible, EDA_COLOR_T aColor );
     EDA_COLOR_T GetLayerColor( int aLayer ) const;
