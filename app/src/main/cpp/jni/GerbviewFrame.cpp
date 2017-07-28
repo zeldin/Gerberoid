@@ -55,6 +55,7 @@ private:
   static void NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
   static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
   static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
+  static jstring NativeColorGetName(JNIEnv *env, jobject objectOrClass, jint color);
 
   class FrameHolder {
   private:
@@ -91,6 +92,7 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeOnDraw", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeOnDraw },
   { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
   { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
+  { "NativeColorGetName", "(I)Ljava/lang/String;", (void*)&NativeColorGetName },
 };
 
 GerbviewFrame::FrameHolder::FrameHolder(jlong handle)
@@ -214,6 +216,11 @@ void GerbviewFrame::NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, 
 jint GerbviewFrame::NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color)
 {
   return MakeColour(static_cast<EDA_COLOR_T>(color)).ARGB();
+}
+
+jstring GerbviewFrame::NativeColorGetName(JNIEnv *env, jobject objectOrClass, jint color)
+{
+  return env->NewStringUTF(ColorGetName(static_cast<EDA_COLOR_T>(color)));
 }
 
 bool GerbviewFrame::Hook::init(JNIEnv *env)

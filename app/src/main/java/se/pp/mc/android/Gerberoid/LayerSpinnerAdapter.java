@@ -31,11 +31,13 @@ import android.widget.TextView;
 class LayerSpinnerAdapter extends BaseAdapter {
 
     private Context context;
+    private GerbviewFrame gerber;
     private Layer[] layers;
 
     public LayerSpinnerAdapter(Context context, GerbviewFrame gerber)
     {
 	this.context = context;
+	this.gerber = gerber;
 	this.layers = gerber.getLayers();
     }
 
@@ -55,7 +57,7 @@ class LayerSpinnerAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent)
+    public View getView(final int position, View view, ViewGroup parent)
     {
 	if (view == null)
 	    view = ((Activity)context).getLayoutInflater().inflate(R.layout.layer_spinner_entry, parent, false);
@@ -63,6 +65,19 @@ class LayerSpinnerAdapter extends BaseAdapter {
 	text.setText(text.getResources().getString(R.string.layer_name, position+1));
 	ImageButton button = (ImageButton) view.findViewById(R.id.layer_color);
 	button.setImageDrawable(new ColorDrawable(layers[position].GetColor()));
+	button.setOnClickListener(new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+		    new ColorSelectorDialogFragment() {
+			@Override
+			public void onColorSelected(int color) {
+			    gerber.SetLayerColor(position, color);
+			    notifyDataSetChanged();
+			}
+		    }.show(((Activity)context).getFragmentManager(),
+			   "layerColor");
+		}
+	    });
 	return view;
     }
 }

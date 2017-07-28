@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.GestureDetector;
 import android.view.ScaleGestureDetector;
@@ -239,6 +240,7 @@ public class GerbviewFrame extends View
     {
 	NativeSetLayerColor(nativeHandle, layer, color);
 	layers[layer].SetColor(NativeMakeColour(color));
+	invalidate();
     }
 
     int GetLayerColor(int layer)
@@ -283,6 +285,19 @@ public class GerbviewFrame extends View
 	NativeSetOriginAndScale(nativeHandle, logicalOriginX, logicalOriginY, userScale);
     }
 
+    static Pair<int[], String[]> getColors(Context context)
+    {
+	Resources resources = context.getResources();
+	int numColors = resources.getInteger(R.integer.number_of_colors);
+	int[] colors = new int[numColors];
+	String[] names = new String[numColors];
+	for (int i=0; i<colors.length; i++)
+	    colors[i] = NativeMakeColour(i);
+	for (int i=0; i<names.length; i++)
+	    names[i] = NativeColorGetName(i);
+	return new Pair<int[], String[]>(colors, names);
+    }
+
     private native long NativeCreate();
     private native void NativeDestroy(long handle);
     private native void NativeSetLayerColor(long handle, int layer, int color);
@@ -296,4 +311,5 @@ public class GerbviewFrame extends View
     private native void NativeOnDraw(long handle, Canvas canvas, boolean eraseBg);
     private native void NativeSetOriginAndScale(long handle, int logicalOriginX, int logicalOriginY, float userScale);
     private native static int NativeMakeColour(int color);
+    private native static String NativeColorGetName(int color);
 };
