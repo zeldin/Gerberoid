@@ -31,6 +31,7 @@ import android.view.GestureDetector;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class GerbviewFrame extends View
@@ -42,8 +43,31 @@ public class GerbviewFrame extends View
         System.loadLibrary("gerbview");
     }
 
+    private class LayerImpl implements Layer
+    {
+	private int color;
+	private int argb;
+	private boolean visible;
+	private String displayName;
+
+	public int GetColor() { return argb; }
+	public boolean IsVisible() { return visible; }
+	public String GetDisplayName() { return displayName; }
+    }
+
     private class LayerManager extends DataSetObservable implements Layers
     {
+	private LayerImpl[] layers;
+	private int activeLayer;
+
+	private LayerManager(int numberOfLayers)
+	{
+	    layers = new LayerImpl[numberOfLayers];
+	    for (int i=0; i<layers.length; i++) {
+		layers[i] = new LayerImpl();
+	    }
+	}
+
 	public int getLayerCount()
 	{
 	    return layers.length;
@@ -56,7 +80,8 @@ public class GerbviewFrame extends View
 	public void SetLayerColor(int layer, int color)
 	{
 	    NativeSetLayerColor(nativeHandle, layer, color);
-	    layers[layer].SetColor(NativeMakeColour(color));
+	    layers[layer].color = color;
+	    layers[layer].argb = NativeMakeColour(color);
 	    notifyChanged();
 	    invalidate();
 	}
@@ -64,9 +89,122 @@ public class GerbviewFrame extends View
 	public void SetLayerVisible(int layer, boolean visible)
 	{
 	    NativeSetLayerVisible(nativeHandle, layer, visible);
-	    layers[layer].SetVisible(visible);
+	    layers[layer].visible = visible;
 	    notifyChanged();
 	    invalidate();
+	}
+
+	public boolean LoadGerber(File file)
+	{
+	    final String FullFileName = file.getAbsolutePath();
+	    NativeErase_Current_DrawLayer(nativeHandle);
+	    boolean result = NativeRead_GERBER_File(nativeHandle, FullFileName, FullFileName);
+	    layers[activeLayer].displayName = NativeGetDisplayName(activeLayer);
+	    notifyChanged();
+	    invalidate();
+	    return result;
+	}
+
+	public boolean LoadDrill(File file)
+	{
+	    final String FullFileName = file.getAbsolutePath();
+	    NativeErase_Current_DrawLayer(nativeHandle);
+	    boolean result = NativeRead_EXCELLON_File(nativeHandle, FullFileName);
+	    layers[activeLayer].displayName = NativeGetDisplayName(activeLayer);
+	    layerManager.notifyChanged();
+	    invalidate();
+	    return result;
+	}
+
+	public boolean Clear_DrawLayers()
+	{
+	    boolean result = NativeClear_DrawLayers(nativeHandle);
+	    for (int i=0; i<layers.length; i++) {
+		layers[i].displayName = NativeGetDisplayName(i);
+	    }
+	    activeLayer = 0;
+	    notifyChanged();
+	    invalidate();
+	    return result;
+	}
+
+	public void setActiveLayer(int layer)
+	{
+	    activeLayer = layer;
+	    NativesetActiveLayer(nativeHandle, layer);
+	    notifyChanged();
+	    invalidate();
+	}
+
+	public int getActiveLayer()
+	{
+	    return activeLayer;
+	}
+
+	private void onRestoreInstanceState(Bundle savedInstanceState, Resources resources)
+	{
+	    int[] layerColors = savedInstanceState.getIntArray("layerColors");
+	    if (layerColors == null)
+		layerColors = resources.getIntArray(R.array.default_layer_colors);
+	    if (layerColors != null)
+	    SetLayerColors(layerColors);
+	    boolean[] layerVisibilities = savedInstanceState.getBooleanArray("layerVisibilities");
+	    if (layerVisibilities == null) {
+		layerVisibilities = new boolean[layers.length];
+		Arrays.fill(layerVisibilities, true);
+	    }
+	    SetLayerVisibilities(layerVisibilities);
+	    NativeClear_DrawLayers(nativeHandle);
+	    for (int i=0; i<layers.length; i++) {
+		String gerbname = null;
+		if (i == 0)
+		    gerbname = "/sdcard/Download/riser-B.Cu.gbr";
+		if (gerbname != null)
+		    android.util.Log.i("GerbviewFram", "RGF => "+NativeRead_GERBER_File(nativeHandle, gerbname, gerbname));
+		layers[i].displayName = NativeGetDisplayName(i);
+	    }
+	    activeLayer = savedInstanceState.getInt("activeLayer", 0);
+	    NativesetActiveLayer(nativeHandle, activeLayer);
+	    notifyChanged();
+	}
+
+	private void onSaveInstanceState(Bundle savedInstanceState) {
+	    int[] layerColors = new int[layers.length];
+	    GetLayerColors(layerColors);
+	    savedInstanceState.putIntArray("layerColors", layerColors);
+	    boolean[] layerVisibilities = new boolean[layers.length];
+	    GetLayerVisibilities(layerVisibilities);
+	    savedInstanceState.putBooleanArray("layerVisibilities", layerVisibilities);
+	    savedInstanceState.putInt("activeLayer", activeLayer);
+	}
+
+	private void SetLayerColors(int[] colors)
+	{
+	    for(int i=0; i<colors.length; i++) {
+		NativeSetLayerColor(nativeHandle, i, colors[i]);
+		layers[i].color = colors[i];
+		layers[i].argb = NativeMakeColour(colors[i]);
+	    }
+	}
+
+	private void GetLayerColors(int[] colors)
+	{
+	    for(int i=0; i<colors.length; i++)
+		colors[i] = layers[i].color;
+	}
+
+	private void SetLayerVisibilities(boolean[] visibilities)
+	{
+	    for(int i=0; i<visibilities.length; i++) {
+		NativeSetLayerVisible(nativeHandle, i, visibilities[i]);
+		layers[i].visible = visibilities[i];
+	    }
+	}
+
+	private void GetLayerVisibilities(boolean[] visibilities)
+	{
+	    for(int i=0; i<visibilities.length; i++)
+		visibilities[i] = layers[i].visible;
 	}
     }
 
@@ -86,9 +224,7 @@ public class GerbviewFrame extends View
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
 
-    private Layer[] layers;
     private LayerManager layerManager;
-    private int activeLayer;
 
     public GerbviewFrame(Context context) {
 	super(context);
@@ -189,12 +325,7 @@ public class GerbviewFrame extends View
     void onCreate()
     {
 	nativeHandle = NativeCreate();
-	layers = new Layer[getContext().getResources().getInteger(R.integer.number_of_layers)];
-	for (int i=0; i<layers.length; i++) {
-	    layers[i] = new Layer();
-	    layers[i].SetDisplayName(NativeGetDisplayName(i));
-	}
-	layerManager = new LayerManager();
+	layerManager = new LayerManager(getContext().getResources().getInteger(R.integer.number_of_layers));
 	logicalOriginX = 0;
 	logicalOriginY = 0;
 	userScale = 5e-5f;
@@ -210,78 +341,25 @@ public class GerbviewFrame extends View
 	NativeDestroy(nativeHandle);
 	nativeHandle = 0;
 	layerManager = null;
-	layers = null;
     }
 
     void onRestoreInstanceState(Bundle savedInstanceState)
     {
 	Resources resources = getContext().getResources();
-	int[] layerColors = savedInstanceState.getIntArray("layerColors");
-	if (layerColors == null)
-	    layerColors = resources.getIntArray(R.array.default_layer_colors);
-	if (layerColors != null)
-	    SetLayerColors(layerColors);
-	boolean[] layerVisibilities = savedInstanceState.getBooleanArray("layerVisibilities");
-	if (layerVisibilities == null) {
-	    layerVisibilities = new boolean[layers.length];
-	    Arrays.fill(layerVisibilities, true);
-	}
-	SetLayerVisibilities(layerVisibilities);
+	layerManager.onRestoreInstanceState(savedInstanceState, resources);
 	int[] visibleElementColors = savedInstanceState.getIntArray("visibleElementColors");
 	if (visibleElementColors == null)
 	    visibleElementColors = resources.getIntArray(R.array.default_visible_element_colors);
 	if (visibleElementColors != null)
 	    SetVisibleElementColors(visibleElementColors);
-	activeLayer = savedInstanceState.getInt("activeLayer", 0);
-	NativesetActiveLayer(nativeHandle, activeLayer);
-	layerManager.notifyChanged();
-	android.util.Log.i("GerbviewFram", "RGF => "+Read_GERBER_File("/sdcard/Download/riser-B.Cu.gbr"));
     }
 
     void onSaveInstanceState(Bundle savedInstanceState) {
-	if (layers != null) {
-	    int[] layerColors = new int[layers.length];
-	    GetLayerColors(layerColors);
-	    savedInstanceState.putIntArray("layerColors", layerColors);
-	    boolean[] layerVisibilities = new boolean[layers.length];
-	    GetLayerVisibilities(layerVisibilities);
-	    savedInstanceState.putBooleanArray("layerVisibilities", layerVisibilities);
-	}
-	if (nativeHandle != 0) {
-	    Resources resources = getContext().getResources();
-	    int[] visibleElementColors = new int[resources.getInteger(R.integer.number_of_visible_elements)];
-	    GetVisibleElementColors(visibleElementColors);
-	    savedInstanceState.putIntArray("visibleElementColors", visibleElementColors);
-	}
-	savedInstanceState.putInt("activeLayer", activeLayer);
-    }
-
-    private void SetLayerColors(int[] colors)
-    {
-	for(int i=0; i<colors.length; i++) {
-	    NativeSetLayerColor(nativeHandle, i, colors[i]);
-	    layers[i].SetColor(NativeMakeColour(colors[i]));
-	}
-    }
-
-    private void GetLayerColors(int[] colors)
-    {
-	for(int i=0; i<colors.length; i++)
-	    colors[i] = NativeGetLayerColor(nativeHandle, i);
-    }
-
-    private void SetLayerVisibilities(boolean[] visibilities)
-    {
-	for(int i=0; i<visibilities.length; i++) {
-	    NativeSetLayerVisible(nativeHandle, i, visibilities[i]);
-	    layers[i].SetVisible(visibilities[i]);
-	}
-    }
-
-    private void GetLayerVisibilities(boolean[] visibilities)
-    {
-	for(int i=0; i<visibilities.length; i++)
-	    visibilities[i] = NativeIsLayerVisible(nativeHandle, i);
+	Resources resources = getContext().getResources();
+	layerManager.onSaveInstanceState(savedInstanceState);
+	int[] visibleElementColors = new int[resources.getInteger(R.integer.number_of_visible_elements)];
+	GetVisibleElementColors(visibleElementColors);
+	savedInstanceState.putIntArray("visibleElementColors", visibleElementColors);
     }
 
     private void SetVisibleElementColors(int[] colors)
@@ -296,63 +374,9 @@ public class GerbviewFrame extends View
 	    colors[i] = NativeGetVisibleElementColor(nativeHandle, i+1);
     }
 
-    boolean Read_GERBER_File(String GERBER_FullFileName, String D_Code_FullFileName)
-    {
-	boolean result = NativeRead_GERBER_File(nativeHandle, GERBER_FullFileName, D_Code_FullFileName);
-	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
-	layerManager.notifyChanged();
-	invalidate();
-	return result;
-    }
-
-    boolean Read_GERBER_File(String FullFileName)
-    {
-	return Read_GERBER_File(FullFileName, FullFileName);
-    }
-
-    boolean Read_EXCELLON_File(String EXCELLON_FullFileName)
-    {
-	boolean result = NativeRead_EXCELLON_File(nativeHandle, EXCELLON_FullFileName);
-	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
-	layerManager.notifyChanged();
-	invalidate();
-	return result;
-    }
-
-    boolean Clear_DrawLayers()
-    {
-	boolean result = NativeClear_DrawLayers(nativeHandle);
-	for (int i=0; i<layers.length; i++) {
-	    layers[i].SetDisplayName(NativeGetDisplayName(i));
-	}
-	layerManager.notifyChanged();
-	invalidate();
-	return result;
-    }
-
-    void Erase_Current_DrawLayer()
-    {
-	NativeErase_Current_DrawLayer(nativeHandle);
-	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
-	layerManager.notifyChanged();
-	invalidate();
-    }
-
     private void SetOriginAndScale()
     {
 	NativeSetOriginAndScale(nativeHandle, logicalOriginX, logicalOriginY, userScale);
-    }
-
-    void setActiveLayer(int layer)
-    {
-	activeLayer = layer;
-	NativesetActiveLayer(nativeHandle, layer);
-	invalidate();
-    }
-
-    int getActiveLayer()
-    {
-	return activeLayer;
     }
 
     Layers getLayers() {

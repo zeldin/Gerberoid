@@ -21,12 +21,19 @@ package se.pp.mc.android.Gerberoid;
 
 import android.database.DataSetObserver;
 
+import java.io.File;
+
 public interface Layers
 {
     public int getLayerCount();
     public Layer getLayer(int layer);
     public void SetLayerColor(int layer, int color);
     public void SetLayerVisible(int layer, boolean visible);
+    public boolean LoadGerber(File file);
+    public boolean LoadDrill(File file);
+    public boolean Clear_DrawLayers();
+    public void setActiveLayer(int layer);
+    public int getActiveLayer();
 
     public void registerObserver(DataSetObserver observer);
     public void unregisterObserver(DataSetObserver observer);

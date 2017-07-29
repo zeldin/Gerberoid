@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
 
     private GerbviewFrame gerbviewFrame;
     private Spinner layerSpinner;
+    private Layers layers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +54,18 @@ public class MainActivity extends Activity {
         if (gerbviewFrame != null) {
 	    gerbviewFrame.onCreate();
 	    gerbviewFrame.onRestoreInstanceState((savedInstanceState == null? new Bundle() : savedInstanceState));
-	}
+	    layers = gerbviewFrame.getLayers();
+	} else
+	    layers = null;
 	layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
 	if (layerSpinner != null) {
-	    layerSpinner.setAdapter(new LayerSpinnerAdapter(this, gerbviewFrame.getLayers()));
-	    layerSpinner.setSelection(gerbviewFrame.getActiveLayer());
+	    layerSpinner.setAdapter(new LayerSpinnerAdapter(this, layers));
+	    layerSpinner.setSelection(layers.getActiveLayer());
 	    layerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 		    @Override
 		    public void onItemSelected(AdapterView<?> parent, View view,
 					       int pos, long id) {
-			gerbviewFrame.setActiveLayer(pos);
+			layers.setActiveLayer(pos);
 		    }
 
 		    @Override
@@ -83,6 +86,7 @@ public class MainActivity extends Activity {
     protected void onDestroy ()
     {
 	layerSpinner = null;
+	layers = null;
 	if (gerbviewFrame != null) {
 	    gerbviewFrame.onDestroy();
 	    gerbviewFrame = null;
@@ -111,22 +115,10 @@ public class MainActivity extends Activity {
 		       "application/octet-stream");
 	    break;
 	case R.id.action_clear:
-	    gerbviewFrame.Clear_DrawLayers();
+	    layers.Clear_DrawLayers();
 	    break;
 	}
 	return true;
-    }
-
-    private void LoadGerber(File file)
-    {
-	gerbviewFrame.Erase_Current_DrawLayer();
-	gerbviewFrame.Read_GERBER_File(file.getAbsolutePath());
-    }
-
-    private void LoadDrill(File file)
-    {
-	gerbviewFrame.Erase_Current_DrawLayer();
-	gerbviewFrame.Read_EXCELLON_File(file.getAbsolutePath());
     }
 
     private void SelectFile(int requestCode, int titleResource,
@@ -151,9 +143,9 @@ public class MainActivity extends Activity {
 		final File file = FileUtils.getFile(this, uri);
 		if (file != null) {
 		    if (requestCode == REQUEST_GERBER)
-			LoadGerber(file);
+			layers.LoadGerber(file);
 		    else
-			LoadDrill(file);
+			layers.LoadDrill(file);
 		}
 	    }
 	    break;
