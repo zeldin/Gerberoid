@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Gerberoid</string>
 
@@ -15,4 +16,18 @@
     <string name="colors_dialog_title">Colors</string>
 
     <string name="cancel">Cancel</string>
+
+    <string name="about_text">Gerberoid version %1$s
+\n© 2017 Marcus Comstedt
+\n
+\nBased on GerbView 4.0.6, a part of the KiCad EDA Suite
+\n© 1992-2015 KiCad Developers Team
+\n
+\nThis application uses aFileChooser
+\n© 2011-2013 Paul Burke
+\n
+\nGerberoid is released under the GNU General Public License (GPL) version 3 or any later version
+\n
+\nhttps://github.com/zeldin/Gerberoid</string>
+
 </resources>

@@ -20,7 +20,10 @@
 package se.pp.mc.android.Gerberoid;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -117,6 +120,18 @@ public class MainActivity extends Activity {
 	case R.id.action_clear:
 	    layers.Clear_DrawLayers();
 	    layerSpinner.setSelection(layers.getActiveLayer());
+	    break;
+	case R.id.action_about:
+	    String version = "?";
+	    try {
+		PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+		version = pInfo.versionName;
+	    } catch(PackageManager.NameNotFoundException e) {}
+	    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setTitle(R.string.action_about)
+		.setMessage(getResources().getString(R.string.about_text, version))
+		.create()
+		.show();
 	    break;
 	}
 	return true;
