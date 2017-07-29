@@ -49,6 +49,8 @@ public class GerbviewFrame extends View
 	private int argb;
 	private boolean visible;
 	private String displayName;
+	private String fileName;
+	private boolean isDrill;
 
 	public int GetColor() { return argb; }
 	public boolean IsVisible() { return visible; }
@@ -94,32 +96,54 @@ public class GerbviewFrame extends View
 	    invalidate();
 	}
 
+	private boolean LoadFile(String filename, boolean drill, boolean full)
+	{
+	    if (full)
+		NativeErase_Current_DrawLayer(nativeHandle);
+	    boolean result = (filename == null? false :
+			      (drill? NativeRead_EXCELLON_File(nativeHandle, filename) :
+			       NativeRead_GERBER_File(nativeHandle, filename, filename)));
+	    if (result) {
+		layers[activeLayer].fileName = filename;
+		layers[activeLayer].isDrill = drill;
+	    } else {
+		layers[activeLayer].fileName = null;
+		layers[activeLayer].isDrill = false;
+	    }
+	    layers[activeLayer].displayName = NativeGetDisplayName(activeLayer);
+	    if (full) {
+		notifyChanged();
+		invalidate();
+	    }
+	    return result;
+	}
+
+	private boolean LoadFile(File file, boolean drill)
+	{
+	    return LoadFile(file.getAbsolutePath(), drill, true);
+	}
+
+	private boolean LoadFile(String filename, boolean drill)
+	{
+	    return LoadFile(filename, drill, false);
+	}
+
 	public boolean LoadGerber(File file)
 	{
-	    final String FullFileName = file.getAbsolutePath();
-	    NativeErase_Current_DrawLayer(nativeHandle);
-	    boolean result = NativeRead_GERBER_File(nativeHandle, FullFileName, FullFileName);
-	    layers[activeLayer].displayName = NativeGetDisplayName(activeLayer);
-	    notifyChanged();
-	    invalidate();
-	    return result;
+	    return LoadFile(file, false);
 	}
 
 	public boolean LoadDrill(File file)
 	{
-	    final String FullFileName = file.getAbsolutePath();
-	    NativeErase_Current_DrawLayer(nativeHandle);
-	    boolean result = NativeRead_EXCELLON_File(nativeHandle, FullFileName);
-	    layers[activeLayer].displayName = NativeGetDisplayName(activeLayer);
-	    layerManager.notifyChanged();
-	    invalidate();
-	    return result;
+	    return LoadFile(file, true);
 	}
 
 	public boolean Clear_DrawLayers()
 	{
 	    boolean result = NativeClear_DrawLayers(nativeHandle);
 	    for (int i=0; i<layers.length; i++) {
+		layers[i].fileName = null;
+		layers[i].isDrill = false;
 		layers[i].displayName = NativeGetDisplayName(i);
 	    }
 	    activeLayer = 0;
@@ -154,15 +178,16 @@ public class GerbviewFrame extends View
 		Arrays.fill(layerVisibilities, true);
 	    }
 	    SetLayerVisibilities(layerVisibilities);
-	    NativeClear_DrawLayers(nativeHandle);
-	    for (int i=0; i<layers.length; i++) {
-		String gerbname = null;
-		if (i == 0)
-		    gerbname = "/sdcard/Download/riser-B.Cu.gbr";
-		if (gerbname != null)
-		    android.util.Log.i("GerbviewFram", "RGF => "+NativeRead_GERBER_File(nativeHandle, gerbname, gerbname));
-		layers[i].displayName = NativeGetDisplayName(i);
+	    String[] layerFileNames = savedInstanceState.getStringArray("layerFileNames");
+	    if (layerFileNames == null) {
+		layerFileNames = new String[layers.length];
+		layerFileNames[0] = "/sdcard/Download/riser-B.Cu.gbr";
 	    }
+	    boolean[] layerDrills = savedInstanceState.getBooleanArray("layerDrills");
+	    if (layerDrills == null) {
+		layerDrills = new boolean[layers.length];
+	    }
+	    SetLayerFiles(layerFileNames, layerDrills);
 	    activeLayer = savedInstanceState.getInt("activeLayer", 0);
 	    NativesetActiveLayer(nativeHandle, activeLayer);
 	    notifyChanged();
@@ -175,6 +200,11 @@ public class GerbviewFrame extends View
 	    boolean[] layerVisibilities = new boolean[layers.length];
 	    GetLayerVisibilities(layerVisibilities);
 	    savedInstanceState.putBooleanArray("layerVisibilities", layerVisibilities);
+	    String[] layerFileNames = new String[layers.length];
+	    boolean[] layerDrills = new boolean[layers.length];
+	    GetLayerFiles(layerFileNames, layerDrills);
+	    savedInstanceState.putStringArray("layerFileNames", layerFileNames);
+	    savedInstanceState.putBooleanArray("layerDrills", layerDrills);
 	    savedInstanceState.putInt("activeLayer", activeLayer);
 	}
 
@@ -205,6 +235,23 @@ public class GerbviewFrame extends View
 	{
 	    for(int i=0; i<visibilities.length; i++)
 		visibilities[i] = layers[i].visible;
+	}
+
+	private void SetLayerFiles(String[] layerFileNames, boolean[] layerDrills)
+	{
+	    NativeClear_DrawLayers(nativeHandle);
+	    for (activeLayer=0; activeLayer<layers.length; activeLayer++) {
+		NativesetActiveLayer(nativeHandle, activeLayer);
+		LoadFile(layerFileNames[activeLayer], layerDrills[activeLayer]);
+	    }
+	}
+
+	private void GetLayerFiles(String[] layerFileNames, boolean[] layerDrills)
+	{
+	    for (int i=0; i<layers.length; i++) {
+		layerFileNames[i] = layers[i].fileName;
+		layerDrills[i] = layers[i].isDrill;
+	    }
 	}
     }
 
