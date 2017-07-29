@@ -375,7 +375,7 @@ public class GerbviewFrame extends View
 	layerManager = new LayerManager(getContext().getResources().getInteger(R.integer.number_of_layers));
 	logicalOriginX = 0;
 	logicalOriginY = 0;
-	userScale = 5e-5f;
+	userScale = 1f;
 	SetOriginAndScale();
 	isScaling = false;
 	scaleGestureDetector = new ScaleGestureDetector(getContext(), this);
@@ -399,6 +399,10 @@ public class GerbviewFrame extends View
 	    visibleElementColors = resources.getIntArray(R.array.default_visible_element_colors);
 	if (visibleElementColors != null)
 	    SetVisibleElementColors(visibleElementColors);
+	logicalOriginX = savedInstanceState.getInt("logicalOriginX", 0);
+	logicalOriginY = savedInstanceState.getInt("logicalOriginY", 0);
+	userScale = savedInstanceState.getFloat("userScale", 5e-5f);
+	SetOriginAndScale();
     }
 
     void onSaveInstanceState(Bundle savedInstanceState) {
@@ -407,6 +411,9 @@ public class GerbviewFrame extends View
 	int[] visibleElementColors = new int[resources.getInteger(R.integer.number_of_visible_elements)];
 	GetVisibleElementColors(visibleElementColors);
 	savedInstanceState.putIntArray("visibleElementColors", visibleElementColors);
+	savedInstanceState.putInt("logicalOriginX", logicalOriginX);
+	savedInstanceState.putInt("logicalOriginY", logicalOriginY);
+	savedInstanceState.putFloat("userScale", userScale);
     }
 
     private void SetVisibleElementColors(int[] colors)
