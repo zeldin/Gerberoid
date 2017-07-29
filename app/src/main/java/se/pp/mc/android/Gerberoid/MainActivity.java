@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
 	}
 	layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
 	if (layerSpinner != null) {
-	    layerSpinner.setAdapter(new LayerSpinnerAdapter(this, gerbviewFrame));
+	    layerSpinner.setAdapter(new LayerSpinnerAdapter(this, gerbviewFrame.getLayers()));
 	    layerSpinner.setSelection(gerbviewFrame.getActiveLayer());
 	    layerSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 		    @Override

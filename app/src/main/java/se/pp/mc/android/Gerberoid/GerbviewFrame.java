@@ -21,6 +21,7 @@ package se.pp.mc.android.Gerberoid;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.DataSetObservable;
 import android.graphics.Canvas;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -41,6 +42,34 @@ public class GerbviewFrame extends View
         System.loadLibrary("gerbview");
     }
 
+    private class LayerManager extends DataSetObservable implements Layers
+    {
+	public int getLayerCount()
+	{
+	    return layers.length;
+	}
+
+	public Layer getLayer(int layer) {
+	    return (layer >= 0 && layer < layers.length? layers[layer] : null);
+	}
+
+	public void SetLayerColor(int layer, int color)
+	{
+	    NativeSetLayerColor(nativeHandle, layer, color);
+	    layers[layer].SetColor(NativeMakeColour(color));
+	    notifyChanged();
+	    invalidate();
+	}
+
+	public void SetLayerVisible(int layer, boolean visible)
+	{
+	    NativeSetLayerVisible(nativeHandle, layer, visible);
+	    layers[layer].SetVisible(visible);
+	    notifyChanged();
+	    invalidate();
+	}
+    }
+
     private long nativeHandle;
 
     private int logicalOriginX;
@@ -58,6 +87,7 @@ public class GerbviewFrame extends View
     private GestureDetector gestureDetector;
 
     private Layer[] layers;
+    private LayerManager layerManager;
     private int activeLayer;
 
     public GerbviewFrame(Context context) {
@@ -66,10 +96,6 @@ public class GerbviewFrame extends View
 
     public GerbviewFrame(Context context, AttributeSet attrs) {
 	super(context, attrs);
-    }
-
-    public Layer[] getLayers() {
-	return layers;
     }
 
     @Override
@@ -168,6 +194,7 @@ public class GerbviewFrame extends View
 	    layers[i] = new Layer();
 	    layers[i].SetDisplayName(NativeGetDisplayName(i));
 	}
+	layerManager = new LayerManager();
 	logicalOriginX = 0;
 	logicalOriginY = 0;
 	userScale = 5e-5f;
@@ -182,6 +209,7 @@ public class GerbviewFrame extends View
     {
 	NativeDestroy(nativeHandle);
 	nativeHandle = 0;
+	layerManager = null;
 	layers = null;
     }
 
@@ -206,6 +234,7 @@ public class GerbviewFrame extends View
 	    SetVisibleElementColors(visibleElementColors);
 	activeLayer = savedInstanceState.getInt("activeLayer", 0);
 	NativesetActiveLayer(nativeHandle, activeLayer);
+	layerManager.notifyChanged();
 	android.util.Log.i("GerbviewFram", "RGF => "+Read_GERBER_File("/sdcard/Download/riser-B.Cu.gbr"));
     }
 
@@ -267,22 +296,11 @@ public class GerbviewFrame extends View
 	    colors[i] = NativeGetVisibleElementColor(nativeHandle, i+1);
     }
 
-    void SetLayerColor(int layer, int color)
-    {
-	NativeSetLayerColor(nativeHandle, layer, color);
-	layers[layer].SetColor(NativeMakeColour(color));
-	invalidate();
-    }
-
-    int GetLayerColor(int layer)
-    {
-	return NativeGetLayerColor(nativeHandle, layer);
-    }
-
     boolean Read_GERBER_File(String GERBER_FullFileName, String D_Code_FullFileName)
     {
 	boolean result = NativeRead_GERBER_File(nativeHandle, GERBER_FullFileName, D_Code_FullFileName);
 	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
+	layerManager.notifyChanged();
 	invalidate();
 	return result;
     }
@@ -296,6 +314,7 @@ public class GerbviewFrame extends View
     {
 	boolean result = NativeRead_EXCELLON_File(nativeHandle, EXCELLON_FullFileName);
 	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
+	layerManager.notifyChanged();
 	invalidate();
 	return result;
     }
@@ -306,6 +325,7 @@ public class GerbviewFrame extends View
 	for (int i=0; i<layers.length; i++) {
 	    layers[i].SetDisplayName(NativeGetDisplayName(i));
 	}
+	layerManager.notifyChanged();
 	invalidate();
 	return result;
     }
@@ -314,21 +334,13 @@ public class GerbviewFrame extends View
     {
 	NativeErase_Current_DrawLayer(nativeHandle);
 	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
+	layerManager.notifyChanged();
 	invalidate();
     }
 
     private void SetOriginAndScale()
     {
 	NativeSetOriginAndScale(nativeHandle, logicalOriginX, logicalOriginY, userScale);
-    }
-
-    void SetLayerVisible(int layer, boolean visible)
-    {
-	if (layers != null) {
-	    layers[layer].SetVisible(visible);
-	    NativeSetLayerVisible(nativeHandle, layer, visible);
-	    invalidate();
-	}
     }
 
     void setActiveLayer(int layer)
@@ -341,6 +353,10 @@ public class GerbviewFrame extends View
     int getActiveLayer()
     {
 	return activeLayer;
+    }
+
+    Layers getLayers() {
+	return layerManager;
     }
 
     static Pair<int[], String[]> getColors(Context context)

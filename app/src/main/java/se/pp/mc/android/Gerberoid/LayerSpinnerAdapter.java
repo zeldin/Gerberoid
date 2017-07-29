@@ -21,6 +21,7 @@ package se.pp.mc.android.Gerberoid;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,29 +34,27 @@ import android.widget.ToggleButton;
 class LayerSpinnerAdapter extends BaseAdapter {
 
     private Context context;
-    private GerbviewFrame gerber;
-    private Layer[] layers;
+    private Layers layers;
 
-    public LayerSpinnerAdapter(Context context, GerbviewFrame gerber)
+    public LayerSpinnerAdapter(Context context, Layers layers)
     {
 	this.context = context;
-	this.gerber = gerber;
-	this.layers = gerber.getLayers();
+	this.layers = layers;
     }
 
     @Override
     public int getCount() {
-	return layers.length;
+	return layers.getLayerCount();
     }
 
     @Override
     public Object getItem(int position) {
-	return layers[position];
+	return layers.getLayer(position);
     }
 
     @Override
     public long getItemId(int position) {
-	return layers[position].hashCode();
+	return layers.getLayer(position).hashCode();
     }
 
     @Override
@@ -63,18 +62,18 @@ class LayerSpinnerAdapter extends BaseAdapter {
     {
 	if (view == null)
 	    view = ((Activity)context).getLayoutInflater().inflate(R.layout.layer_spinner_entry, parent, false);
+	final Layer layer = layers.getLayer(position);
 	TextView text = (TextView) view.findViewById(R.id.layer_name);
-	text.setText(layers[position].GetDisplayName());
+	text.setText(layer.GetDisplayName());
 	ImageButton button = (ImageButton) view.findViewById(R.id.layer_color);
-	button.setImageDrawable(new ColorDrawable(layers[position].GetColor()));
+	button.setImageDrawable(new ColorDrawable(layer.GetColor()));
 	button.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
 		    new ColorSelectorDialogFragment() {
 			@Override
 			public void onColorSelected(int color) {
-			    gerber.SetLayerColor(position, color);
-			    notifyDataSetChanged();
+			    layers.SetLayerColor(position, color);
 			}
 		    }.show(((Activity)context).getFragmentManager(),
 			   "layerColor");
@@ -82,14 +81,25 @@ class LayerSpinnerAdapter extends BaseAdapter {
 	    });
 	ToggleButton toggle = (ToggleButton) view.findViewById(R.id.layer_visible);
 	toggle.setOnCheckedChangeListener(null);
-	toggle.setChecked(layers[position].IsVisible());
+	toggle.setChecked(layer.IsVisible());
 	toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 		@Override
 		public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		    gerber.SetLayerVisible(position, isChecked);
-		    notifyDataSetChanged();
+		    layers.SetLayerVisible(position, isChecked);
 		}
 	    });
 	return view;
+    }
+
+    @Override
+    public void registerDataSetObserver(DataSetObserver observer)
+    {
+	layers.registerObserver(observer);
+    }
+
+    @Override
+    public void unregisterDataSetObserver(DataSetObserver observer)
+    {
+	layers.unregisterObserver(observer);
     }
 }
