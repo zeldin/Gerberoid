@@ -164,8 +164,10 @@ public class GerbviewFrame extends View
     {
 	nativeHandle = NativeCreate();
 	layers = new Layer[getContext().getResources().getInteger(R.integer.number_of_layers)];
-	for (int i=0; i<layers.length; i++)
+	for (int i=0; i<layers.length; i++) {
 	    layers[i] = new Layer();
+	    layers[i].SetDisplayName(NativeGetDisplayName(i));
+	}
 	logicalOriginX = 0;
 	logicalOriginY = 0;
 	userScale = 5e-5f;
@@ -280,6 +282,7 @@ public class GerbviewFrame extends View
     boolean Read_GERBER_File(String GERBER_FullFileName, String D_Code_FullFileName)
     {
 	boolean result = NativeRead_GERBER_File(nativeHandle, GERBER_FullFileName, D_Code_FullFileName);
+	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
 	invalidate();
 	return result;
     }
@@ -292,6 +295,7 @@ public class GerbviewFrame extends View
     boolean Read_EXCELLON_File(String EXCELLON_FullFileName)
     {
 	boolean result = NativeRead_EXCELLON_File(nativeHandle, EXCELLON_FullFileName);
+	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
 	invalidate();
 	return result;
     }
@@ -299,6 +303,9 @@ public class GerbviewFrame extends View
     boolean Clear_DrawLayers()
     {
 	boolean result = NativeClear_DrawLayers(nativeHandle);
+	for (int i=0; i<layers.length; i++) {
+	    layers[i].SetDisplayName(NativeGetDisplayName(i));
+	}
 	invalidate();
 	return result;
     }
@@ -306,6 +313,7 @@ public class GerbviewFrame extends View
     void Erase_Current_DrawLayer()
     {
 	NativeErase_Current_DrawLayer(nativeHandle);
+	layers[activeLayer].SetDisplayName(NativeGetDisplayName(activeLayer));
 	invalidate();
     }
 
@@ -363,6 +371,7 @@ public class GerbviewFrame extends View
     private native boolean NativeIsLayerVisible(long handle, int layer);
     private native void NativeSetLayerVisible(long handle, int layer, boolean visible);
     private native void NativesetActiveLayer(long handle, int layer);
+    private native static String NativeGetDisplayName(int layer);
     private native static int NativeMakeColour(int color);
     private native static String NativeColorGetName(int color);
 };

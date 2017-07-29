@@ -64,7 +64,7 @@ class LayerSpinnerAdapter extends BaseAdapter {
 	if (view == null)
 	    view = ((Activity)context).getLayoutInflater().inflate(R.layout.layer_spinner_entry, parent, false);
 	TextView text = (TextView) view.findViewById(R.id.layer_name);
-	text.setText(text.getResources().getString(R.string.layer_name, position+1));
+	text.setText(layers[position].GetDisplayName());
 	ImageButton button = (ImageButton) view.findViewById(R.id.layer_color);
 	button.setImageDrawable(new ColorDrawable(layers[position].GetColor()));
 	button.setOnClickListener(new View.OnClickListener() {

@@ -21,6 +21,7 @@
 #include <common.h>
 #include <gerbview.h>
 #include <gerbview_frame.h>
+#include <class_GERBER.h>
 
 #include <jni.h>
 #include "inithook.h"
@@ -57,6 +58,7 @@ private:
   static jboolean NativeIsLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static void NativeSetLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jboolean visible);
   static void NativesetActiveLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
+  static jstring NativeGetDisplayName(JNIEnv *env, jobject objectOrClass, jint layer);
   static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
   static jstring NativeColorGetName(JNIEnv *env, jobject objectOrClass, jint color);
 
@@ -97,6 +99,7 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeIsLayerVisible", "(JI)Z", (void*)&NativeIsLayerVisible },
   { "NativeSetLayerVisible", "(JIZ)V", (void*)&NativeSetLayerVisible },
   { "NativesetActiveLayer", "(JI)V", (void*)&NativesetActiveLayer },
+  { "NativeGetDisplayName", "(I)Ljava/lang/String;", (void*)&NativeGetDisplayName },
   { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
   { "NativeColorGetName", "(I)Ljava/lang/String;", (void*)&NativeColorGetName },
 };
@@ -243,6 +246,11 @@ void GerbviewFrame::NativesetActiveLayer(JNIEnv *env, jobject objectOrClass, jlo
   if (frame) {
     frame->setActiveLayer(layer);
   }
+}
+
+jstring GerbviewFrame::NativeGetDisplayName(JNIEnv *env, jobject objectOrClass, jint layer)
+{
+  return env->NewStringUTF(g_GERBER_List.GetDisplayName(layer));
 }
 
 jint GerbviewFrame::NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color)

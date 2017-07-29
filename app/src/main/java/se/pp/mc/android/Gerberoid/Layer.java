@@ -23,9 +23,12 @@ class Layer
 {
     private int color;
     private boolean visible;
+    private String displayName;
 
     public void SetColor(int color) { this.color = color; }
     public int GetColor() { return color; }
     public void SetVisible(boolean visible) { this.visible = visible; }
     public boolean IsVisible() { return visible; }
+    public void SetDisplayName(String displayName) { this.displayName = displayName; }
+    public String GetDisplayName() { return displayName; }
 }
