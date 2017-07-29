@@ -116,6 +116,7 @@ public class MainActivity extends Activity {
 	    break;
 	case R.id.action_clear:
 	    layers.Clear_DrawLayers();
+	    layerSpinner.setSelection(layers.getActiveLayer());
 	    break;
 	}
 	return true;
@@ -146,6 +147,7 @@ public class MainActivity extends Activity {
 			layers.LoadGerber(file);
 		    else
 			layers.LoadDrill(file);
+		    layerSpinner.setSelection(layers.getActiveLayer());
 		}
 	    }
 	    break;

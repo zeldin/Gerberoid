@@ -112,6 +112,11 @@ public class GerbviewFrame extends View
 	    }
 	    layers[activeLayer].displayName = NativeGetDisplayName(activeLayer);
 	    if (full) {
+		int layer = NativegetNextAvailableLayer(nativeHandle, activeLayer);
+		if (layer >= 0) {
+		    activeLayer = layer;
+		    NativesetActiveLayer(nativeHandle, layer);
+		}
 		notifyChanged();
 		invalidate();
 	    }
@@ -465,6 +470,7 @@ public class GerbviewFrame extends View
     private native boolean NativeIsLayerVisible(long handle, int layer);
     private native void NativeSetLayerVisible(long handle, int layer, boolean visible);
     private native void NativesetActiveLayer(long handle, int layer);
+    private native int NativegetNextAvailableLayer(long handle, int layer);
     private native static String NativeGetDisplayName(int layer);
     private native static int NativeMakeColour(int color);
     private native static String NativeColorGetName(int color);

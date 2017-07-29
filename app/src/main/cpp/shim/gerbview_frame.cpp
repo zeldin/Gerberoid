@@ -22,6 +22,7 @@
 #include <gerbview.h>
 #include <gerbview_frame.h>
 #include <class_gbr_layout.h>
+#include <class_GERBER.h>
 
 GERBVIEW_FRAME::GERBVIEW_FRAME(android::View&& view)
 {
@@ -48,6 +49,21 @@ void GERBVIEW_FRAME::setActiveLayer( int aLayer )
 int GERBVIEW_FRAME::getActiveLayer()
 {
   return m_Active_Layer;
+}
+
+int GERBVIEW_FRAME::getNextAvailableLayer( int aLayer ) const
+{
+    int layer = aLayer;
+    for( int i = 0; i < GERBER_DRAWLAYERS_COUNT; ++i )
+    {
+        GERBER_IMAGE* gerber = g_GERBER_List.GetGbrImage( layer );
+        if( gerber == NULL || gerber->m_FileName.IsEmpty() )
+            return layer;
+        ++layer;
+        if( layer >= GERBER_DRAWLAYERS_COUNT )
+            layer = 0;
+    }
+    return -1;
 }
 
 bool GERBVIEW_FRAME::IsLayerVisible( int aLayer ) const

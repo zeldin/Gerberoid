@@ -61,6 +61,7 @@ public:
 
     void setActiveLayer( int aLayer );
     int getActiveLayer();
+    int getNextAvailableLayer( int aLayer ) const;
     void UpdateTitleAndInfo();
     bool IsLayerVisible( int aLayer ) const;
     void SetLayerVisible( int aLayer, bool aVisible );
