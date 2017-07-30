@@ -148,6 +148,7 @@ bool GERBVIEW_FRAME::Clear_DrawLayers()
   if( GetGerberLayout() == NULL )
     return false;
   GetGerberLayout()->m_Drawings.DeleteAll();
+  g_GERBER_List.ClearList();
   GetGerberLayout()->SetBoundingBox( EDA_RECT() );
   return true;
 }
@@ -163,4 +164,5 @@ void GERBVIEW_FRAME::Erase_Current_DrawLayer()
       continue;
     item->DeleteStructure();
   }
+  g_GERBER_List.ClearImage( layer );
 }
