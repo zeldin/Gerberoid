@@ -35,7 +35,7 @@ import android.view.View;
 import java.io.File;
 import java.util.Arrays;
 
-public class GerbviewFrame extends View
+public class GerbviewFrame extends View implements GerberViewer
 {
 
     static {
@@ -207,7 +207,7 @@ public class GerbviewFrame extends View
 	    return true;
 	}
 
-	void onRestoreInstanceState(Bundle savedInstanceState)
+	private void onRestoreInstanceState(Bundle savedInstanceState)
 	{
 	    logicalOriginX = savedInstanceState.getInt("logicalOriginX", 0);
 	    logicalOriginY = savedInstanceState.getInt("logicalOriginY", 0);
@@ -215,7 +215,7 @@ public class GerbviewFrame extends View
 	    SetOriginAndScale();
 	}
 
-	void onSaveInstanceState(Bundle savedInstanceState) {
+	private void onSaveInstanceState(Bundle savedInstanceState) {
 	    savedInstanceState.putInt("logicalOriginX", logicalOriginX);
 	    savedInstanceState.putInt("logicalOriginY", logicalOriginY);
 	    savedInstanceState.putFloat("userScale", userScale);
@@ -469,7 +469,7 @@ public class GerbviewFrame extends View
 	return viewPort.onTouchEvent(ev) || super.onTouchEvent(ev);
     }
 
-    void onCreate()
+    public void onCreate()
     {
 	Resources resources = getContext().getResources();
 	nativeHandle = NativeCreate();
@@ -478,7 +478,7 @@ public class GerbviewFrame extends View
 	setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
-    void onDestroy()
+    public void onDestroy()
     {
 	final long handle = nativeHandle;
 	nativeHandle = 0;
@@ -487,7 +487,7 @@ public class GerbviewFrame extends View
 	viewPort = null;
     }
 
-    void onRestoreInstanceState(Bundle savedInstanceState)
+    public void onRestoreInstanceState(Bundle savedInstanceState)
     {
 	Resources resources = getContext().getResources();
 	layerManager.onRestoreInstanceState(savedInstanceState, resources);
@@ -499,7 +499,7 @@ public class GerbviewFrame extends View
 	    SetVisibleElementColors(visibleElementColors);
     }
 
-    void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(Bundle savedInstanceState) {
 	Resources resources = getContext().getResources();
 	layerManager.onSaveInstanceState(savedInstanceState);
 	viewPort.onSaveInstanceState(savedInstanceState);
@@ -520,11 +520,11 @@ public class GerbviewFrame extends View
 	    colors[i] = NativeGetVisibleElementColor(nativeHandle, i+1);
     }
 
-    Layers getLayers() {
+    public Layers getLayers() {
 	return layerManager;
     }
 
-    ViewPort getViewPort() {
+    public ViewPort getViewPort() {
 	return viewPort;
     }
 

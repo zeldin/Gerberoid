@@ -44,22 +44,22 @@ public class MainActivity extends Activity {
     private static final int REQUEST_GERBER = 10001;
     private static final int REQUEST_DRILL  = 10002;
 
-    private GerbviewFrame gerbviewFrame;
-    private Spinner layerSpinner;
+    private GerberViewer gerber;
     private Layers layers;
     private ViewPort viewPort;
+    private Spinner layerSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        gerbviewFrame = (GerbviewFrame) findViewById(R.id.gerbview_frame);
-        if (gerbviewFrame != null) {
-	    gerbviewFrame.onCreate();
-	    gerbviewFrame.onRestoreInstanceState((savedInstanceState == null? new Bundle() : savedInstanceState));
-	    layers = gerbviewFrame.getLayers();
-	    viewPort = gerbviewFrame.getViewPort();
+        gerber = (GerberViewer) findViewById(R.id.gerber_viewer);
+        if (gerber != null) {
+	    gerber.onCreate();
+	    gerber.onRestoreInstanceState((savedInstanceState == null? new Bundle() : savedInstanceState));
+	    layers = gerber.getLayers();
+	    viewPort = gerber.getViewPort();
 	} else {
 	    layers = null;
 	    viewPort = null;
@@ -85,8 +85,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
 	super.onSaveInstanceState(savedInstanceState);
-	if (gerbviewFrame != null)
-	    gerbviewFrame.onSaveInstanceState(savedInstanceState);
+	if (gerber != null)
+	    gerber.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -95,9 +95,9 @@ public class MainActivity extends Activity {
 	layerSpinner = null;
 	layers = null;
 	viewPort = null;
-	if (gerbviewFrame != null) {
-	    gerbviewFrame.onDestroy();
-	    gerbviewFrame = null;
+	if (gerber != null) {
+	    gerber.onDestroy();
+	    gerber = null;
 	}
 	super.onDestroy();
     }
