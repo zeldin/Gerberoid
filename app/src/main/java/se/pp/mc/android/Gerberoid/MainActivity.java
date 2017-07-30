@@ -121,6 +121,15 @@ public class MainActivity extends Activity {
 	    layers.Clear_DrawLayers();
 	    layerSpinner.setSelection(layers.getActiveLayer());
 	    break;
+	case R.id.action_zoom_in:
+	    gerbviewFrame.SetPreviousZoom();
+	    break;
+	case R.id.action_zoom_out:
+	    gerbviewFrame.SetNextZoom();
+	    break;
+	case R.id.action_zoom_fit:
+	    gerbviewFrame.Zoom_Automatique();
+	    break;
 	case R.id.action_about:
 	    String version = "?";
 	    try {

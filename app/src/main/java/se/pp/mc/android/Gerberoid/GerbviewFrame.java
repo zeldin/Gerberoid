@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.DataSetObservable;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Pair;
@@ -118,7 +119,7 @@ public class GerbviewFrame extends View
 		    NativesetActiveLayer(nativeHandle, layer);
 		}
 		notifyChanged();
-		invalidate();
+		Zoom_Automatique();
 	    }
 	    return result;
 	}
@@ -272,6 +273,7 @@ public class GerbviewFrame extends View
     private int startLogOrgY;
     private float startUserScale;
     private boolean isScaling;
+    private float[] zoomList;
 
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
@@ -376,8 +378,14 @@ public class GerbviewFrame extends View
 
     void onCreate()
     {
+	Resources resources = getContext().getResources();
+	float iuPerDecimils = resources.getInteger(R.integer.IU_PER_DECIMILS);
+	int[] zooms = resources.getIntArray(R.array.zoom_list);
+	zoomList = new float[zooms.length];
+	for (int i=0; i<zooms.length; i++)
+	    zoomList[i] = 100f / (iuPerDecimils * zooms[i]);
 	nativeHandle = NativeCreate();
-	layerManager = new LayerManager(getContext().getResources().getInteger(R.integer.number_of_layers));
+	layerManager = new LayerManager(resources.getInteger(R.integer.number_of_layers));
 	logicalOriginX = 0;
 	logicalOriginY = 0;
 	userScale = 1f;
@@ -393,6 +401,7 @@ public class GerbviewFrame extends View
 	NativeDestroy(nativeHandle);
 	nativeHandle = 0;
 	layerManager = null;
+	zoomList = null;
     }
 
     void onRestoreInstanceState(Bundle savedInstanceState)
@@ -406,7 +415,9 @@ public class GerbviewFrame extends View
 	    SetVisibleElementColors(visibleElementColors);
 	logicalOriginX = savedInstanceState.getInt("logicalOriginX", 0);
 	logicalOriginY = savedInstanceState.getInt("logicalOriginY", 0);
-	userScale = savedInstanceState.getFloat("userScale", 5e-5f);
+	float iuPerDecimils = resources.getInteger(R.integer.IU_PER_DECIMILS);
+	float defaultZoom = 100f / (iuPerDecimils * resources.getInteger(R.integer.default_zoom));
+	userScale = savedInstanceState.getFloat("userScale", defaultZoom);
 	SetOriginAndScale();
     }
 
@@ -442,6 +453,52 @@ public class GerbviewFrame extends View
 	return layerManager;
     }
 
+    public void Zoom_Automatique()
+    {
+	Rect bbox = NativeComputeBoundingBox(nativeHandle);
+	float w = getWidth();
+        float h = getHeight();
+	float xscale = (w > 0 && bbox.width() > 0? w / bbox.width() : 1f);
+	float yscale = (h > 0 && bbox.height() > 0? h / bbox.height() : 1f);
+	userScale = (xscale < yscale? xscale : yscale);
+	logicalOriginX = (int)(bbox.centerX() - w * 0.5f / userScale);
+	logicalOriginY = (int)(bbox.centerY() - h * 0.5f / userScale);
+	SetOriginAndScale();
+	invalidate();
+    }
+
+    private boolean SetZoom(float zoom)
+    {
+	float focalx = getWidth() * 0.5f;
+	float focaly = getHeight() * 0.5f;
+	logicalOriginX += focalx / userScale - focalx / zoom;
+	logicalOriginY += focaly / userScale - focaly / zoom;
+	userScale = zoom;
+	SetOriginAndScale();
+	invalidate();
+	return true;
+    }
+
+    public boolean SetPreviousZoom()
+    {
+	for (int i=zoomList.length; --i >= 0; ) {
+	    if (zoomList[i] > userScale) {
+		return SetZoom(zoomList[i]);
+	    }
+	}
+	return false;
+    }
+
+    public boolean SetNextZoom()
+    {
+	for (int i=0; i<zoomList.length; i++) {
+	    if (zoomList[i] < userScale) {
+		return SetZoom(zoomList[i]);
+	    }
+	}
+	return false;
+    }
+
     static Pair<int[], String[]> getColors(Context context)
     {
 	Resources resources = context.getResources();
@@ -471,6 +528,7 @@ public class GerbviewFrame extends View
     private native void NativeSetLayerVisible(long handle, int layer, boolean visible);
     private native void NativesetActiveLayer(long handle, int layer);
     private native int NativegetNextAvailableLayer(long handle, int layer);
+    private native Rect NativeComputeBoundingBox(long handle);
     private native static String NativeGetDisplayName(int layer);
     private native static int NativeMakeColour(int color);
     private native static String NativeColorGetName(int color);

@@ -31,6 +31,8 @@ class GerbviewFrame {
 
 private:
   static jclass class_GerbviewFrame;
+  static jclass class_Rect;
+  static jmethodID method_Rect_init;
 
   static const JNINativeMethod methods[];
 
@@ -59,6 +61,7 @@ private:
   static void NativeSetLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jboolean visible);
   static void NativesetActiveLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static jint NativegetNextAvailableLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
+  static jobject NativeComputeBoundingBox(JNIEnv *env, jobject objectOrClass, jlong handle);
   static jstring NativeGetDisplayName(JNIEnv *env, jobject objectOrClass, jint layer);
   static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
   static jstring NativeColorGetName(JNIEnv *env, jobject objectOrClass, jint color);
@@ -83,6 +86,8 @@ private:
 GerbviewFrame::Hook GerbviewFrame::hook;
 
 jclass GerbviewFrame::class_GerbviewFrame = 0;
+jclass GerbviewFrame::class_Rect = 0;
+jmethodID GerbviewFrame::method_Rect_init = 0;
 
 const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeCreate", "()J", (void *)&NativeCreate },
@@ -101,6 +106,7 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeSetLayerVisible", "(JIZ)V", (void*)&NativeSetLayerVisible },
   { "NativesetActiveLayer", "(JI)V", (void*)&NativesetActiveLayer },
   { "NativegetNextAvailableLayer", "(JI)I", (void*)&NativegetNextAvailableLayer },
+  { "NativeComputeBoundingBox", "(J)Landroid/graphics/Rect;", (void*)&NativeComputeBoundingBox },
   { "NativeGetDisplayName", "(I)Ljava/lang/String;", (void*)&NativeGetDisplayName },
   { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
   { "NativeColorGetName", "(I)Ljava/lang/String;", (void*)&NativeColorGetName },
@@ -260,6 +266,21 @@ jint GerbviewFrame::NativegetNextAvailableLayer(JNIEnv *env, jobject objectOrCla
   }
 }
 
+jobject GerbviewFrame::NativeComputeBoundingBox(JNIEnv *env, jobject objectOrClass, jlong handle)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    EDA_RECT bbox = frame->GetGerberLayout()->ComputeBoundingBox();
+    return env->NewObject(class_Rect, method_Rect_init,
+			  static_cast<jint>(bbox.GetX()),
+			  static_cast<jint>(bbox.GetY()),
+			  static_cast<jint>(bbox.GetRight()),
+			  static_cast<jint>(bbox.GetBottom()));
+  } else {
+    return 0;
+  }
+}
+
 jstring GerbviewFrame::NativeGetDisplayName(JNIEnv *env, jobject objectOrClass, jint layer)
 {
   return env->NewStringUTF(g_GERBER_List.GetDisplayName(layer));
@@ -282,6 +303,14 @@ bool GerbviewFrame::Hook::init(JNIEnv *env)
     return false;
   class_GerbviewFrame = (jclass)env->NewGlobalRef(gfclass);
   env->DeleteLocalRef(gfclass);
+  jclass rclass = env->FindClass("android/graphics/Rect");
+  if (!rclass)
+    return false;
+  class_Rect = (jclass)env->NewGlobalRef(rclass);
+  env->DeleteLocalRef(rclass);
+  method_Rect_init = env->GetMethodID(class_Rect, "<init>", "(IIII)V");
+  if (!method_Rect_init)
+    return false;
   env->RegisterNatives(class_GerbviewFrame, methods, sizeof(methods)/sizeof(methods[0]));
   return true;
 }
@@ -292,5 +321,10 @@ void GerbviewFrame::Hook::deinit(JNIEnv *env)
     env->UnregisterNatives(class_GerbviewFrame);
     env->DeleteGlobalRef(class_GerbviewFrame);
     class_GerbviewFrame = 0;
+  }
+  if (class_Rect) {
+    method_Rect_init = 0;
+    env->DeleteGlobalRef(class_Rect);
+    class_Rect = 0;
   }
 }

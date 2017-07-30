@@ -2,6 +2,8 @@
     <integer name="number_of_layers">32</integer>
     <integer name="number_of_colors">30</integer>
     <integer name="number_of_visible_elements">3</integer>
+    <integer name="IU_PER_DECIMILS">254</integer>
+    <integer name="default_zoom">35000</integer>
 
     <integer name="DCODES_VISIBLE">1</integer>
     <integer name="GERBER_GRID_VISIBLE">2</integer>
@@ -78,6 +80,30 @@
 	<item>@integer/LIGHTMAGENTA</item>
 	<item>@integer/YELLOW</item>
 	<item>@integer/LIGHTGRAY</item>
+    </integer-array>
+
+    <integer-array name="zoom_list">
+	<item>50</item>
+	<item>75</item>
+	<item>100</item>
+	<item>150</item>
+	<item>200</item>
+	<item>300</item>
+	<item>450</item>
+	<item>700</item>
+	<item>1000</item>
+	<item>1500</item>
+	<item>2200</item>
+	<item>3500</item>
+	<item>5000</item>
+	<item>8000</item>
+	<item>11000</item>
+	<item>15000</item>
+	<item>20000</item>
+	<item>35000</item>
+	<item>50000</item>
+	<item>100000</item>
+	<item>200000</item>
     </integer-array>
 
 </resources>
