@@ -480,8 +480,9 @@ public class GerbviewFrame extends View
 
     void onDestroy()
     {
-	NativeDestroy(nativeHandle);
+	final long handle = nativeHandle;
 	nativeHandle = 0;
+	NativeDestroy(handle);
 	layerManager = null;
 	viewPort = null;
     }
