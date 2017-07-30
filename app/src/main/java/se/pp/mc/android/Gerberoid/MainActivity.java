@@ -47,6 +47,7 @@ public class MainActivity extends Activity {
     private GerbviewFrame gerbviewFrame;
     private Spinner layerSpinner;
     private Layers layers;
+    private ViewPort viewPort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +59,11 @@ public class MainActivity extends Activity {
 	    gerbviewFrame.onCreate();
 	    gerbviewFrame.onRestoreInstanceState((savedInstanceState == null? new Bundle() : savedInstanceState));
 	    layers = gerbviewFrame.getLayers();
-	} else
+	    viewPort = gerbviewFrame.getViewPort();
+	} else {
 	    layers = null;
+	    viewPort = null;
+	}
 	layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
 	if (layerSpinner != null) {
 	    layerSpinner.setAdapter(new LayerSpinnerAdapter(this, layers));
@@ -90,6 +94,7 @@ public class MainActivity extends Activity {
     {
 	layerSpinner = null;
 	layers = null;
+	viewPort = null;
 	if (gerbviewFrame != null) {
 	    gerbviewFrame.onDestroy();
 	    gerbviewFrame = null;
@@ -122,13 +127,13 @@ public class MainActivity extends Activity {
 	    layerSpinner.setSelection(layers.getActiveLayer());
 	    break;
 	case R.id.action_zoom_in:
-	    gerbviewFrame.SetPreviousZoom();
+	    viewPort.SetPreviousZoom();
 	    break;
 	case R.id.action_zoom_out:
-	    gerbviewFrame.SetNextZoom();
+	    viewPort.SetNextZoom();
 	    break;
 	case R.id.action_zoom_fit:
-	    gerbviewFrame.Zoom_Automatique();
+	    viewPort.Zoom_Automatique();
 	    break;
 	case R.id.action_about:
 	    String version = "?";
