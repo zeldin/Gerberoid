@@ -26,6 +26,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
@@ -48,6 +49,8 @@ public class MainActivity extends Activity {
     private Layers layers;
     private ViewPort viewPort;
     private Spinner layerSpinner;
+    private DrawerLayout drawerLayout;
+    private View toolsDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,10 @@ public class MainActivity extends Activity {
 		    }
 		});
 	}
+	drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+	toolsDrawer = findViewById(R.id.tools_drawer);
+	if (toolsDrawer != null)
+	    new ToolsDrawer(toolsDrawer);
     }
 
     @Override
@@ -92,6 +99,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy ()
     {
+	drawerLayout = null;
+	toolsDrawer = null;
 	layerSpinner = null;
 	layers = null;
 	viewPort = null;
@@ -114,6 +123,12 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item)
     {
 	switch (item.getItemId()) {
+	case R.id.action_settings:
+	    if (drawerLayout.isDrawerOpen(toolsDrawer))
+		drawerLayout.closeDrawer(toolsDrawer);
+	    else
+		drawerLayout.openDrawer(toolsDrawer);
+	    break;
 	case R.id.action_gerber:
 	    SelectFile(REQUEST_GERBER, R.string.file_request_gerber,
 		       "application/vnd.gerber");

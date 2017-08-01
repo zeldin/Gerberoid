@@ -17,6 +17,17 @@
 
     <string name="cancel">Cancel</string>
 
+    <string name="show_grid">Show grid</string>
+    <string name="hide_grid">Hide grid</string>
+    <string name="spots_sketch">Show spots in sketch mode</string>
+    <string name="lines_sketch">Show lines in sketch mode</string>
+    <string name="poly_sketch">Show polygons in sketch mode</string>
+    <string name="neg_ghost">Show negative objects in ghost color</string>
+    <string name="show_dcode">Show dcode number</string>
+    <string name="layers_mode_0">Show layers in raw mode</string>
+    <string name="layers_mode_1">Show layers in stacked mode</string>
+    <string name="layers_mode_2">Show layers in transparency mode</string>
+
     <string name="about_text">Gerberoid version %1$s
 \n© 2017 Marcus Comstedt
 \n
