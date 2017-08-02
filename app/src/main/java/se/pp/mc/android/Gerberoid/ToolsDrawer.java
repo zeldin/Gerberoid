@@ -161,15 +161,14 @@ class ToolsDrawer {
 		public void onClick(final View v) {
 		    new ColorSelectorDialogFragment() {
 			@Override
-			public void onColorSelected(int color) {
-			    int newColor = 0;
+			public void onColorSelected(int color, int argb) {
 			    switch(v.getId()) {
 			    case R.id.grid_color:
 			    case R.id.ghost_color:
 			    case R.id.dcode_color:
 				break;
 			    }
-			    ((ImageButton)v).setImageDrawable(new ColorDrawable(newColor));
+			    ((ImageButton)v).setImageDrawable(new ColorDrawable(argb));
 			}
 		    }.show(((Activity)v.getContext()).getFragmentManager(),
 			   "visibleColor");

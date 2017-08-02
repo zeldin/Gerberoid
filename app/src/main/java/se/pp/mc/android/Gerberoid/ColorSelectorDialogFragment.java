@@ -56,15 +56,16 @@ public abstract class ColorSelectorDialogFragment extends DialogFragment
 	final String[] names = pair.second;
 	for (int i=0; i<colors.length; i++) {
 	    final int colorIndex = i;
+	    final int colorARGB = colors[i];
 	    final Button button = new Button(context);
-	    button.setBackgroundColor(colors[i]);
-	    button.setTextColor(isDark(colors[i])? Color.WHITE : Color.BLACK);
+	    button.setBackgroundColor(colorARGB);
+	    button.setTextColor(isDark(colorARGB)? Color.WHITE : Color.BLACK);
 	    button.setText(names[i]);
 	    button.setLayoutParams(new GridLayout.LayoutParams(layoutParams));
 	    button.setOnClickListener(new View.OnClickListener() {
 		    @Override
 		    public void onClick(View v) {
-			onColorSelected(colorIndex);
+			onColorSelected(colorIndex, colorARGB);
 			dismiss();
 		    }
 		});
@@ -90,5 +91,5 @@ public abstract class ColorSelectorDialogFragment extends DialogFragment
     {
     }
 
-    public abstract void onColorSelected(int color);
+    public abstract void onColorSelected(int color, int colorARGB);
 }

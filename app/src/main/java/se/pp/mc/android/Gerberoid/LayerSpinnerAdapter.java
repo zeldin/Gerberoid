@@ -72,7 +72,7 @@ class LayerSpinnerAdapter extends BaseAdapter {
 		public void onClick(View v) {
 		    new ColorSelectorDialogFragment() {
 			@Override
-			public void onColorSelected(int color) {
+			public void onColorSelected(int color, int argb) {
 			    layers.SetLayerColor(position, color);
 			}
 		    }.show(((Activity)context).getFragmentManager(),
