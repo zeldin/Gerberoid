@@ -154,12 +154,23 @@ void wxDC::DrawPoint(wxCoord x, wxCoord y)
 void wxDC::DrawArc(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2,
 		   wxCoord xc, wxCoord yc)
 {
-  /* Stub */
+  double dx = x1-xc;
+  double dy = y1-yc;
+  int r = sqrt(dx*dx+dy*dy);
+  float angle1 = atan2f(y1-yc, x1-xc)*(float)(180/M_PI);
+  float angle2 = atan2f(y2-yc, x2-xc)*(float)(180/M_PI);
+  float start = angle2;
+  float sweep = angle1-angle2;
+  if (start < 0)
+    start += 360;
+  if (sweep < 0)
+    sweep += 360;
+  drawArc(android::RectF(xc-r, yc-r, xc+r, yc+r), start, sweep, false, paint);
 }
 
 void wxDC::DrawArc(const wxPoint& pt1, const wxPoint& pt2, const wxPoint& centre)
 {
-  /* Stub */
+  DrawArc(pt1.x, pt1.y, pt2.x, pt2.y, centre.x, centre.y);
 }
 
 void wxDC::DrawEllipse(wxCoord x, wxCoord y, wxCoord width, wxCoord height)

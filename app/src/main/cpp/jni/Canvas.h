@@ -48,6 +48,7 @@ class Canvas : public JNIRef
   bool clipRect(int left, int top, int right, int bottom);
   void drawCircle(float cx, float cy, float radius, const Paint& paint);
   void drawOval(const RectF &rect, const Paint& paint);
+  void drawArc(const RectF &rect, float startAngle, float sweepAngle, bool useCenter, const Paint& paint);
   void drawBitmap(const Bitmap &bitmap, const Rect &src, const Rect &dst, const Paint &paint);
   void drawLine(float startX, float startY, float stopX, float stopY, const Paint &paint);
   void drawPath(const Path &path, const Paint &paint);

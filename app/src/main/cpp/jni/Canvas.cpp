@@ -47,6 +47,7 @@ private:
   static jmethodID method_clipRect;
   static jmethodID method_drawCircle;
   static jmethodID method_drawOval;
+  static jmethodID method_drawArc;
   static jmethodID method_drawBitmap;
   static jmethodID method_drawLine;
   static jmethodID method_drawPath;
@@ -67,6 +68,7 @@ jmethodID Canvas::Native::method_translate = 0;
 jmethodID Canvas::Native::method_clipRect = 0;
 jmethodID Canvas::Native::method_drawCircle = 0;
 jmethodID Canvas::Native::method_drawOval = 0;
+jmethodID Canvas::Native::method_drawArc = 0;
 jmethodID Canvas::Native::method_drawBitmap = 0;
 jmethodID Canvas::Native::method_drawLine = 0;
 jmethodID Canvas::Native::method_drawPath = 0;
@@ -141,6 +143,18 @@ void Canvas::drawOval(const RectF &rect, const Paint& paint)
   if (!env || !get() || !paint) return;
   env->CallVoidMethod(*this, Native::method_drawOval,
 		      static_cast<jobject>(rect),
+		      static_cast<jobject>(paint));
+}
+
+void Canvas::drawArc(const RectF &rect, float startAngle, float sweepAngle, bool useCenter, const Paint& paint)
+{
+  LocalFrame env;
+  if (!env || !get() || !paint) return;
+  env->CallVoidMethod(*this, Native::method_drawArc,
+		      static_cast<jobject>(rect),
+		      static_cast<jfloat>(startAngle),
+		      static_cast<jfloat>(sweepAngle),
+		      static_cast<jboolean>(useCenter),
 		      static_cast<jobject>(paint));
 }
 
@@ -223,6 +237,7 @@ bool Canvas::Native::init(JNIEnv *env)
   method_clipRect = env->GetMethodID(class_Canvas, "clipRect", "(IIII)Z");
   method_drawCircle = env->GetMethodID(class_Canvas, "drawCircle", "(FFFLandroid/graphics/Paint;)V");
   method_drawOval = env->GetMethodID(class_Canvas, "drawOval", "(Landroid/graphics/RectF;Landroid/graphics/Paint;)V");
+  method_drawArc = env->GetMethodID(class_Canvas, "drawArc", "(Landroid/graphics/RectF;FFZLandroid/graphics/Paint;)V");
   method_drawBitmap = env->GetMethodID(class_Canvas, "drawBitmap", "(Landroid/graphics/Bitmap;Landroid/graphics/Rect;Landroid/graphics/Rect;Landroid/graphics/Paint;)V");
   method_drawLine = env->GetMethodID(class_Canvas, "drawLine", "(FFFFLandroid/graphics/Paint;)V");
   method_drawPath = env->GetMethodID(class_Canvas, "drawPath", "(Landroid/graphics/Path;Landroid/graphics/Paint;)V");
@@ -230,7 +245,7 @@ bool Canvas::Native::init(JNIEnv *env)
   method_drawPoint = env->GetMethodID(class_Canvas, "drawPoint", "(FFLandroid/graphics/Paint;)V");
   return method_init && method_setBitmap && method_save && method_restore &&
     method_scale && method_translate && method_clipRect && method_drawCircle &&
-    method_drawOval && method_drawBitmap && method_drawLine &&
+    method_drawOval && method_drawArc && method_drawBitmap && method_drawLine &&
     method_drawPath && method_drawRect && method_drawPoint;
 }
 
@@ -245,6 +260,7 @@ void Canvas::Native::deinit(JNIEnv *env)
   method_clipRect = 0;
   method_drawCircle = 0;
   method_drawOval = 0;
+  method_drawArc = 0;
   method_drawBitmap = 0;
   method_drawLine = 0;
   method_drawPath = 0;
