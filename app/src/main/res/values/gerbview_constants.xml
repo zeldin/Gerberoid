@@ -4,6 +4,8 @@
     <integer name="number_of_visible_elements">3</integer>
     <integer name="IU_PER_DECIMILS">254</integer>
     <integer name="default_zoom">35000</integer>
+    <integer name="default_display_flags">55</integer>
+    <integer name="default_display_mode">0</integer>
 
     <integer name="DCODES_VISIBLE">1</integer>
     <integer name="GERBER_GRID_VISIBLE">2</integer>

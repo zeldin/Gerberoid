@@ -444,10 +444,205 @@ public class GerbviewFrame extends View implements GerberViewer
 	}
     }
 
+    private class DisplayOptionsImpl implements DisplayOptions
+    {
+	private int[] visibleElementColor;
+	private int[] visibleElementArgb;
+	private int displayFlags;
+	private int displayMode;
+
+	private static final int FLAG_DISPLAY_DCODES = 1;
+	private static final int FLAG_DISPLAY_FLASHED_ITEMS_FILL = 2;
+	private static final int FLAG_DISPLAY_LINES_FILL = 4;
+	private static final int FLAG_DISPLAY_NEGATIVE_OBJECTS = 8;
+	private static final int FLAG_DISPLAY_POLYGONS_FILL = 16;
+	private static final int FLAG_DISPLAY_GRID = 32;
+
+	private DisplayOptionsImpl()
+	{
+	    Resources resources = getContext().getResources();
+	    final int numberOfVisibleElements = resources.getInteger(R.integer.number_of_visible_elements);
+	    visibleElementColor = new int[numberOfVisibleElements];
+	    visibleElementArgb = new int[numberOfVisibleElements];
+	}
+
+	public boolean GetDisplayDCodesFlag()
+	{
+	    return GetFlag(FLAG_DISPLAY_DCODES);
+	}
+
+	public void SetDisplayDCodesFlag(boolean flag)
+	{
+	    SetFlag(FLAG_DISPLAY_DCODES, flag);
+	}
+
+	public boolean GetDisplayFlashedItemsFillFlag()
+	{
+	    return GetFlag(FLAG_DISPLAY_FLASHED_ITEMS_FILL);
+	}
+
+	public void SetDisplayFlashedItemsFillFlag(boolean flag)
+	{
+	    SetFlag(FLAG_DISPLAY_FLASHED_ITEMS_FILL, flag);
+	}
+
+	public boolean GetDisplayLinesFillFlag()
+	{
+	    return GetFlag(FLAG_DISPLAY_LINES_FILL);
+	}
+
+	public void SetDisplayLinesFillFlag(boolean flag)
+	{
+	    SetFlag(FLAG_DISPLAY_LINES_FILL, flag);
+	}
+
+	public boolean GetDisplayNegativeObjectsFlag()
+	{
+	    return GetFlag(FLAG_DISPLAY_NEGATIVE_OBJECTS);
+	}
+
+	public void SetDisplayNegativeObjectsFlag(boolean flag)
+	{
+	    SetFlag(FLAG_DISPLAY_NEGATIVE_OBJECTS, flag);
+	}
+
+	public boolean GetDisplayPolygonsFillFlag()
+	{
+	    return GetFlag(FLAG_DISPLAY_POLYGONS_FILL);
+	}
+
+	public void SetDisplayPolygonsFillFlag(boolean flag)
+	{
+	    SetFlag(FLAG_DISPLAY_POLYGONS_FILL, flag);
+	}
+
+	public boolean GetDisplayGridFlag()
+	{
+	    return GetFlag(FLAG_DISPLAY_GRID);
+	}
+
+	public void SetDisplayGridFlag(boolean flag)
+	{
+	    SetFlag(FLAG_DISPLAY_GRID, flag);
+	}
+
+	public int GetDisplayMode()
+	{
+	    return displayMode;
+	}
+
+	public void SetDisplayMode(int mode)
+	{
+	    if (mode != displayMode) {
+		displayMode = mode;
+		NativeSetDisplayMode(nativeHandle, displayMode);
+		invalidate();
+	    }
+	}
+
+	public int GetDCodesVisibleColorARGB()
+	{
+	    return GetVisibleElementColorARGB(R.integer.DCODES_VISIBLE);
+	}
+
+	public void SetDCodesVisibleColor(int color)
+	{
+	    SetVisibleElementColor(R.integer.DCODES_VISIBLE, color);
+	}
+
+	public int GetGerberGridVisibleColorARGB()
+	{
+	    return GetVisibleElementColorARGB(R.integer.GERBER_GRID_VISIBLE);
+	}
+
+	public void SetGerberGridVisibleColor(int color)
+	{
+	    SetVisibleElementColor(R.integer.GERBER_GRID_VISIBLE, color);
+	}
+
+	public int GetNegativeObjectsVisibleColorARGB()
+	{
+	    return GetVisibleElementColorARGB(R.integer.NEGATIVE_OBJECTS_VISIBLE);
+	}
+
+	public void SetNegativeObjectsVisibleColor(int color)
+	{
+	    SetVisibleElementColor(R.integer.NEGATIVE_OBJECTS_VISIBLE, color);
+	}
+
+	private void onRestoreInstanceState(Bundle savedInstanceState, Resources resources)
+	{
+	    int[] visibleElementColors = savedInstanceState.getIntArray("visibleElementColors");
+	    if (visibleElementColors == null)
+		visibleElementColors = resources.getIntArray(R.array.default_visible_element_colors);
+	    if (visibleElementColors != null)
+		SetVisibleElementColors(visibleElementColors);
+	    displayFlags = savedInstanceState.getInt("displayFlags", resources.getInteger(R.integer.default_display_flags));
+	    NativeSetDisplayFlags(nativeHandle, displayFlags);
+	    displayMode = savedInstanceState.getInt("displayMode", resources.getInteger(R.integer.default_display_mode));
+	    NativeSetDisplayMode(nativeHandle, displayMode);
+	}
+
+	private void onSaveInstanceState(Bundle savedInstanceState) {
+	    Resources resources = getContext().getResources();
+	    int[] visibleElementColors = new int[resources.getInteger(R.integer.number_of_visible_elements)];
+	    GetVisibleElementColors(visibleElementColors);
+	    savedInstanceState.putIntArray("visibleElementColors", visibleElementColors);
+	    savedInstanceState.putInt("displayFlags", displayFlags);
+	    savedInstanceState.putInt("displayMode", displayMode);
+	}
+
+	private void SetVisibleElementColors(int[] colors)
+	{
+	    for(int i=0; i<colors.length; i++) {
+		NativeSetVisibleElementColor(nativeHandle, i+1, colors[i]);
+		visibleElementColor[i] = colors[i];
+		visibleElementArgb[i] = NativeMakeColour(colors[i]);
+	    }
+	}
+
+	private void GetVisibleElementColors(int[] colors)
+	{
+	    for(int i=0; i<colors.length; i++)
+		colors[i] = visibleElementColor[i];
+	}
+
+	private int GetVisibleElementColorARGB(int id)
+	{
+	    final int visible = getContext().getResources().getInteger(id);
+	    return visibleElementArgb[visible-1];
+	}
+
+	private void SetVisibleElementColor(int id, int color)
+	{
+	    final int visible = getContext().getResources().getInteger(id);
+	    NativeSetVisibleElementColor(nativeHandle, visible, color);
+	    visibleElementColor[visible-1] = color;
+	    visibleElementArgb[visible-1] = NativeMakeColour(color);
+	    invalidate();
+	}
+
+	private boolean GetFlag(int flag)
+	{
+	    return (displayFlags & flag) != 0;
+	}
+
+	private void SetFlag(int flag, boolean value)
+	{
+	    final boolean oldValue = ((displayFlags & flag) != 0);
+	    if (value != oldValue) {
+		displayFlags ^= flag;
+		NativeSetDisplayFlags(nativeHandle, displayFlags);
+		invalidate();
+	    }
+	}
+    }
+
     private long nativeHandle;
 
     private LayerManager layerManager;
     private ViewPortImpl viewPort;
+    private DisplayOptionsImpl displayOptions;
 
     public GerbviewFrame(Context context) {
 	super(context);
@@ -475,6 +670,7 @@ public class GerbviewFrame extends View implements GerberViewer
 	nativeHandle = NativeCreate();
 	layerManager = new LayerManager(resources.getInteger(R.integer.number_of_layers));
 	viewPort = new ViewPortImpl();
+	displayOptions = new DisplayOptionsImpl();
 	setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
@@ -485,6 +681,7 @@ public class GerbviewFrame extends View implements GerberViewer
 	NativeDestroy(handle);
 	layerManager = null;
 	viewPort = null;
+	displayOptions = null;
     }
 
     public void onRestoreInstanceState(Bundle savedInstanceState)
@@ -492,32 +689,13 @@ public class GerbviewFrame extends View implements GerberViewer
 	Resources resources = getContext().getResources();
 	layerManager.onRestoreInstanceState(savedInstanceState, resources);
 	viewPort.onRestoreInstanceState(savedInstanceState);
-	int[] visibleElementColors = savedInstanceState.getIntArray("visibleElementColors");
-	if (visibleElementColors == null)
-	    visibleElementColors = resources.getIntArray(R.array.default_visible_element_colors);
-	if (visibleElementColors != null)
-	    SetVisibleElementColors(visibleElementColors);
+	displayOptions.onRestoreInstanceState(savedInstanceState, resources);
     }
 
     public void onSaveInstanceState(Bundle savedInstanceState) {
-	Resources resources = getContext().getResources();
 	layerManager.onSaveInstanceState(savedInstanceState);
 	viewPort.onSaveInstanceState(savedInstanceState);
-	int[] visibleElementColors = new int[resources.getInteger(R.integer.number_of_visible_elements)];
-	GetVisibleElementColors(visibleElementColors);
-	savedInstanceState.putIntArray("visibleElementColors", visibleElementColors);
-    }
-
-    private void SetVisibleElementColors(int[] colors)
-    {
-	for(int i=0; i<colors.length; i++)
-	    NativeSetVisibleElementColor(nativeHandle, i+1, colors[i]);
-    }
-
-    private void GetVisibleElementColors(int[] colors)
-    {
-	for(int i=0; i<colors.length; i++)
-	    colors[i] = NativeGetVisibleElementColor(nativeHandle, i+1);
+	displayOptions.onSaveInstanceState(savedInstanceState);
     }
 
     public Layers getLayers() {
@@ -526,6 +704,10 @@ public class GerbviewFrame extends View implements GerberViewer
 
     public ViewPort getViewPort() {
 	return viewPort;
+    }
+
+    public DisplayOptions getDisplayOptions() {
+	return displayOptions;
     }
 
     static Pair<int[], String[]> getColors(Context context)
@@ -558,6 +740,8 @@ public class GerbviewFrame extends View implements GerberViewer
     private native void NativesetActiveLayer(long handle, int layer);
     private native int NativegetNextAvailableLayer(long handle, int layer);
     private native Rect NativeComputeBoundingBox(long handle);
+    private native void NativeSetDisplayFlags(long handle, int flags);
+    private native void NativeSetDisplayMode(long handle, int mode);
     private native static String NativeGetDisplayName(int layer);
     private native static int NativeMakeColour(int color);
     private native static String NativeColorGetName(int color);

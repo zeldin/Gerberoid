@@ -47,6 +47,7 @@ public class MainActivity extends Activity {
 
     private GerberViewer gerber;
     private Layers layers;
+    private DisplayOptions displayOptions;
     private ViewPort viewPort;
     private Spinner layerSpinner;
     private DrawerLayout drawerLayout;
@@ -63,9 +64,11 @@ public class MainActivity extends Activity {
 	    gerber.onRestoreInstanceState((savedInstanceState == null? new Bundle() : savedInstanceState));
 	    layers = gerber.getLayers();
 	    viewPort = gerber.getViewPort();
+	    displayOptions = gerber.getDisplayOptions();
 	} else {
 	    layers = null;
 	    viewPort = null;
+	    displayOptions = null;
 	}
 	layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
 	if (layerSpinner != null) {
@@ -86,7 +89,7 @@ public class MainActivity extends Activity {
 	drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 	toolsDrawer = findViewById(R.id.tools_drawer);
 	if (toolsDrawer != null)
-	    new ToolsDrawer(toolsDrawer);
+	    new ToolsDrawer(toolsDrawer, displayOptions);
     }
 
     @Override
@@ -104,6 +107,7 @@ public class MainActivity extends Activity {
 	layerSpinner = null;
 	layers = null;
 	viewPort = null;
+	displayOptions = null;
 	if (gerber != null) {
 	    gerber.onDestroy();
 	    gerber = null;

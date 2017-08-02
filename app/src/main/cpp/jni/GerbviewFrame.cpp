@@ -62,6 +62,8 @@ private:
   static void NativesetActiveLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static jint NativegetNextAvailableLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static jobject NativeComputeBoundingBox(JNIEnv *env, jobject objectOrClass, jlong handle);
+  static void NativeSetDisplayFlags(JNIEnv *env, jobject objectOrClass, jlong handle, jint flags);
+  static void NativeSetDisplayMode(JNIEnv *env, jobject objectOrClass, jlong handle, jint mode);
   static jstring NativeGetDisplayName(JNIEnv *env, jobject objectOrClass, jint layer);
   static jint NativeMakeColour(JNIEnv *env, jobject objectOrClass, jint color);
   static jstring NativeColorGetName(JNIEnv *env, jobject objectOrClass, jint color);
@@ -107,6 +109,8 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativesetActiveLayer", "(JI)V", (void*)&NativesetActiveLayer },
   { "NativegetNextAvailableLayer", "(JI)I", (void*)&NativegetNextAvailableLayer },
   { "NativeComputeBoundingBox", "(J)Landroid/graphics/Rect;", (void*)&NativeComputeBoundingBox },
+  { "NativeSetDisplayFlags", "(JI)V", (void*)&NativeSetDisplayFlags },
+  { "NativeSetDisplayMode", "(JI)V", (void*)&NativeSetDisplayMode },
   { "NativeGetDisplayName", "(I)Ljava/lang/String;", (void*)&NativeGetDisplayName },
   { "NativeMakeColour", "(I)I", (void*)&NativeMakeColour },
   { "NativeColorGetName", "(I)Ljava/lang/String;", (void*)&NativeColorGetName },
@@ -278,6 +282,27 @@ jobject GerbviewFrame::NativeComputeBoundingBox(JNIEnv *env, jobject objectOrCla
 			  static_cast<jint>(bbox.GetBottom()));
   } else {
     return 0;
+  }
+}
+
+void GerbviewFrame::NativeSetDisplayFlags(JNIEnv *env, jobject objectOrClass, jlong handle, jint flags)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    frame->m_DisplayOptions.m_DisplayDCodes = !!(flags & 1);
+    frame->m_DisplayOptions.m_DisplayFlashedItemsFill = !!((flags >> 1)&1);
+    frame->m_DisplayOptions.m_DisplayLinesFill = !!((flags >> 2)&1);
+    frame->m_DisplayOptions.m_DisplayNegativeObjects = !!((flags >> 3)&1);
+    frame->m_DisplayOptions.m_DisplayPolygonsFill = !!((flags >> 4)&1);
+    frame->m_DisplayOptions.m_DisplayGrid = !!((flags >> 5)&1);
+  }
+}
+
+void GerbviewFrame::NativeSetDisplayMode(JNIEnv *env, jobject objectOrClass, jlong handle, jint mode)
+{
+  FrameHolder frame(handle);
+  if (frame) {
+    frame->m_displayMode = mode;
   }
 }
 

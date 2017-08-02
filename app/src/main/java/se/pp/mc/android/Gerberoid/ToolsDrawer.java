@@ -36,6 +36,8 @@ import android.widget.ToggleButton;
 
 class ToolsDrawer {
 
+    private DisplayOptions displayOptions;
+
     private static void calculateToolTipPosition(Toast toast, View view)
     {
 	final int[] screenPos = new int[2];
@@ -71,14 +73,31 @@ class ToolsDrawer {
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 	    switch(buttonView.getId()) {
 	    case R.id.opt_grid:
+		displayOptions.SetDisplayGridFlag(isChecked);
+		break;
 	    case R.id.opt_padsketch:
+		displayOptions.SetDisplayFlashedItemsFillFlag(!isChecked);
+		break;
 	    case R.id.opt_linesketch:
+		displayOptions.SetDisplayLinesFillFlag(!isChecked);
+		break;
 	    case R.id.opt_polysketch:
+		displayOptions.SetDisplayPolygonsFillFlag(!isChecked);
+		break;
 	    case R.id.opt_negghost:
+		displayOptions.SetDisplayNegativeObjectsFlag(isChecked);
+		break;
 	    case R.id.opt_showdcode:
+		displayOptions.SetDisplayDCodesFlag(isChecked);
+		break;
 	    case R.id.opt_layers_mode_0:
+		displayOptions.SetDisplayMode(0);
+		break;
 	    case R.id.opt_layers_mode_1:
+		displayOptions.SetDisplayMode(1);
+		break;
 	    case R.id.opt_layers_mode_2:
+		displayOptions.SetDisplayMode(2);
 		break;
 	    }
 	}
@@ -164,8 +183,13 @@ class ToolsDrawer {
 			public void onColorSelected(int color, int argb) {
 			    switch(v.getId()) {
 			    case R.id.grid_color:
+				displayOptions.SetGerberGridVisibleColor(color);
+				break;
 			    case R.id.ghost_color:
+				displayOptions.SetNegativeObjectsVisibleColor(color);
+				break;
 			    case R.id.dcode_color:
+				displayOptions.SetDCodesVisibleColor(color);
 				break;
 			    }
 			    ((ImageButton)v).setImageDrawable(new ColorDrawable(argb));
@@ -177,31 +201,36 @@ class ToolsDrawer {
 	}
     }
 
-    public ToolsDrawer(View drawer)
+    public ToolsDrawer(View drawer, DisplayOptions displayOptions)
     {
+	this.displayOptions = displayOptions;
 	((RadioGroup)drawer.findViewById(R.id.opt_layers_mode)).
 	    setOnCheckedChangeListener(new ToggleListener());
 	new ToggleAndColorSetting((ToggleButton)drawer.findViewById(R.id.opt_grid),
 				  (ImageButton)drawer.findViewById(R.id.grid_color),
-				  false, 0xffcccccc);
+				  displayOptions.GetDisplayGridFlag(),
+				  displayOptions.GetGerberGridVisibleColorARGB());
 	new ToggleSetting((ToggleButton)drawer.findViewById(R.id.opt_padsketch),
-			  false);
+			  !displayOptions.GetDisplayFlashedItemsFillFlag());
 	new ToggleSetting((ToggleButton)drawer.findViewById(R.id.opt_linesketch),
-			  false);
+			  !displayOptions.GetDisplayLinesFillFlag());
 	new ToggleSetting((ToggleButton)drawer.findViewById(R.id.opt_polysketch),
-			  false);
+			  !displayOptions.GetDisplayPolygonsFillFlag());
 	new ToggleAndColorSetting((ToggleButton)drawer.findViewById(R.id.opt_negghost),
 				  (ImageButton)drawer.findViewById(R.id.ghost_color),
-				  false, 0xffffff00);
+				  displayOptions.GetDisplayNegativeObjectsFlag(),
+				  displayOptions.GetNegativeObjectsVisibleColorARGB());
 	new ToggleAndColorSetting((ToggleButton)drawer.findViewById(R.id.opt_showdcode),
 				  (ImageButton)drawer.findViewById(R.id.dcode_color),
-				  false, 0xffff00ff);
+				  displayOptions.GetDisplayDCodesFlag(),
+				  displayOptions.GetDCodesVisibleColorARGB());
+	final int mode = displayOptions.GetDisplayMode();
 	new RadioSetting((ToggleButton)drawer.findViewById(R.id.opt_layers_mode_0),
-			 true);
+			 mode == 0);
 	new RadioSetting((ToggleButton)drawer.findViewById(R.id.opt_layers_mode_1),
-			 false);
+			 mode == 1);
 	new RadioSetting((ToggleButton)drawer.findViewById(R.id.opt_layers_mode_2),
-			 false);
+			 mode == 2);
     }
 
 }

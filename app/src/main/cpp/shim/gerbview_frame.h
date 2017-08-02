@@ -34,6 +34,7 @@ struct GBR_DISPLAY_OPTIONS
   bool m_DisplayPolarCood;
   bool m_DisplayPolygonsFill;
   bool m_IsPrinting;
+  bool m_DisplayGrid;
 };
 
 class GBR_SCREEN : public BASE_SCREEN {};

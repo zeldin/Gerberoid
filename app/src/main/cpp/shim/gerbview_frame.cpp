@@ -122,8 +122,16 @@ void GERBVIEW_FRAME::ClearMsgPanel( void )
 
 bool GERBVIEW_FRAME::IsElementVisible( GERBER_VISIBLE_ID aItemIdVisible ) const
 {
-  /* Stub */
-  return true;
+  switch( aItemIdVisible ) {
+  case DCODES_VISIBLE:
+    return m_DisplayOptions.m_DisplayDCodes;
+  case NEGATIVE_OBJECTS_VISIBLE:
+    return m_DisplayOptions.m_DisplayNegativeObjects;
+  case GERBER_GRID_VISIBLE:
+    return m_DisplayOptions.m_DisplayGrid;
+  default:
+    return true;
+  }
 }
 
 void GERBVIEW_FRAME::DrawWorkSheet( wxDC* aDC, BASE_SCREEN* aScreen, int aLineWidth,

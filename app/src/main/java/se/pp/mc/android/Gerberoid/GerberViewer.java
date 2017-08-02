@@ -25,6 +25,7 @@ interface GerberViewer
 {
     public Layers getLayers();
     public ViewPort getViewPort();
+    public DisplayOptions getDisplayOptions();
 
     public void onCreate();
     public void onDestroy();
