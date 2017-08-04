@@ -3,26 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="1dp"
+    android:padding="@dimen/layer_spinner_entry_padding"
     android:gravity="left|center_vertical"
     android:baselineAligned="false"
     android:descendantFocusability="blocksDescendants">
     <ToggleButton
 	android:id="@+id/layer_visible"
-	android:layout_width="24sp"
-	android:layout_height="24sp"
+	android:layout_width="@dimen/layer_visibility_icon_size"
+	android:layout_height="@dimen/layer_visibility_icon_size"
 	android:background="@drawable/visibility_toggle"
 	android:textOn=""
 	android:textOff=""/>
     <ImageButton
 	android:id="@+id/layer_color"
-	android:layout_width="30sp"
-        android:layout_height="30sp"
-	android:padding="5dp"
+	android:layout_width="@dimen/layer_color_button_size"
+        android:layout_height="@dimen/layer_color_button_size"
+	android:padding="@dimen/layer_color_button_padding"
 	android:cropToPadding="true"/>
     <TextView
 	android:id="@+id/layer_name"
 	android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-	android:layout_marginLeft="4sp"/>
+	android:layout_marginLeft="@dimen/layer_spinner_entry_text_margin"/>
 </LinearLayout>

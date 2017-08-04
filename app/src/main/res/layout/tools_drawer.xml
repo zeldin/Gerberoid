@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tools_drawer"
-    android:layout_width="120dp"
+    android:layout_width="@dimen/tools_drawer_width"
     android:layout_height="match_parent"
     android:layout_gravity="end"
     android:orientation="vertical"
-    android:background="#f3f3f3"
+    android:background="@color/tools_drawer_background"
     tools:context="se.pp.mc.android.Gerberoid.MainActivity"
     tools:showIn="@layout/activity_main">
 	<LinearLayout
@@ -24,9 +24,9 @@
 		android:textOff="@string/hide_grid"/>
 	    <ImageButton
 		android:id="@+id/grid_color"
-		android:layout_width="40dp"
-	        android:layout_height="40dp"
-		android:padding="10dp"
+		android:layout_width="@dimen/tools_drawer_color_button_size"
+	        android:layout_height="@dimen/tools_drawer_color_button_size"
+		android:padding="@dimen/tools_drawer_color_button_padding"
 		android:cropToPadding="true"/>
 	</LinearLayout>
 	<ToggleButton
@@ -64,9 +64,9 @@
 		android:textOff="@string/neg_ghost"/>
 	    <ImageButton
 		android:id="@+id/ghost_color"
-		android:layout_width="40dp"
-	        android:layout_height="40dp"
-		android:padding="10dp"
+		android:layout_width="@dimen/tools_drawer_color_button_size"
+	        android:layout_height="@dimen/tools_drawer_color_button_size"
+		android:padding="@dimen/tools_drawer_color_button_padding"
 		android:cropToPadding="true"/>
 	</LinearLayout>
 	<LinearLayout
@@ -83,9 +83,9 @@
 		android:textOff="@string/show_dcode"/>
 	    <ImageButton
 		android:id="@+id/dcode_color"
-		android:layout_width="40dp"
-	        android:layout_height="40dp"
-		android:padding="10dp"
+		android:layout_width="@dimen/tools_drawer_color_button_size"
+	        android:layout_height="@dimen/tools_drawer_color_button_size"
+		android:padding="@dimen/tools_drawer_color_button_padding"
 		android:cropToPadding="true"/>
 	</LinearLayout>
 	<RadioGroup
