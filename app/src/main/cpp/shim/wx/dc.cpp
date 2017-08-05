@@ -163,7 +163,7 @@ void wxDC::DrawArc(wxCoord x1, wxCoord y1, wxCoord x2, wxCoord y2,
   float sweep = angle1-angle2;
   if (start < 0)
     start += 360;
-  if (sweep < 0)
+  if (sweep <= 0)
     sweep += 360;
   drawArc(android::RectF(xc-r, yc-r, xc+r, yc+r), start, sweep, false, paint);
 }
