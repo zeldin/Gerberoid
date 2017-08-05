@@ -60,9 +60,9 @@ void wxDC::SetLogicalOrigin(wxCoord x, wxCoord y)
 void wxDC::SetUserScale(double x, double y)
 {
   if (x != scalex || y != scaley) {
-    logorgx *= x/scalex;
-    logorgy *= y/scaley;
+    translate(logorgx, logorgy);
     scale(x/scalex, y/scaley);
+    translate(-logorgx, -logorgy);
     scalex = x;
     scaley = y;
   }
