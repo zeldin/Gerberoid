@@ -21,6 +21,7 @@
 #include "Paint.h"
 #include "Xfermode.h"
 #include "PathEffect.h"
+#include "ColorFilter.h"
 #include "inithook.h"
 #include "localframe.h"
 
@@ -47,6 +48,7 @@ private:
   static jmethodID method_setStrokeJoin;
   static jmethodID method_setXfermode;
   static jmethodID method_setPathEffect;
+  static jmethodID method_setColorFilter;
   static jfieldID field_FILL;
   static jfieldID field_FILL_AND_STROKE;
   static jfieldID field_STROKE;
@@ -73,6 +75,7 @@ jmethodID Paint::Native::method_setStrokeCap = 0;
 jmethodID Paint::Native::method_setStrokeJoin = 0;
 jmethodID Paint::Native::method_setXfermode = 0;
 jmethodID Paint::Native::method_setPathEffect = 0;
+jmethodID Paint::Native::method_setColorFilter = 0;
 jfieldID Paint::Native::field_FILL = 0;
 jfieldID Paint::Native::field_FILL_AND_STROKE = 0;
 jfieldID Paint::Native::field_STROKE = 0;
@@ -155,6 +158,15 @@ const PathEffect &Paint::setPathEffect(const PathEffect &effect)
   return effect;
 }
 
+const ColorFilter &Paint::setColorFilter(const ColorFilter &colorFilter)
+{
+  LocalFrame env;
+  if (!env || !get()) return colorFilter;
+  env->CallObjectMethod(*this, Native::method_setColorFilter,
+			static_cast<jobject>(colorFilter));
+  return colorFilter;
+}
+
 JNIRef Paint::Native::createPaint()
 {
   LocalFrame env;
@@ -194,6 +206,7 @@ bool Paint::Native::init(JNIEnv *env)
   method_setStrokeJoin = env->GetMethodID(class_Paint, "setStrokeJoin", "(Landroid/graphics/Paint$Join;)V");
   method_setXfermode = env->GetMethodID(class_Paint, "setXfermode", "(Landroid/graphics/Xfermode;)Landroid/graphics/Xfermode;");
   method_setPathEffect = env->GetMethodID(class_Paint, "setPathEffect", "(Landroid/graphics/PathEffect;)Landroid/graphics/PathEffect;");
+  method_setColorFilter = env->GetMethodID(class_Paint, "setColorFilter", "(Landroid/graphics/ColorFilter;)Landroid/graphics/ColorFilter;");
   field_FILL = env->GetStaticFieldID(class_Paint_Style, "FILL", "Landroid/graphics/Paint$Style;");
   field_FILL_AND_STROKE = env->GetStaticFieldID(class_Paint_Style, "FILL_AND_STROKE", "Landroid/graphics/Paint$Style;");
   field_STROKE = env->GetStaticFieldID(class_Paint_Style, "STROKE", "Landroid/graphics/Paint$Style;");
@@ -205,7 +218,7 @@ bool Paint::Native::init(JNIEnv *env)
   field_join_ROUND = env->GetStaticFieldID(class_Paint_Join, "ROUND", "Landroid/graphics/Paint$Join;");
   return method_init && method_setColor && method_setStrokeWidth &&
     method_setStyle && method_setStrokeCap && method_setStrokeJoin &&
-    method_setXfermode && method_setPathEffect &&
+    method_setXfermode && method_setPathEffect && method_setColorFilter &&
     field_FILL && field_FILL_AND_STROKE && field_STROKE &&
     field_cap_BUTT && field_cap_ROUND && field_cap_SQUARE &&
     field_join_BEVEL && field_join_MITER && field_join_ROUND;
@@ -221,6 +234,7 @@ void Paint::Native::deinit(JNIEnv *env)
   method_setStrokeJoin = 0;
   method_setXfermode = 0;
   method_setPathEffect = 0;
+  method_setColorFilter = 0;
   field_FILL = 0;
   field_FILL_AND_STROKE = 0;
   field_STROKE = 0;

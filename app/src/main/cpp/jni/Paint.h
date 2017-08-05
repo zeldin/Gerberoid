@@ -28,6 +28,7 @@ namespace android
 
 class Xfermode;
 class PathEffect;
+class ColorFilter;
 
 class Paint : public JNIRef
 {
@@ -78,6 +79,7 @@ class Paint : public JNIRef
   void setStrokeJoin(const Join &style);
   const Xfermode &setXfermode(const Xfermode &xfermode);
   const PathEffect &setPathEffect(const PathEffect &effect);
+  const ColorFilter &setColorFilter(const ColorFilter &filter);
 };
 
 }

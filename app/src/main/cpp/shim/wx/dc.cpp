@@ -25,6 +25,7 @@
 #include <Path.h>
 #include <PorterDuff.h>
 #include <PathEffect.h>
+#include <ColorFilter.h>
 
 wxDC::wxDC(android::Canvas&& canvas) : android::Canvas(std::move(canvas))
 {
@@ -95,6 +96,15 @@ bool wxDC::Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
 {
   if (source->bitmap) {
     android::Paint paint;
+    if (useMask) {
+      float array[] = {
+	1, 0, 0, 0, 0,
+	0, 1, 0, 0, 0,
+	0, 0, 1, 0, 0,
+	10, 10, 10, 0, 0,
+      };
+      paint.setColorFilter(android::ColorMatrixColorFilter(array));
+    }
     paint.setXfermode(android::PorterDuffXfermode(rop == wxOR?
 						  android::PorterDuff::Mode::LIGHTEN :
 						  (useMask? android::PorterDuff::Mode::SRC_OVER :
