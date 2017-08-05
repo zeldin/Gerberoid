@@ -105,8 +105,10 @@ EDA_COLOR_T GERBVIEW_FRAME::GetDrawBgColor() const
 
 EDA_COLOR_T GERBVIEW_FRAME::GetNegativeItemsColor() const
 {
-  /* Stub */
-  return BLACK;
+  if( IsElementVisible( NEGATIVE_OBJECTS_VISIBLE ) )
+    return GetVisibleElementColor( NEGATIVE_OBJECTS_VISIBLE );
+  else
+    return GetDrawBgColor();
 }
 
 void GERBVIEW_FRAME::AppendMsgPanel( const wxString& textUpper, const wxString& textLower,
