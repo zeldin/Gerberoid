@@ -238,7 +238,23 @@ void wxDC::SetBrush(const wxBrush& brush)
 
 void wxDC::SetLogicalFunction(wxRasterOperationMode function)
 {
-  /* Stub */
+  switch(function) {
+  case wxCOPY:
+    paint.setXfermode(0);
+    break;
+  case wxOR:
+    paint.setXfermode(android::PorterDuffXfermode(android::PorterDuff::Mode::LIGHTEN));
+    break;
+  case wxXOR:
+    paint.setXfermode(android::PorterDuffXfermode(android::PorterDuff::Mode::XOR));
+    break;
+  case wxEQUIV:
+    paint.setXfermode(android::PorterDuffXfermode(android::PorterDuff::Mode::SRC_IN));
+    break;
+  case wxINVERT:
+    paint.setXfermode(android::PorterDuffXfermode(android::PorterDuff::Mode::DST_OUT));
+    break;
+  }
 }
 
 void wxMemoryDC::SelectObject(wxBitmap& bmp)
