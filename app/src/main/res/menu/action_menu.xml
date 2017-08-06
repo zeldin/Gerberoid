@@ -8,23 +8,6 @@
         android:title="@string/action_settings"/>
     <group>
         <item
-            android:id="@+id/action_gerber"
-            app:showAsAction="ifRoom"
-            android:icon="@drawable/gerber_file"
-            android:title="@string/action_gerber"/>
-        <item
-            android:id="@+id/action_drill"
-            app:showAsAction="ifRoom"
-            android:icon="@drawable/gerbview_drill_file"
-            android:title="@string/action_drill"/>
-    </group>
-    <item
-        android:id="@+id/action_clear"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/gerbview_clear_layers"
-        android:title="@string/action_clear"/>
-    <group>
-        <item
             android:id="@+id/action_zoom_in"
             app:showAsAction="ifRoom"
             android:icon="@drawable/ic_zoom_in_black_24px"

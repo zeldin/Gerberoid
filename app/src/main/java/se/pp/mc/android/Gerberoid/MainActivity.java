@@ -41,7 +41,8 @@ import com.ipaulpro.afilechooser.utils.FileUtils;
 import java.io.File;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+    implements Toolbar.OnMenuItemClickListener {
 
 
     private static final int REQUEST_GERBER = 10001;
@@ -61,6 +62,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 	Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 	setSupportActionBar(toolbar);
+	toolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
+	toolbar.setOnMenuItemClickListener(this);
+	toolbar.inflateMenu(R.menu.bottom_toolbar);
 
         gerber = (GerberViewer) findViewById(R.id.gerber_viewer);
         if (gerber != null) {
@@ -137,18 +141,6 @@ public class MainActivity extends AppCompatActivity {
 	    else
 		drawerLayout.openDrawer(toolsDrawer);
 	    break;
-	case R.id.action_gerber:
-	    SelectFile(REQUEST_GERBER, R.string.file_request_gerber,
-		       "application/vnd.gerber");
-	    break;
-	case R.id.action_drill:
-	    SelectFile(REQUEST_DRILL, R.string.file_request_drill,
-		       "application/octet-stream");
-	    break;
-	case R.id.action_clear:
-	    layers.Clear_DrawLayers();
-	    layerSpinner.setSelection(layers.getActiveLayer());
-	    break;
 	case R.id.action_zoom_in:
 	    viewPort.SetPreviousZoom();
 	    break;
@@ -169,6 +161,26 @@ public class MainActivity extends AppCompatActivity {
 		.setMessage(getResources().getString(R.string.about_text, version))
 		.create()
 		.show();
+	    break;
+	}
+	return true;
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item)
+    {
+	switch (item.getItemId()) {
+	case R.id.action_gerber:
+	    SelectFile(REQUEST_GERBER, R.string.file_request_gerber,
+		       "application/vnd.gerber");
+	    break;
+	case R.id.action_drill:
+	    SelectFile(REQUEST_DRILL, R.string.file_request_drill,
+		       "application/octet-stream");
+	    break;
+	case R.id.action_clear:
+	    layers.Clear_DrawLayers();
+	    layerSpinner.setSelection(layers.getActiveLayer());
 	    break;
 	}
 	return true;
