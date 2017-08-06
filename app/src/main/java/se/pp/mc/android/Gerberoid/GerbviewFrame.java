@@ -370,7 +370,6 @@ public class GerbviewFrame extends View implements GerberViewer
 	    String[] layerFileNames = savedInstanceState.getStringArray("layerFileNames");
 	    if (layerFileNames == null) {
 		layerFileNames = new String[layers.length];
-		layerFileNames[0] = "/sdcard/Download/riser-B.Cu.gbr";
 	    }
 	    boolean[] layerDrills = savedInstanceState.getBooleanArray("layerDrills");
 	    if (layerDrills == null) {
