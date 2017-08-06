@@ -725,16 +725,13 @@ public class GerbviewFrame extends View implements GerberViewer
     private native long NativeCreate();
     private native void NativeDestroy(long handle);
     private native void NativeSetLayerColor(long handle, int layer, int color);
-    private native int NativeGetLayerColor(long handle, int layer);
     private native void NativeSetVisibleElementColor(long handle, int layer, int color);
-    private native int NativeGetVisibleElementColor(long handle, int layer);
     private native boolean NativeRead_GERBER_File(long handle, String GERBER_FullFileName, String D_Code_FullFileName);
     private native boolean NativeRead_EXCELLON_File(long handle, String EXCELLON_FullFileName);
     private native boolean NativeClear_DrawLayers(long handle);
     private native void NativeErase_Current_DrawLayer(long handle);
     private native void NativeOnDraw(long handle, Canvas canvas, boolean eraseBg);
     private native void NativeSetOriginAndScale(long handle, int logicalOriginX, int logicalOriginY, float userScale);
-    private native boolean NativeIsLayerVisible(long handle, int layer);
     private native void NativeSetLayerVisible(long handle, int layer, boolean visible);
     private native void NativesetActiveLayer(long handle, int layer);
     private native int NativegetNextAvailableLayer(long handle, int layer);

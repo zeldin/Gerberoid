@@ -48,16 +48,13 @@ private:
   static jlong NativeCreate(JNIEnv *env, jobject objectOrClass);
   static void NativeDestroy(JNIEnv *env, jobject objectOrClass, jlong handle);
   static void NativeSetLayerColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jint color);
-  static jint NativeGetLayerColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static void NativeSetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item, jint color);
-  static jint NativeGetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item);
   static jboolean NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName);
   static jboolean NativeRead_EXCELLON_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring EXCELLON_FullFileName);
   static jboolean NativeClear_DrawLayers(JNIEnv *env, jobject objectOrClass, jlong handle);
   static void NativeErase_Current_DrawLayer(JNIEnv *env, jobject objectOrClass, jlong handle);
   static void NativeOnDraw(JNIEnv *env, jobject objectOrClass, jlong handle, jobject canvas, jboolean eraseBg);
   static void NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, jlong handle, jint logicalOriginX, jint logicalOriginY, jfloat userScale);
-  static jboolean NativeIsLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static void NativeSetLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer, jboolean visible);
   static void NativesetActiveLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
   static jint NativegetNextAvailableLayer(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer);
@@ -95,16 +92,13 @@ const JNINativeMethod GerbviewFrame::methods[] = {
   { "NativeCreate", "()J", (void *)&NativeCreate },
   { "NativeDestroy", "(J)V", (void *)&NativeDestroy },
   { "NativeSetLayerColor", "(JII)V", (void*)&NativeSetLayerColor },
-  { "NativeGetLayerColor", "(JI)I", (void*)&NativeGetLayerColor },
   { "NativeSetVisibleElementColor", "(JII)V", (void*)&NativeSetVisibleElementColor },
-  { "NativeGetVisibleElementColor", "(JI)I", (void*)&NativeGetVisibleElementColor },
   { "NativeRead_GERBER_File", "(JLjava/lang/String;Ljava/lang/String;)Z", (void*)&NativeRead_GERBER_File },
   { "NativeRead_EXCELLON_File", "(JLjava/lang/String;)Z", (void*)&NativeRead_EXCELLON_File },
   { "NativeClear_DrawLayers", "(J)Z", (void*)&NativeClear_DrawLayers },
   { "NativeErase_Current_DrawLayer", "(J)V", (void*)&NativeErase_Current_DrawLayer },
   { "NativeOnDraw", "(JLandroid/graphics/Canvas;Z)V", (void*)&NativeOnDraw },
   { "NativeSetOriginAndScale", "(JIIF)V", (void*)&NativeSetOriginAndScale },
-  { "NativeIsLayerVisible", "(JI)Z", (void*)&NativeIsLayerVisible },
   { "NativeSetLayerVisible", "(JIZ)V", (void*)&NativeSetLayerVisible },
   { "NativesetActiveLayer", "(JI)V", (void*)&NativesetActiveLayer },
   { "NativegetNextAvailableLayer", "(JI)I", (void*)&NativegetNextAvailableLayer },
@@ -146,29 +140,11 @@ void GerbviewFrame::NativeSetLayerColor(JNIEnv *env, jobject objectOrClass, jlon
     frame->SetLayerColor(layer, static_cast<EDA_COLOR_T>(color));
 }
 
-jint GerbviewFrame::NativeGetLayerColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer)
-{
-  FrameHolder frame(handle);
-  if (frame)
-    return frame->GetLayerColor(layer);
-  else
-    return -1;
-}
-
 void GerbviewFrame::NativeSetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item, jint color)
 {
   FrameHolder frame(handle);
   if (frame)
     frame->SetVisibleElementColor(static_cast<GERBER_VISIBLE_ID>(item), static_cast<EDA_COLOR_T>(color));
-}
-
-jint GerbviewFrame::NativeGetVisibleElementColor(JNIEnv *env, jobject objectOrClass, jlong handle, jint item)
-{
-  FrameHolder frame(handle);
-  if (frame)
-    return frame->GetVisibleElementColor(static_cast<GERBER_VISIBLE_ID>(item));
-  else
-    return -1;
 }
 
 jboolean GerbviewFrame::NativeRead_GERBER_File(JNIEnv *env, jobject objectOrClass, jlong handle, jstring GERBER_FullFileName, jstring D_Code_FullFileName)
@@ -231,16 +207,6 @@ void GerbviewFrame::NativeSetOriginAndScale(JNIEnv *env, jobject objectOrClass, 
   FrameHolder frame(handle);
   if (frame) {
     frame->m_canvas->SetOriginAndScale(logicalOriginX, logicalOriginY, userScale);
-  }
-}
-
-jboolean GerbviewFrame::NativeIsLayerVisible(JNIEnv *env, jobject objectOrClass, jlong handle, jint layer)
-{
-  FrameHolder frame(handle);
-  if (frame) {
-    return frame->IsLayerVisible(layer);
-  } else {
-    return false;
   }
 }
 
