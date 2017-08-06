@@ -1,15 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="se.pp.mc.android.Gerberoid.MainActivity">
+    <android.support.v7.widget.Toolbar
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	app:logo="@drawable/ic_launcher"
+	android:id="@+id/toolbar"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/colorPrimary"
+	android:minHeight="?attr/actionBarSize"
+	style="@style/ToolBarStyle" />
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+	android:layout_weight="1">
 
-    <include layout="@layout/content_main" />
+        <include layout="@layout/content_main" />
 
-    <include layout="@layout/tools_drawer" />
+        <include layout="@layout/tools_drawer" />
 
-</android.support.v4.widget.DrawerLayout>
+    </android.support.v4.widget.DrawerLayout>
+    <android.support.v7.widget.Toolbar
+	android:id="@+id/toolbar_bottom"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:background="?attr/colorPrimary"
+	android:minHeight="?attr/actionBarSize"
+	style="@style/ToolBarStyle">
+
+	<include layout="@layout/bottom_toolbar" />
+
+    </android.support.v7.widget.Toolbar>
+</LinearLayout>

@@ -28,4 +28,6 @@ android {
 
 dependencies {
     compile 'andhradroid.dev:aFilechooser:1.0.1'
+    compile 'com.android.support:support-v4:24.2.+'
+    compile 'com.android.support:appcompat-v7:24.2.+'
 }
