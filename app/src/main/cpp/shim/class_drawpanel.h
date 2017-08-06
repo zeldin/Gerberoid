@@ -43,6 +43,7 @@ class EDA_DRAW_PANEL : public wxWindow
   void SetPrintMirrored(bool mode);
   void DoPrepareDC(wxDC& DC);
   void DrawBackGround(wxDC* DC);
+  void DrawGrid(wxDC* DC);
   void DrawCrossHair(wxDC* DC);
   bool IsMouseCaptured();
   void CallMouseCapture( wxDC* aDC, const wxPoint& aPosition, bool aErase );

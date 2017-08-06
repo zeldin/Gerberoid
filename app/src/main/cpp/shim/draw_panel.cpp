@@ -19,6 +19,10 @@
 
 #include "class_drawpanel.h"
 #include "gr_basic.h"
+#include "gerbview_frame.h"
+#include "convert_to_biu.h"
+
+#define MIN_GRID_SIZE 20
 
 void EDA_DRAW_PANEL::SetPrintMirrored(bool mode)
 {
@@ -42,7 +46,34 @@ void EDA_DRAW_PANEL::DoPrepareDC(wxDC& dc)
 
 void EDA_DRAW_PANEL::DrawBackGround(wxDC* DC)
 {
-  /* Stub */
+  GRSetDrawMode( DC, GR_COPY );
+  if( GetParent()->IsElementVisible(GERBER_GRID_VISIBLE) )
+    DrawGrid( DC );
+}
+
+void EDA_DRAW_PANEL::DrawGrid(wxDC* DC)
+{
+  wxRealPoint  gridSize(1000*IU_PER_DECIMILS, 1000*IU_PER_DECIMILS);
+  wxSize       screenSize;
+  wxPoint      org;
+  wxRealPoint  screenGridSize;
+
+  screenSize = GetClientSize();
+  screenGridSize.x = DC->LogicalToDeviceXRel(KiROUND(gridSize.x));
+  screenGridSize.y = DC->LogicalToDeviceYRel(KiROUND(gridSize.y));
+  org = m_ClipBox.GetPosition();
+  if (screenGridSize.x < MIN_GRID_SIZE || screenGridSize.y < MIN_GRID_SIZE)
+    return;
+  org.x = KiROUND(KiROUND(org.x/gridSize.x)*gridSize.x);
+  org.y = KiROUND(KiROUND(org.y/gridSize.y)*gridSize.y);
+  GRSetColorPen(DC, GetParent()->GetVisibleElementColor(GERBER_GRID_VISIBLE));
+  double right = m_ClipBox.GetRight();
+  double bottom = m_ClipBox.GetBottom();
+  for (double x=org.x; x<=right; x+=gridSize.x) {
+    int xpos = KiROUND( x );
+    for (double y=org.y; y<=bottom; y+=gridSize.y)
+      DC->DrawPoint( xpos, KiROUND( y )  );
+  }
 }
 
 void EDA_DRAW_PANEL::DrawCrossHair(wxDC* DC)

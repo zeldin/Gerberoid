@@ -60,6 +60,7 @@ class wxDC : protected android::Canvas
   bool Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
 	    wxDC *source, wxCoord xsrc, wxCoord ysrc,
 	    wxRasterOperationMode rop = wxCOPY, bool useMask = false);
+  wxCoord LogicalToDeviceXRel(wxCoord x) const;
   wxCoord LogicalToDeviceYRel(wxCoord y) const;
   wxCoord DeviceToLogicalX(wxCoord x) const;
   wxCoord DeviceToLogicalY(wxCoord y) const;

@@ -118,6 +118,11 @@ bool wxDC::Blit(wxCoord xdest, wxCoord ydest, wxCoord width, wxCoord height,
   return false;
 }
 
+wxCoord wxDC::LogicalToDeviceXRel(wxCoord x) const
+{
+  return x * scalex;
+}
+
 wxCoord wxDC::LogicalToDeviceYRel(wxCoord y) const
 {
   return y * scaley;
