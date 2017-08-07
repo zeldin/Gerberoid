@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tools_drawer"
     android:layout_width="@dimen/tools_drawer_width"
     android:layout_height="match_parent"
     android:layout_gravity="end"
-    android:orientation="vertical"
     android:background="@color/tools_drawer_background"
     tools:context="se.pp.mc.android.Gerberoid.MainActivity"
     tools:showIn="@layout/activity_main">
+    <LinearLayout
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:orientation="vertical">
 	<LinearLayout
 	    android:orientation="horizontal"
 	    android:gravity="left|center_vertical"
@@ -115,4 +118,5 @@
 		android:textOn="@string/layers_mode_2"
 		android:textOff="@string/layers_mode_2"/>
 	</RadioGroup>
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

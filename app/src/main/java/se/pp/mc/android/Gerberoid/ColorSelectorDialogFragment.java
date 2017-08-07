@@ -31,6 +31,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 
 public abstract class ColorSelectorDialogFragment extends DialogFragment
 {
@@ -71,7 +73,11 @@ public abstract class ColorSelectorDialogFragment extends DialogFragment
 		});
 	    grid.addView(button);
 	}
-	return grid;
+	final ScrollView scrollView1 = new ScrollView(context);
+	scrollView1.addView(grid);
+	final HorizontalScrollView scrollView2 = new HorizontalScrollView(context);
+	scrollView2.addView(scrollView1);
+	return scrollView2;
     }
 
     @Override
