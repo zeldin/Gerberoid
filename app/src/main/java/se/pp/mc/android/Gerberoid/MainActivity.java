@@ -24,7 +24,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.Manifest;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -171,12 +173,10 @@ public class MainActivity extends AppCompatActivity
     {
 	switch (item.getItemId()) {
 	case R.id.action_gerber:
-	    SelectFile(REQUEST_GERBER, R.string.file_request_gerber,
-		       "application/vnd.gerber");
+	    SelectFile(REQUEST_GERBER);
 	    break;
 	case R.id.action_drill:
-	    SelectFile(REQUEST_DRILL, R.string.file_request_drill,
-		       "application/octet-stream");
+	    SelectFile(REQUEST_DRILL);
 	    break;
 	case R.id.action_clear:
 	    layers.Clear_DrawLayers();
@@ -186,11 +186,56 @@ public class MainActivity extends AppCompatActivity
 	return true;
     }
 
-    private void SelectFile(int requestCode, int titleResource,
-			    String mimeType)
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+					   String[] permissions,
+					   int[] grantResults)
     {
+	int result = PackageManager.PERMISSION_DENIED;
+	for(int i=0; i<permissions.length; i++)
+	    if (Manifest.permission.READ_EXTERNAL_STORAGE.equals(permissions[i])) {
+		result = grantResults[i];
+		break;
+	    }
+	if (result == PackageManager.PERMISSION_GRANTED)
+	    SelectFile(requestCode);
+    }
+
+    private boolean GetFilePermission(int requestCode)
+    {
+	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+	    return true;
+
+	if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+	    return true;
+
+	requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, requestCode);
+	return false;
+    }
+
+    private void SelectFile(int requestCode)
+    {
+	int titleResource;
+	switch(requestCode) {
+	case REQUEST_GERBER:
+	    titleResource = R.string.file_request_gerber;
+	    break;
+	case REQUEST_DRILL:
+	    titleResource = R.string.file_request_drill;
+	    break;
+	default:
+	    return;
+	}
+	if (!GetFilePermission(requestCode))
+	    return;
 	final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-	intent.setType(mimeType);
+	final String octetStream = "application/octet-stream";
+	intent.setType(octetStream);
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT &&
+	    requestCode == REQUEST_GERBER) {
+	    String[] extraMimeTypes = {"application/vnd.gerber", octetStream};
+	    intent.putExtra(Intent.EXTRA_MIME_TYPES, extraMimeTypes);
+	}
 	intent.addCategory(Intent.CATEGORY_OPENABLE);
 	startActivityForResult(Intent.createChooser(intent,
 						    getResources().getString(titleResource)),
