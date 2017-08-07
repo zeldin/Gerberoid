@@ -21,6 +21,7 @@ package se.pp.mc.android.Gerberoid;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -37,6 +38,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.ipaulpro.afilechooser.utils.FileUtils;
 
@@ -237,9 +239,23 @@ public class MainActivity extends AppCompatActivity
 	    intent.putExtra(Intent.EXTRA_MIME_TYPES, extraMimeTypes);
 	}
 	intent.addCategory(Intent.CATEGORY_OPENABLE);
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+	    intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
 	startActivityForResult(Intent.createChooser(intent,
 						    getResources().getString(titleResource)),
 			       requestCode);
+    }
+
+    private boolean LoadThing(int requestCode, Uri uri)
+    {
+	final File file = FileUtils.getFile(this, uri);
+	if (file == null)
+	    return false;
+
+	if (requestCode == REQUEST_GERBER)
+	    return layers.LoadGerber(file);
+	else
+	    return layers.LoadDrill(file);
     }
 
     @Override
@@ -249,15 +265,28 @@ public class MainActivity extends AppCompatActivity
 	case REQUEST_GERBER:
 	case REQUEST_DRILL:
 	    if (resultCode == RESULT_OK) {
-		final Uri uri = data.getData();
-		final File file = FileUtils.getFile(this, uri);
-		if (file != null) {
-		    if (requestCode == REQUEST_GERBER)
-			layers.LoadGerber(file);
-		    else
-			layers.LoadDrill(file);
-		    layerSpinner.setSelection(layers.getActiveLayer());
+		ClipData clipData = null;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+		    clipData = data.getClipData();
+		if (clipData != null) {
+		    final int n = clipData.getItemCount();
+		    for (int i = 0; i < n; i++) {
+			final int oldActiveLayer = layers.getActiveLayer();
+			if (!LoadThing(requestCode,
+				       clipData.getItemAt(i).getUri()))
+			    break;
+			if (layers.getActiveLayer() == oldActiveLayer &&
+			    i+1 < n) {
+
+			    Toast.makeText(this, R.string.no_more_empty_layers,
+					   Toast.LENGTH_LONG).show();
+			    break;
+			}
+		    }
+		} else {
+		    LoadThing(requestCode, data.getData());
 		}
+		layerSpinner.setSelection(layers.getActiveLayer());
 	    }
 	    break;
 	}

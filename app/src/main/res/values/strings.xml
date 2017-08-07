@@ -15,6 +15,9 @@
     <string name="file_request_drill">Open Drill File</string>
     <string name="colors_dialog_title">Colors</string>
 
+    <string name="no_more_empty_layers">No more empty available layers.\n
+The remaining gerber files will not be loaded.</string>
+
     <string name="cancel">Cancel</string>
 
     <string name="show_grid">Show grid</string>
