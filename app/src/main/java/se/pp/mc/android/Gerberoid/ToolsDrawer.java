@@ -36,6 +36,7 @@ import android.widget.ToggleButton;
 
 class ToolsDrawer {
 
+    private Activity activity;
     private DisplayOptions displayOptions;
 
     private static void calculateToolTipPosition(Toast toast, View view)
@@ -194,15 +195,15 @@ class ToolsDrawer {
 			    }
 			    ((ImageButton)v).setImageDrawable(new ColorDrawable(argb));
 			}
-		    }.show(((Activity)v.getContext()).getFragmentManager(),
-			   "visibleColor");
+		    }.show(activity.getFragmentManager(), "visibleColor");
 		}
 	    });
 	}
     }
 
-    public ToolsDrawer(View drawer, DisplayOptions displayOptions)
+    public ToolsDrawer(Activity activity, View drawer, DisplayOptions displayOptions)
     {
+	this.activity = activity;
 	this.displayOptions = displayOptions;
 	((RadioGroup)drawer.findViewById(R.id.opt_layers_mode)).
 	    setOnCheckedChangeListener(new ToggleListener());

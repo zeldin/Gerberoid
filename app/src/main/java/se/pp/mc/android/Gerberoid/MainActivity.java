@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity
 	drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 	toolsDrawer = findViewById(R.id.tools_drawer);
 	if (toolsDrawer != null)
-	    new ToolsDrawer(toolsDrawer, displayOptions);
+	    new ToolsDrawer(this, toolsDrawer, displayOptions);
     }
 
     @Override

@@ -20,7 +20,6 @@
 package se.pp.mc.android.Gerberoid;
 
 import android.app.Activity;
-import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;
@@ -33,12 +32,12 @@ import android.widget.ToggleButton;
 
 class LayerSpinnerAdapter extends BaseAdapter {
 
-    private Context context;
+    private Activity activity;
     private Layers layers;
 
-    public LayerSpinnerAdapter(Context context, Layers layers)
+    public LayerSpinnerAdapter(Activity activity, Layers layers)
     {
-	this.context = context;
+	this.activity = activity;
 	this.layers = layers;
     }
 
@@ -61,7 +60,7 @@ class LayerSpinnerAdapter extends BaseAdapter {
     public View getView(final int position, View view, ViewGroup parent)
     {
 	if (view == null)
-	    view = ((Activity)context).getLayoutInflater().inflate(R.layout.layer_spinner_entry, parent, false);
+	    view = activity.getLayoutInflater().inflate(R.layout.layer_spinner_entry, parent, false);
 	final Layer layer = layers.getLayer(position);
 	TextView text = (TextView) view.findViewById(R.id.layer_name);
 	text.setText(layer.GetDisplayName());
@@ -75,8 +74,7 @@ class LayerSpinnerAdapter extends BaseAdapter {
 			public void onColorSelected(int color, int argb) {
 			    layers.SetLayerColor(position, color);
 			}
-		    }.show(((Activity)context).getFragmentManager(),
-			   "layerColor");
+		    }.show(activity.getFragmentManager(), "layerColor");
 		}
 	    });
 	ToggleButton toggle = (ToggleButton) view.findViewById(R.id.layer_visible);
