@@ -57,6 +57,7 @@ private:
 
 public:
     GERBVIEW_FRAME(android::View&& view);
+    ~GERBVIEW_FRAME();
 
     GBR_DISPLAY_OPTIONS m_DisplayOptions;
 

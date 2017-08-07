@@ -41,6 +41,16 @@ GERBVIEW_FRAME::GERBVIEW_FRAME(android::View&& view)
   SetLayout( new GBR_LAYOUT() );
 }
 
+GERBVIEW_FRAME::~GERBVIEW_FRAME() {
+  for(int i=0; i<GERBER_DRAWLAYERS_COUNT; ++i)
+    if(GERBER_IMAGE* image = g_GERBER_List.GetGbrImage(i)) {
+      g_GERBER_List.AddGbrImage(NULL, i);
+      delete image;
+    }
+  SetLayout(NULL);
+  delete m_canvas;
+}
+
 void GERBVIEW_FRAME::setActiveLayer( int aLayer )
 {
   m_Active_Layer = aLayer;
