@@ -22,6 +22,7 @@
 		android:id="@+id/opt_grid"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+	        style="@style/ImageButtonStyle"
 		android:drawableTop="@drawable/grid"
 		android:textOn="@string/show_grid"
 		android:textOff="@string/hide_grid"/>
@@ -36,6 +37,7 @@
 	    android:id="@+id/opt_padsketch"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    style="@style/ImageButtonStyle"
 	    android:drawableTop="@drawable/pad_sketch"
 	    android:textOn="@string/spots_sketch"
 	    android:textOff="@string/spots_sketch"/>
@@ -43,6 +45,7 @@
 	    android:id="@+id/opt_linesketch"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    style="@style/ImageButtonStyle"
 	    android:drawableTop="@drawable/showtrack"
 	    android:textOn="@string/lines_sketch"
 	    android:textOff="@string/lines_sketch"/>
@@ -50,6 +53,7 @@
 	    android:id="@+id/opt_polysketch"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    style="@style/ImageButtonStyle"
 	    android:drawableTop="@drawable/opt_show_polygon"
 	    android:textOn="@string/poly_sketch"
 	    android:textOff="@string/poly_sketch"/>
@@ -62,6 +66,7 @@
 		android:id="@+id/opt_negghost"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+	        style="@style/ImageButtonStyle"
 		android:drawableTop="@drawable/gerbview_show_negative_objects"
 		android:textOn="@string/neg_ghost"
 		android:textOff="@string/neg_ghost"/>
@@ -81,6 +86,7 @@
 	        android:id="@+id/opt_showdcode"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+	        style="@style/ImageButtonStyle"
 		android:drawableTop="@drawable/show_dcodenumber"
 		android:textOn="@string/show_dcode"
 		android:textOff="@string/show_dcode"/>
@@ -100,6 +106,7 @@
 		android:id="@+id/opt_layers_mode_0"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+	        style="@style/ImageButtonStyle"
 		android:drawableTop="@drawable/gbr_select_mode0"
 		android:textOn="@string/layers_mode_0"
 		android:textOff="@string/layers_mode_0"/>
@@ -107,6 +114,7 @@
 		android:id="@+id/opt_layers_mode_1"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+	        style="@style/ImageButtonStyle"
 		android:drawableTop="@drawable/gbr_select_mode1"
 		android:textOn="@string/layers_mode_1"
 		android:textOff="@string/layers_mode_1"/>
@@ -114,6 +122,7 @@
 		android:id="@+id/opt_layers_mode_2"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+	        style="@style/ImageButtonStyle"
 		android:drawableTop="@drawable/gbr_select_mode2"
 		android:textOn="@string/layers_mode_2"
 		android:textOff="@string/layers_mode_2"/>

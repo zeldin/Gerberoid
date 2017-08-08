@@ -7,4 +7,9 @@
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
     </style>
+
+    <style name="ImageButtonStyle" parent="">
+	<item name="android:minHeight">48dip</item>
+        <item name="android:minWidth">64dip</item>
+    </style>
 </resources>

@@ -112,6 +112,7 @@ class ToolsDrawer {
 	    SpannableString content = new SpannableString("X");
 	    content.setSpan(imageSpan, 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 	    button.setCompoundDrawables(null, null, null, null);
+	    button.setTransformationMethod(null);
 	    button.setText(content);
 	    button.setTextOn(content);
 	    button.setTextOff(content);
