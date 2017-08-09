@@ -20,9 +20,11 @@
 package se.pp.mc.android.Gerberoid;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
@@ -38,6 +40,32 @@ class ToolsDrawer {
 
     private Activity activity;
     private DisplayOptions displayOptions;
+
+    public static class VisibleColorSelectorDialogFragment
+	extends ColorSelectorDialogFragment
+    {
+	@Override
+	public void onColorSelected(int color, int argb) {
+	    Bundle args = getArguments();
+	    DisplayOptions displayOptions = ((MainActivity)getActivity()).getDisplayOptions();
+	    if (args == null || displayOptions == null)
+		return;
+	    int id = args.getInt("viewId", -1);
+	    switch(id) {
+	    case R.id.grid_color:
+		displayOptions.SetGerberGridVisibleColor(color);
+		break;
+	    case R.id.ghost_color:
+		displayOptions.SetNegativeObjectsVisibleColor(color);
+		break;
+	    case R.id.dcode_color:
+		displayOptions.SetDCodesVisibleColor(color);
+		break;
+	    }
+	    ImageButton i = (ImageButton)(getActivity().findViewById(id));
+	    i.setImageDrawable(new ColorDrawable(argb));
+	}
+    }
 
     private static void calculateToolTipPosition(Toast toast, View view)
     {
@@ -180,23 +208,11 @@ class ToolsDrawer {
 	    imageButton.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(final View v) {
-		    new ColorSelectorDialogFragment() {
-			@Override
-			public void onColorSelected(int color, int argb) {
-			    switch(v.getId()) {
-			    case R.id.grid_color:
-				displayOptions.SetGerberGridVisibleColor(color);
-				break;
-			    case R.id.ghost_color:
-				displayOptions.SetNegativeObjectsVisibleColor(color);
-				break;
-			    case R.id.dcode_color:
-				displayOptions.SetDCodesVisibleColor(color);
-				break;
-			    }
-			    ((ImageButton)v).setImageDrawable(new ColorDrawable(argb));
-			}
-		    }.show(activity.getFragmentManager(), "visibleColor");
+		    DialogFragment dialog = new VisibleColorSelectorDialogFragment();
+		    Bundle bundle = new Bundle(1);
+		    bundle.putInt("viewId", v.getId());
+		    dialog.setArguments(bundle);
+		    dialog.show(activity.getFragmentManager(), "visibleColor");
 		}
 	    });
 	}

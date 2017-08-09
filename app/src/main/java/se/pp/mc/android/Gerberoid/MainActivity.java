@@ -291,4 +291,7 @@ public class MainActivity extends AppCompatActivity
 	    break;
 	}
     }
+
+    Layers getLayers() { return layers; }
+    DisplayOptions getDisplayOptions() { return displayOptions; }
 }

@@ -20,8 +20,10 @@
 package se.pp.mc.android.Gerberoid;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.database.DataSetObserver;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -34,6 +36,19 @@ class LayerSpinnerAdapter extends BaseAdapter {
 
     private Activity activity;
     private Layers layers;
+
+    public static class LayerColorSelectorDialogFragment
+	extends ColorSelectorDialogFragment
+    {
+	@Override
+	public void onColorSelected(int color, int argb) {
+	    Bundle args = getArguments();
+	    Layers layers = ((MainActivity)getActivity()).getLayers();
+	    if (args == null || layers == null)
+		return;
+	    layers.SetLayerColor(args.getInt("layerNumber", 0), color);
+	}
+    }
 
     public LayerSpinnerAdapter(Activity activity, Layers layers)
     {
@@ -69,12 +84,11 @@ class LayerSpinnerAdapter extends BaseAdapter {
 	button.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
-		    new ColorSelectorDialogFragment() {
-			@Override
-			public void onColorSelected(int color, int argb) {
-			    layers.SetLayerColor(position, color);
-			}
-		    }.show(activity.getFragmentManager(), "layerColor");
+		    DialogFragment dialog = new LayerColorSelectorDialogFragment();
+		    Bundle bundle = new Bundle(1);
+		    bundle.putInt("layerNumber", position);
+		    dialog.setArguments(bundle);
+		    dialog.show(activity.getFragmentManager(), "layerColor");
 		}
 	    });
 	ToggleButton toggle = (ToggleButton) view.findViewById(R.id.layer_visible);
