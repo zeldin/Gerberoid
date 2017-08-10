@@ -7,7 +7,7 @@ android {
         applicationId "se.pp.mc.android.Gerberoid"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 1
+        versionCode 10000
         versionName "1.0"
 	generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi']
         externalNativeBuild {
