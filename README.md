@@ -4,6 +4,8 @@ Gerberoid
 Gerberoid is an Android port of the gerber file viewer GerbView, which
 is part of the [KiCad][1] EDA suite.
 
+<a href="https://f-droid.org/packages/se.pp.mc.android.Gerberoid/" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></a>
 
 License
 -------
@@ -24,7 +26,6 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Gerberoid.  If not, see <http://www.gnu.org/licenses/>.
-
 
 ---
 
