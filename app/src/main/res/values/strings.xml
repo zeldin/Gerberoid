@@ -37,9 +37,6 @@ The remaining gerber files will not be loaded.</string>
 \nBased on GerbView 4.0.6, a part of the KiCad EDA Suite
 \n© 1992-2015 KiCad Developers Team
 \n
-\nThis application uses aFileChooser
-\n© 2011-2013 Paul Burke
-\n
 \nGerberoid is released under the GNU General Public License (GPL) version 3 or any later version
 \n
 \nhttps://github.com/zeldin/Gerberoid</string>
