@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
 
     private boolean LoadThing(int requestCode, Uri uri) {
 
+        // TODO: make this async, show loading indicator
         final File file = toPrivateFile(uri);
         if (file == null) {
             return false;
@@ -212,6 +213,8 @@ public class MainActivity extends AppCompatActivity implements Toolbar.OnMenuIte
         return success;
 
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
