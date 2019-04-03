@@ -3,11 +3,15 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
+
         applicationId "se.pp.mc.android.Gerberoid"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 10000
         versionName "1.0"
+
+        vectorDrawables.useSupportLibrary = true
+
 	generatedDensities = ['mdpi', 'hdpi', 'xhdpi', 'xxhdpi']
         externalNativeBuild {
             cmake {
@@ -26,6 +30,10 @@ android {
 }
 
 dependencies {
+
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.github.Kennyc1012:BottomSheetMenu:2.4.1'
+
 }

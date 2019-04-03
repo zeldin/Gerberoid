@@ -2,27 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="@dimen/layer_spinner_entry_padding"
-    android:gravity="left|center_vertical"
     android:baselineAligned="false"
-    android:descendantFocusability="blocksDescendants">
+    android:descendantFocusability="blocksDescendants"
+    android:gravity="left|center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/layer_spinner_entry_padding">
+
     <ToggleButton
-	android:id="@+id/layer_visible"
-	android:layout_width="@dimen/layer_visibility_icon_size"
-	android:layout_height="@dimen/layer_visibility_icon_size"
-	android:background="@drawable/visibility_toggle"
-	android:textOn=""
-	android:textOff=""/>
+        android:id="@+id/layer_visible"
+        android:layout_width="@dimen/layer_visibility_icon_size"
+        android:layout_height="@dimen/layer_visibility_icon_size"
+        android:background="@drawable/visibility_toggle"
+        android:layout_margin="4dp"
+        android:textOff=""
+        android:textOn="" />
+
     <ImageButton
-	android:id="@+id/layer_color"
-	android:layout_width="@dimen/layer_color_button_size"
+        android:id="@+id/layer_color"
+        android:layout_width="@dimen/layer_color_button_size"
         android:layout_height="@dimen/layer_color_button_size"
-	android:padding="@dimen/layer_color_button_padding"
-	android:cropToPadding="true"/>
+        android:cropToPadding="true"
+        android:layout_margin="4dp"
+        android:padding="@dimen/layer_color_button_padding" />
+
     <TextView
-	android:id="@+id/layer_name"
-	android:layout_width="wrap_content"
+        android:id="@+id/layer_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-	android:layout_marginLeft="@dimen/layer_spinner_entry_text_margin"/>
+        android:layout_margin="4dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/layer_spinner_entry_text_margin" />
+
 </LinearLayout>

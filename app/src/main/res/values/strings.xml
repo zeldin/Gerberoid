@@ -40,5 +40,6 @@ The remaining gerber files will not be loaded.</string>
 \nGerberoid is released under the GNU General Public License (GPL) version 3 or any later version
 \n
 \nhttps://github.com/zeldin/Gerberoid</string>
+    <string name="action_archive">Archive</string>
 
 </resources>
