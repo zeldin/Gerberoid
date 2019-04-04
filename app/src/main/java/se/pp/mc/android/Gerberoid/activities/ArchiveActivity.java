@@ -43,7 +43,7 @@ public class ArchiveActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setTitle("Add Archive content");
+        setTitle(R.string.archive_title);
 
         this.list = findViewById(R.id.list);
         this.progress = findViewById(R.id.progress);
@@ -111,7 +111,7 @@ public class ArchiveActivity extends AppCompatActivity {
         public void onFinished(List<GerberZipEntry> zipEntries) {
 
             if(zipEntries == null){
-                Toast.makeText(ArchiveActivity.this, "No archive data found!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ArchiveActivity.this, getString(R.string.no_archive_data_found), Toast.LENGTH_SHORT).show();
             }
 
             adapter.setData(zipEntries);

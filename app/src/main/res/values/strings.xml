@@ -40,6 +40,13 @@ The remaining gerber files will not be loaded.</string>
 \nGerberoid is released under the GNU General Public License (GPL) version 3 or any later version
 \n
 \nhttps://github.com/zeldin/Gerberoid</string>
+
     <string name="action_archive">Archive</string>
+    <string name="no_archive_data_found">No archive data found!</string>
+    <string name="archive_title">Add Archive content</string>
+    <string name="add_layers_title">Add Layers</string>
+    <string name="dialog_error_title">Error</string>
+    <string name="dialog_title_file_not_loaded">Selected file could not be loaded!</string>
+    <string name="dialog_ok">OK</string>
 
 </resources>

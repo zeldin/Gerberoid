@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 
         new BottomSheet.Builder(this)
                 .setSheet(R.menu.bottom_toolbar)
-                .setTitle("Add Layers")
+                .setTitle(R.string.add_layers_title)
                 .setListener(new BottomSheetListener() {
 
                     @Override
@@ -306,9 +306,9 @@ public class MainActivity extends AppCompatActivity {
             if (!success) {
 
                 new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Error")
-                        .setMessage("Selected file could not be loaded!")
-                        .setPositiveButton("OK", null)
+                        .setTitle(getString(R.string.dialog_error_title))
+                        .setMessage(getString(R.string.dialog_title_file_not_loaded))
+                        .setPositiveButton(getString(R.string.dialog_ok), null)
                         .show();
 
             }
