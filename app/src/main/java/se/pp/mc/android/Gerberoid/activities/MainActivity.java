@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package se.pp.mc.android.Gerberoid;
+package se.pp.mc.android.Gerberoid.activities;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -47,6 +46,22 @@ import com.kennyc.bottomsheet.BottomSheet;
 import com.kennyc.bottomsheet.BottomSheetListener;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import se.pp.mc.android.Gerberoid.adapters.LayerSpinnerAdapter;
+import se.pp.mc.android.Gerberoid.gerber.DisplayOptions;
+import se.pp.mc.android.Gerberoid.model.GerberZipEntry;
+import se.pp.mc.android.Gerberoid.model.FileType;
+import se.pp.mc.android.Gerberoid.tasks.LayerLoadCallback;
+import se.pp.mc.android.Gerberoid.tasks.LayerLoadTask;
+import se.pp.mc.android.Gerberoid.tasks.LoadRequest;
+import se.pp.mc.android.Gerberoid.utils.FileUtils;
+import se.pp.mc.android.Gerberoid.gerber.GerberViewer;
+import se.pp.mc.android.Gerberoid.gerber.Layers;
+import se.pp.mc.android.Gerberoid.R;
+import se.pp.mc.android.Gerberoid.gerber.ViewPort;
+import se.pp.mc.android.Gerberoid.views.ToolsDrawer;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -199,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
 
         new BottomSheet.Builder(this)
                 .setSheet(R.menu.bottom_toolbar)
-                .setTitle("Add Layer")
+                .setTitle("Add Layers")
                 .setListener(new BottomSheetListener() {
 
                     @Override
@@ -241,25 +256,20 @@ public class MainActivity extends AppCompatActivity {
         layerSpinner.setSelection(layers.getActiveLayer());
     }
 
-    private void SelectFile(Parcelable[] files) {
+    private void SelectFile(GerberZipEntry[] files) {
 
-        if (files != null && files.length > 0) {
+        final List<LoadRequest> requests = new ArrayList<>();
 
-            boolean success = true;
-            for (Parcelable f : files) {
-                success &= LoadThing(this, layers, (ArchiveActivity.GerberZipEntry) f);
+        for (GerberZipEntry e : files) {
+
+            if(e != null && e.getFile() != null && e.getType() != null) {
+                requests.add(new LoadRequest(e.getFile(), e.getType()));
             }
 
-            if (!success) {
+        }
 
-                new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("Error")
-                        .setMessage("Selected files could not be loaded!")
-                        .setPositiveButton("OK", null)
-                        .show();
-
-            }
-
+        if(requests.size() > 0) {
+            new LayerLoadTask(layers, mLoadCallback).execute(requests.toArray(new LoadRequest[0]));
         }
 
     }
@@ -273,119 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private static class LoadTask extends AsyncTask<Uri, Void, File> {
-
-        private Layers layers;
-        private int requestCode;
-        private Callback callback;
-
-        private LoadTask(Layers layers, int requestCode, Callback callback) {
-            this.layers = layers;
-            this.requestCode = requestCode;
-            this.callback = callback;
-        }
-
-        @Override
-        protected File doInBackground(Uri... uris) {
-            return toPrivateFile(GerberoidApplication.get().getApplicationContext(), uris[0], this.layers.getActiveLayer());
-        }
-
-        @Override
-        protected void onPreExecute() {
-            callback.onStarted();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(File file) {
-
-            boolean success = false;
-
-            if (file != null) {
-
-                try {
-
-                    if (requestCode == REQUEST_GERBER) {
-                        success = layers.LoadGerber(file);
-                    } else {
-                        success = layers.LoadDrill(file);
-                    }
-
-                    callback.onFinished(success);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                file.delete();
-
-            }
-
-            callback.onFinished(success);
-
-        }
-
-        private interface Callback {
-            void onStarted();
-
-            void onFinished(boolean success);
-        }
-
-    }
-
-    private static boolean LoadThing(Context context, Layers layers, ArchiveActivity.GerberZipEntry gerberZipEntry) {
-
-        boolean success = false;
-
-        final int index = layers.getActiveLayer();
-        final File file = toPrivateFile(context, gerberZipEntry.getFile(), index);
-        if (file == null) {
-            return false;
-        }
-
-        try {
-
-            if (gerberZipEntry.getType() == ArchiveActivity.GerberZipEntryType.GERBER) {
-                success = layers.LoadGerber(file);
-            } else {
-                success = layers.LoadDrill(file);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return success;
-
-    }
-
-    private static boolean LoadThing(Context context, Layers layers, int requestCode, Uri uri) {
-
-        boolean success = false;
-
-        final int index = layers.getActiveLayer();
-        final File file = toPrivateFile(context, uri, index);
-        if (file == null) {
-            return false;
-        }
-
-        try {
-
-            if (requestCode == REQUEST_GERBER) {
-                success = layers.LoadGerber(file);
-            } else {
-                success = layers.LoadDrill(file);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return success;
-
-    }
-
-    private final LoadTask.Callback mLoadCallback = new LoadTask.Callback() {
+    private final LayerLoadCallback mLoadCallback = new LayerLoadCallback() {
 
         @Override
         public void onStarted() {
@@ -394,8 +292,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onFinished(boolean success) {
-            progress.setVisibility(View.GONE);
 
+            progress.setVisibility(View.GONE);
             if (!success) {
 
                 new AlertDialog.Builder(MainActivity.this)
@@ -417,9 +315,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if (resultCode == RESULT_OK) {
 
-                    Parcelable[] files = data.getParcelableArrayExtra("extra.files");
+                    final ArchiveActivity.ResultSet files = (ArchiveActivity.ResultSet)data.getSerializableExtra(ArchiveActivity.EXTRA_FILES);
                     if (files != null) {
-                        SelectFile(files);
+                        SelectFile(files.getData());
                     }
 
                 }
@@ -436,59 +334,43 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_GERBER:
             case REQUEST_DRILL:
                 if (resultCode == RESULT_OK) {
-                    ClipData clipData = null;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                        clipData = data.getClipData();
+
+                    ClipData clipData = data.getClipData();
                     if (clipData != null) {
+
+                        final List<LoadRequest> loadRequests = new ArrayList<>();
                         final int n = clipData.getItemCount();
                         for (int i = 0; i < n; i++) {
-                            final int oldActiveLayer = layers.getActiveLayer();
-                            if (!LoadThing(this, layers, requestCode,
-                                    clipData.getItemAt(i).getUri()))
-                                break;
-                            if (layers.getActiveLayer() == oldActiveLayer &&
-                                    i + 1 < n) {
-
-                                Toast.makeText(this, R.string.no_more_empty_layers,
-                                        Toast.LENGTH_LONG).show();
-                                break;
-                            }
+                            loadRequests.add(new LoadRequest(clipData.getItemAt(i).getUri(), requestCode == REQUEST_GERBER ? FileType.GERBER : FileType.DRILL));
                         }
+
+                        new LayerLoadTask(layers, mLoadCallback).execute(loadRequests.toArray(new LoadRequest[0]));
+
                     } else {
-                        new LoadTask(layers, requestCode, mLoadCallback).execute(data.getData());
+
+                        final Uri uri = data.getData();
+                        if(uri != null) {
+                            new LayerLoadTask(layers, mLoadCallback).execute(new LoadRequest(uri, requestCode == REQUEST_GERBER ? FileType.GERBER : FileType.DRILL));
+                        }
+
                     }
 
                     layerSpinner.setSelection(layers.getActiveLayer());
+
                 }
                 break;
         }
     }
 
-    Layers getLayers() {
+    public Layers getLayers() {
         return layers;
     }
 
-    DisplayOptions getDisplayOptions() {
+    public DisplayOptions getDisplayOptions() {
         return displayOptions;
     }
 
-    public static File toPrivateFile(Context context, Uri uri, int currentLayer) {
 
-        File dataDir = context.getFilesDir();
-        File output = new File(dataDir.getAbsolutePath() + "/layers/" + currentLayer + ".layer");
-        FileUtils.copyFile(context, uri, output);
-        return output;
-
-    }
-
-    public static File toPrivateFile(Context context, File file, int currentLayer) {
-
-        File dataDir = context.getFilesDir();
-        File output = new File(dataDir.getAbsolutePath() + "/layers/" + currentLayer + ".layer");
-        FileUtils.copyFile(file, output);
-        return output;
-
-    }
 
 }
 

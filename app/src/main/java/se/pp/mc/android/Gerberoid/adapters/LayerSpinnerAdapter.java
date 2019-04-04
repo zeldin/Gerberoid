@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package se.pp.mc.android.Gerberoid;
+package se.pp.mc.android.Gerberoid.adapters;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -32,7 +32,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-class LayerSpinnerAdapter extends BaseAdapter {
+import se.pp.mc.android.Gerberoid.R;
+import se.pp.mc.android.Gerberoid.activities.MainActivity;
+import se.pp.mc.android.Gerberoid.fragments.ColorSelectorDialogFragment;
+import se.pp.mc.android.Gerberoid.gerber.Layer;
+import se.pp.mc.android.Gerberoid.gerber.Layers;
+
+public class LayerSpinnerAdapter extends BaseAdapter {
 
     private Activity activity;
     private Layers layers;

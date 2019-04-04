@@ -1,4 +1,4 @@
-package se.pp.mc.android.Gerberoid.adapter;
+package se.pp.mc.android.Gerberoid.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +14,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import se.pp.mc.android.Gerberoid.ArchiveActivity;
-import se.pp.mc.android.Gerberoid.GerberZipEntryAdapter;
 import se.pp.mc.android.Gerberoid.R;
+import se.pp.mc.android.Gerberoid.model.GerberZipEntry;
+import se.pp.mc.android.Gerberoid.model.FileType;
 
 public class ZipEntryAdapter extends RecyclerView.Adapter<ZipEntryAdapter.ZipEntryViewHolder> {
 
-    private final List<ArchiveActivity.GerberZipEntry> entries = new ArrayList<ArchiveActivity.GerberZipEntry>();
+    private final List<GerberZipEntry> entries = new ArrayList<GerberZipEntry>();
 
     @NonNull
     @Override
@@ -38,11 +38,11 @@ public class ZipEntryAdapter extends RecyclerView.Adapter<ZipEntryAdapter.ZipEnt
         return entries.size();
     }
 
-    public List<ArchiveActivity.GerberZipEntry> getSelectedData() {
+    public List<GerberZipEntry> getSelectedData() {
 
-        List<ArchiveActivity.GerberZipEntry> output = new ArrayList<>();
+        List<GerberZipEntry> output = new ArrayList<>();
 
-        for(ArchiveActivity.GerberZipEntry e : entries){
+        for(GerberZipEntry e : entries){
             if(e.isSelected()) {
                 output.add(e);
             }
@@ -52,7 +52,7 @@ public class ZipEntryAdapter extends RecyclerView.Adapter<ZipEntryAdapter.ZipEnt
 
     }
 
-    public void setData(List<ArchiveActivity.GerberZipEntry> entries){
+    public void setData(List<GerberZipEntry> entries){
 
         this.entries.clear();
 
@@ -64,13 +64,13 @@ public class ZipEntryAdapter extends RecyclerView.Adapter<ZipEntryAdapter.ZipEnt
 
     }
 
-    public static class ZipEntryViewHolder extends RecyclerView.ViewHolder {
+    static class ZipEntryViewHolder extends RecyclerView.ViewHolder {
 
         private final CheckBox cbSelected;
         private final TextView tvName;
         private final Spinner spType;
 
-        private ArchiveActivity.GerberZipEntry entry;
+        private GerberZipEntry entry;
 
         public ZipEntryViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,12 +88,12 @@ public class ZipEntryAdapter extends RecyclerView.Adapter<ZipEntryAdapter.ZipEnt
             this.tvName = itemView.findViewById(R.id.tvName);
 
             this.spType = itemView.findViewById(R.id.spType);
-            this.spType.setAdapter(new GerberZipEntryAdapter(itemView.getContext()));
+            this.spType.setAdapter(new GerberFileTypeArrayAdapter(itemView.getContext()));
             this.spType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    entry.setType((ArchiveActivity.GerberZipEntryType) spType.getItemAtPosition(position));
+                    entry.setType((FileType) spType.getItemAtPosition(position));
                 }
 
                 @Override
@@ -105,12 +105,12 @@ public class ZipEntryAdapter extends RecyclerView.Adapter<ZipEntryAdapter.ZipEnt
 
         }
 
-        private void bind(ArchiveActivity.GerberZipEntry entry){
+        private void bind(GerberZipEntry entry){
 
             this.entry = entry;
             this.cbSelected.setChecked(entry.isSelected());
             this.tvName.setText(entry.getName());
-            this.spType.setSelection(((GerberZipEntryAdapter)spType.getAdapter()).getPosition(entry.getType()));
+            this.spType.setSelection(((GerberFileTypeArrayAdapter)spType.getAdapter()).getPosition(entry.getType()));
 
         }
 

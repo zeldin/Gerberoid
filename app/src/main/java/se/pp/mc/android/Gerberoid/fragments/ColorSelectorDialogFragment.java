@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package se.pp.mc.android.Gerberoid;
+package se.pp.mc.android.Gerberoid.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,6 +33,9 @@ import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ScrollView;
+
+import se.pp.mc.android.Gerberoid.gerber.GerbviewFrame;
+import se.pp.mc.android.Gerberoid.R;
 
 public abstract class ColorSelectorDialogFragment extends DialogFragment
 {

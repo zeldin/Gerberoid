@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="se.pp.mc.android.Gerberoid.MainActivity">
+    tools:context="se.pp.mc.android.Gerberoid.activities.MainActivity">
 
     <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"
@@ -23,6 +23,17 @@
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tvNoData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:text="No archive data to add"
+            android:padding="32dp"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <include layout="@layout/layout_fullscreen_progress" />
 

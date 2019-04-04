@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="se.pp.mc.android.Gerberoid.MainActivity"
+    tools:context="se.pp.mc.android.Gerberoid.activities.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <se.pp.mc.android.Gerberoid.GerbviewFrame
+    <se.pp.mc.android.Gerberoid.gerber.GerbviewFrame
 	android:id="@+id/gerber_viewer"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package se.pp.mc.android.Gerberoid;
+package se.pp.mc.android.Gerberoid.utils;
 
 import android.content.Context;
 import android.net.Uri;
@@ -88,8 +88,11 @@ public class FileUtils {
         }
     }
 
-    public static boolean unpackZip(String path, String zippath)
+    public static boolean unpackZip(final String path, final String zippath)
     {
+        byte[] buffer = new byte[1024];
+        int count;
+
         InputStream is;
         ZipInputStream zis;
         try
@@ -100,12 +103,17 @@ public class FileUtils {
 
             while((ze = zis.getNextEntry()) != null)
             {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024];
-                int count;
+                final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-                String filename = ze.getName();
-                FileOutputStream fout = new FileOutputStream(path + "/" + filename);
+                if(ze.isDirectory()){ continue; }
+
+                final String filename = ze.getName();
+                final File outFile = new File(path + "/" + filename);
+                if(!outFile.getParentFile().exists()){
+                    outFile.getParentFile().mkdirs();
+                }
+
+                final FileOutputStream fout = new FileOutputStream(outFile);
 
                 // reading and writing
                 while((count = zis.read(buffer)) != -1)
@@ -129,6 +137,25 @@ public class FileUtils {
         }
 
         return true;
+    }
+
+
+    public static File toInternalLayerFile(Context context, Uri uri, int currentLayer) {
+
+        File dataDir = context.getFilesDir();
+        File output = new File(dataDir.getAbsolutePath() + "/layers/" + currentLayer + ".layer");
+        FileUtils.copyFile(context, uri, output);
+        return output;
+
+    }
+
+    public static File toInternalLayerFile(Context context, File file, int currentLayer) {
+
+        File dataDir = context.getFilesDir();
+        File output = new File(dataDir.getAbsolutePath() + "/layers/" + currentLayer + ".layer");
+        FileUtils.copyFile(file, output);
+        return output;
+
     }
 
 }
