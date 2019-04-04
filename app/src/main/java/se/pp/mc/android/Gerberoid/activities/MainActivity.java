@@ -49,6 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import se.pp.mc.android.Gerberoid.GerberoidApplication;
 import se.pp.mc.android.Gerberoid.adapters.LayerSpinnerAdapter;
 import se.pp.mc.android.Gerberoid.gerber.DisplayOptions;
 import se.pp.mc.android.Gerberoid.model.GerberZipEntry;
@@ -119,11 +120,11 @@ public class MainActivity extends AppCompatActivity {
             layers = gerber.getLayers();
             viewPort = gerber.getViewPort();
             displayOptions = gerber.getDisplayOptions();
-        } else {
-            layers = null;
-            viewPort = null;
-            displayOptions = null;
         }
+
+        GerberoidApplication.get().getPreferences().restoreDisplayOptions(displayOptions);
+        GerberoidApplication.get().getPreferences().restoreLayerColors(layers);
+
         layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
         if (layerSpinner != null) {
             layerSpinner.setAdapter(new LayerSpinnerAdapter(this, layers));
@@ -140,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         toolsDrawer = findViewById(R.id.tools_drawer);
         if (toolsDrawer != null)
@@ -151,6 +153,13 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         if (gerber != null)
             gerber.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onStop() {
+        GerberoidApplication.get().getPreferences().storeDisplayOptions(displayOptions);
+        GerberoidApplication.get().getPreferences().storeLayerColors(layers);
+        super.onStop();
     }
 
     @Override
