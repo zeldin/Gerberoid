@@ -21,14 +21,12 @@ package se.pp.mc.android.Gerberoid.activities;
 
 import android.app.AlertDialog;
 import android.content.ClipData;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
@@ -40,12 +38,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.kennyc.bottomsheet.BottomSheet;
 import com.kennyc.bottomsheet.BottomSheetListener;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +53,6 @@ import se.pp.mc.android.Gerberoid.model.FileType;
 import se.pp.mc.android.Gerberoid.tasks.LayerLoadCallback;
 import se.pp.mc.android.Gerberoid.tasks.LayerLoadTask;
 import se.pp.mc.android.Gerberoid.tasks.LoadRequest;
-import se.pp.mc.android.Gerberoid.utils.FileUtils;
 import se.pp.mc.android.Gerberoid.gerber.GerberViewer;
 import se.pp.mc.android.Gerberoid.gerber.Layers;
 import se.pp.mc.android.Gerberoid.R;
@@ -288,9 +283,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void SelectFile(int requestCode) {
 
-        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        final Intent intent  = new Intent(Intent.ACTION_GET_CONTENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType(requestCode == REQUEST_ARCHIVE ? "application/zip" : "*/*");
+        intent.setType(requestCode == REQUEST_ARCHIVE ? "application/zip" : "application/octet-stream");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && requestCode == REQUEST_GERBER) {
+            String[] extraMimeTypes = {"application/vnd.gerber", "application/octet-stream"};
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, extraMimeTypes);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && requestCode != REQUEST_ARCHIVE) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
+
         startActivityForResult(intent, requestCode);
 
     }
@@ -347,7 +352,11 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_DRILL:
                 if (resultCode == RESULT_OK) {
 
-                    ClipData clipData = data.getClipData();
+                    ClipData clipData = null;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                        clipData = data.getClipData();
+                    }
+
                     if (clipData != null) {
 
                         final List<LoadRequest> loadRequests = new ArrayList<>();

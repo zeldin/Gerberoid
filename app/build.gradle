@@ -7,7 +7,7 @@ android {
     defaultConfig {
 
         applicationId "se.pp.mc.android.Gerberoid"
-        minSdkVersion 19
+        minSdkVersion 14
         targetSdkVersion 28
         versionCode 10000
         versionName "1.0"
@@ -42,7 +42,4 @@ dependencies {
     implementation 'com.github.Kennyc1012:BottomSheetMenu:2.4.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
-}
-repositories {
-    mavenCentral()
 }

@@ -29,20 +29,11 @@ public class FileUtils {
 
     public static File copyFile(Context context, Uri uri, File output){
 
-        try (InputStream inputStream = new BufferedInputStream(context.getContentResolver().openInputStream(uri))) {
-
-            if(!output.getParentFile().exists()){
-                output.getParentFile().mkdirs();
-            }
-
-            if(!output.exists()){
-                output.createNewFile();
-            }
-
-            writeToFile(inputStream, output);
-            return output;
-
-        } catch (IOException e) {
+        try {
+            InputStream inputStream = new BufferedInputStream(context.getContentResolver().openInputStream(uri));
+            return copyFile(inputStream, output);
+        } catch (Exception e){
+            e.printStackTrace();
             return null;
         }
 
@@ -50,7 +41,19 @@ public class FileUtils {
 
     public static File copyFile(File file, File output){
 
-        try (InputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
+        try {
+            InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+            return copyFile(inputStream, output);
+        } catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public static File copyFile(InputStream inputStream, File output){
+
+        try {
 
             if(!output.getParentFile().exists()){
                 output.getParentFile().mkdirs();
@@ -64,7 +67,20 @@ public class FileUtils {
             return output;
 
         } catch (IOException e) {
+
+            e.printStackTrace();
             return null;
+
+        } finally {
+
+            if(inputStream != null){
+
+                try {
+                    inputStream.close();
+                } catch (IOException e) {}
+
+            }
+
         }
 
     }
