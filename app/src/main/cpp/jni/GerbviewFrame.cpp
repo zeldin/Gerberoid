@@ -289,7 +289,7 @@ jstring GerbviewFrame::NativeColorGetName(JNIEnv *env, jobject objectOrClass, ji
 
 bool GerbviewFrame::Hook::init(JNIEnv *env)
 {
-  jclass gfclass = env->FindClass("se/pp/mc/android/Gerberoid/GerbviewFrame");
+  jclass gfclass = env->FindClass("se/pp/mc/android/Gerberoid/gerber/GerbviewFrame");
   if (!gfclass)
     return false;
   class_GerbviewFrame = (jclass)env->NewGlobalRef(gfclass);

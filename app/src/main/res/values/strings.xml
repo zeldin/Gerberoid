@@ -37,11 +37,16 @@ The remaining gerber files will not be loaded.</string>
 \nBased on GerbView 4.0.6, a part of the KiCad EDA Suite
 \n© 1992-2015 KiCad Developers Team
 \n
-\nThis application uses aFileChooser
-\n© 2011-2013 Paul Burke
-\n
 \nGerberoid is released under the GNU General Public License (GPL) version 3 or any later version
 \n
 \nhttps://github.com/zeldin/Gerberoid</string>
+
+    <string name="action_archive">Archive</string>
+    <string name="no_archive_data_found">No archive data found!</string>
+    <string name="archive_title">Add Archive content</string>
+    <string name="add_layers_title">Add Layers</string>
+    <string name="dialog_error_title">Error</string>
+    <string name="dialog_title_file_not_loaded">Selected file could not be loaded!</string>
+    <string name="dialog_ok">OK</string>
 
 </resources>

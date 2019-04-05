@@ -2,9 +2,9 @@
 <resources>
     <dimen name="layer_spinner_entry_padding">1dp</dimen>
     <dimen name="layer_spinner_entry_text_margin">4sp</dimen>
-    <dimen name="layer_visibility_icon_size">24sp</dimen>
-    <dimen name="layer_color_button_size">30sp</dimen>
-    <dimen name="layer_color_button_padding">5dp</dimen>
+    <dimen name="layer_visibility_icon_size">32dp</dimen>
+    <dimen name="layer_color_button_size">32dp</dimen>
+    <dimen name="layer_color_button_padding">8dp</dimen>
     <dimen name="tools_drawer_width">120dp</dimen>
     <dimen name="tools_drawer_color_button_size">40dp</dimen>
     <dimen name="tools_drawer_color_button_padding">10dp</dimen>

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package se.pp.mc.android.Gerberoid;
+package se.pp.mc.android.Gerberoid.views;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -36,7 +36,12 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-class ToolsDrawer {
+import se.pp.mc.android.Gerberoid.R;
+import se.pp.mc.android.Gerberoid.activities.MainActivity;
+import se.pp.mc.android.Gerberoid.fragments.ColorSelectorDialogFragment;
+import se.pp.mc.android.Gerberoid.gerber.DisplayOptions;
+
+public class ToolsDrawer {
 
     private Activity activity;
     private DisplayOptions displayOptions;

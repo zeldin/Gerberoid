@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package se.pp.mc.android.Gerberoid;
+package se.pp.mc.android.Gerberoid.gerber;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -25,7 +25,10 @@ import android.database.DataSetObservable;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.GestureDetector;
@@ -34,6 +37,13 @@ import android.view.View;
 
 import java.io.File;
 import java.util.Arrays;
+
+import se.pp.mc.android.Gerberoid.R;
+import se.pp.mc.android.Gerberoid.gerber.DisplayOptions;
+import se.pp.mc.android.Gerberoid.gerber.GerberViewer;
+import se.pp.mc.android.Gerberoid.gerber.Layer;
+import se.pp.mc.android.Gerberoid.gerber.Layers;
+import se.pp.mc.android.Gerberoid.gerber.ViewPort;
 
 public class GerbviewFrame extends View implements GerberViewer
 {
@@ -280,32 +290,51 @@ public class GerbviewFrame extends View implements GerberViewer
 	    invalidate();
 	}
 
-	private boolean LoadFile(String filename, boolean drill, boolean full)
+	private boolean LoadFile(final String filename, final boolean drill, final boolean full)
 	{
-	    if (full)
-		NativeErase_Current_DrawLayer(nativeHandle);
-	    boolean result = (filename == null? false :
-			      (drill? NativeRead_EXCELLON_File(nativeHandle, filename) :
-			       NativeRead_GERBER_File(nativeHandle, filename, filename)));
-	    if (result) {
-		layers[activeLayer].fileName = filename;
-		layers[activeLayer].isDrill = drill;
-	    } else {
-		layers[activeLayer].fileName = null;
-		layers[activeLayer].isDrill = false;
-	    }
-	    layers[activeLayer].displayName = NativeGetDisplayName(activeLayer);
-	    if (full) {
-		int layer = NativegetNextAvailableLayer(nativeHandle, activeLayer);
-		if (layer >= 0) {
-		    activeLayer = layer;
-		    NativesetActiveLayer(nativeHandle, layer);
+
+		Log.d("GerbviewFrame", "load: " + filename);
+	    if (full) NativeErase_Current_DrawLayer(nativeHandle);
+	    final boolean result = (filename != null && (drill ? NativeRead_EXCELLON_File(nativeHandle, filename) : NativeRead_GERBER_File(nativeHandle, filename, filename)));
+
+		if (result) {
+			layers[activeLayer].fileName = filename;
+			layers[activeLayer].isDrill = drill;
+		} else {
+			layers[activeLayer].fileName = null;
+			layers[activeLayer].isDrill = false;
 		}
-		notifyChanged();
-		viewPort.Zoom_Automatique();
-	    }
+		layers[activeLayer].displayName = NativeGetDisplayName(activeLayer);
+
+		if (full) {
+
+			int layer = NativegetNextAvailableLayer(nativeHandle, activeLayer);
+			if (layer >= 0) {
+				activeLayer = layer;
+				NativesetActiveLayer(nativeHandle, layer);
+			}
+
+		}
+
+	    mHandler.post(new Runnable() {
+
+	    	@Override
+			public void run() {
+
+				if (full) {
+					notifyChanged();
+					viewPort.Zoom_Automatique();
+				}
+
+			}
+
+		});
+
 	    return result;
+
 	}
+
+	private Handler mHandler = new Handler(Looper.getMainLooper());
 
 	private boolean LoadFile(File file, boolean drill)
 	{
@@ -709,7 +738,7 @@ public class GerbviewFrame extends View implements GerberViewer
 	return displayOptions;
     }
 
-    static Pair<int[], String[]> getColors(Context context)
+    public static Pair<int[], String[]> getColors(Context context)
     {
 	Resources resources = context.getResources();
 	int numColors = resources.getInteger(R.integer.number_of_colors);

@@ -1,20 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto" >
-    <group>
-        <item
-            android:id="@+id/action_gerber"
-            app:showAsAction="ifRoom"
-            android:icon="@drawable/gerber_file"
-            android:title="@string/action_gerber"/>
-        <item
-            android:id="@+id/action_drill"
-            app:showAsAction="ifRoom"
-            android:icon="@drawable/gerbview_drill_file"
-            android:title="@string/action_drill"/>
-    </group>
+
+
     <item
-        android:id="@+id/action_clear"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/gerbview_clear_layers"
-        android:title="@string/action_clear"/>
+        android:id="@+id/action_gerber"
+        android:icon="@drawable/gerber_file"
+        android:title="@string/action_gerber"/>
+
+    <item
+        android:id="@+id/action_drill"
+        android:icon="@drawable/gerbview_drill_file"
+        android:title="@string/action_drill"/>
+
+
+    <item
+        android:id="@+id/action_archive"
+        android:icon="@drawable/ic_archive_black_24dp"
+        android:title="@string/action_archive"/>
+
 </menu>
