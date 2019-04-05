@@ -1,5 +1,6 @@
 package se.pp.mc.android.Gerberoid.tasks
 
+import android.content.Context
 import android.net.Uri
 import android.os.AsyncTask
 import se.pp.mc.android.Gerberoid.utils.FileUtils
@@ -9,8 +10,9 @@ import se.pp.mc.android.Gerberoid.model.FileType
 import java.io.File
 import java.lang.ref.WeakReference
 
-class ExtractZipTask(callback : ExtractZipTaskCallback) : AsyncTask<Uri, Any, List<GerberZipEntry>>() {
+class ExtractZipTask(applicationContext: Context, callback : ExtractZipTaskCallback) : AsyncTask<Uri, Any, List<GerberZipEntry>>() {
 
+    private val weakContext = WeakReference<Context>(applicationContext)
     private val weakCallback = WeakReference<ExtractZipTaskCallback>(callback)
 
     override fun onPreExecute() {
@@ -20,7 +22,7 @@ class ExtractZipTask(callback : ExtractZipTaskCallback) : AsyncTask<Uri, Any, Li
 
     override fun doInBackground(vararg uris: Uri): List<GerberZipEntry>? {
 
-        val context = GerberoidApplication.get()
+        val context = weakContext.get() ?: return null
 
         val zipFile = FileUtils.writeUriToTempFile(context, uris[0], "archive_") ?: return null
         val outputDir = File(context.cacheDir, zipFile.name.replace(".tmp", ""))

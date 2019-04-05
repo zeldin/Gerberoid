@@ -1,5 +1,6 @@
 package se.pp.mc.android.Gerberoid.tasks
 
+import android.content.Context
 import android.net.Uri
 import android.os.AsyncTask
 import se.pp.mc.android.Gerberoid.GerberoidApplication
@@ -9,8 +10,9 @@ import se.pp.mc.android.Gerberoid.utils.FileUtils.toInternalLayerFile
 import java.io.File
 import java.lang.ref.WeakReference
 
-class LayerLoadTask(private val layers: Layers, callback: LayerLoadCallback) : AsyncTask<LoadRequest, Void, Boolean>() {
+class LayerLoadTask(applicationContext: Context, private val layers: Layers, callback: LayerLoadCallback) : AsyncTask<LoadRequest, Void, Boolean>() {
 
+    private val weakContext = WeakReference<Context>(applicationContext)
     private val weakCallback = WeakReference<LayerLoadCallback>(callback)
 
     override fun onPreExecute() {
@@ -51,11 +53,13 @@ class LayerLoadTask(private val layers: Layers, callback: LayerLoadCallback) : A
 
     private fun load(request: LoadRequest, layer: Int) : LoadResult? {
 
+        val context = weakContext.get() ?: return null
+
         val src = request.uri
         val result = when(src){
 
-            is Uri -> toInternalLayerFile(GerberoidApplication.get().applicationContext, src, layer)
-            is File -> toInternalLayerFile(GerberoidApplication.get().applicationContext, src, layer)
+            is Uri -> toInternalLayerFile(context, src, layer)
+            is File -> toInternalLayerFile(context, src, layer)
             else -> null
 
         }

@@ -62,6 +62,7 @@ import se.pp.mc.android.Gerberoid.gerber.GerberViewer;
 import se.pp.mc.android.Gerberoid.gerber.Layers;
 import se.pp.mc.android.Gerberoid.R;
 import se.pp.mc.android.Gerberoid.gerber.ViewPort;
+import se.pp.mc.android.Gerberoid.utils.Preferences;
 import se.pp.mc.android.Gerberoid.views.ToolsDrawer;
 
 public class MainActivity extends AppCompatActivity {
@@ -122,8 +123,9 @@ public class MainActivity extends AppCompatActivity {
             displayOptions = gerber.getDisplayOptions();
         }
 
-        GerberoidApplication.get().getPreferences().restoreDisplayOptions(displayOptions);
-        GerberoidApplication.get().getPreferences().restoreLayerColors(layers);
+        final Preferences prefs = ((GerberoidApplication)getApplication()).getPreferences();
+        prefs.restoreDisplayOptions(displayOptions);
+        prefs.restoreLayerColors(layers);
 
         layerSpinner = (Spinner) findViewById(R.id.layer_spinner);
         if (layerSpinner != null) {
@@ -157,8 +159,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        GerberoidApplication.get().getPreferences().storeDisplayOptions(displayOptions);
-        GerberoidApplication.get().getPreferences().storeLayerColors(layers);
+        final Preferences prefs = ((GerberoidApplication)getApplication()).getPreferences();
+        prefs.storeDisplayOptions(displayOptions);
+        prefs.storeLayerColors(layers);
         super.onStop();
     }
 
@@ -278,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if(requests.size() > 0) {
-            new LayerLoadTask(layers, mLoadCallback).execute(requests.toArray(new LoadRequest[0]));
+            new LayerLoadTask(getApplicationContext(), layers, mLoadCallback).execute(requests.toArray(new LoadRequest[0]));
         }
 
     }
@@ -353,13 +356,13 @@ public class MainActivity extends AppCompatActivity {
                             loadRequests.add(new LoadRequest(clipData.getItemAt(i).getUri(), requestCode == REQUEST_GERBER ? FileType.GERBER : FileType.DRILL));
                         }
 
-                        new LayerLoadTask(layers, mLoadCallback).execute(loadRequests.toArray(new LoadRequest[0]));
+                        new LayerLoadTask(getApplicationContext(), layers, mLoadCallback).execute(loadRequests.toArray(new LoadRequest[0]));
 
                     } else {
 
                         final Uri uri = data.getData();
                         if(uri != null) {
-                            new LayerLoadTask(layers, mLoadCallback).execute(new LoadRequest(uri, requestCode == REQUEST_GERBER ? FileType.GERBER : FileType.DRILL));
+                            new LayerLoadTask(getApplicationContext(), layers, mLoadCallback).execute(new LoadRequest(uri, requestCode == REQUEST_GERBER ? FileType.GERBER : FileType.DRILL));
                         }
 
                     }

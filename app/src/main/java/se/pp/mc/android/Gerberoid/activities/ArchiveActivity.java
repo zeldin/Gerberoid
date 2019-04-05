@@ -58,7 +58,7 @@ public class ArchiveActivity extends AppCompatActivity {
             this.finish();
         }
 
-        new ExtractZipTask(callback).execute(uri);
+        new ExtractZipTask(getApplicationContext(), callback).execute(uri);
 
     }
 
