@@ -29,4 +29,4 @@ along with Gerberoid.  If not, see <http://www.gnu.org/licenses/>.
 
 ---
 
-[1]: http://kicad-pcb.org/
+[1]: http://kicad.org/
