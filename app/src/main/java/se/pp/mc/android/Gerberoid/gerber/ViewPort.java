@@ -17,24 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package se.pp.mc.android.Gerberoid;
+package se.pp.mc.android.Gerberoid.gerber;
 
-import android.database.DataSetObserver;
-
-import java.io.File;
-
-public interface Layers
+public interface ViewPort
 {
-    public int getLayerCount();
-    public Layer getLayer(int layer);
-    public void SetLayerColor(int layer, int color);
-    public void SetLayerVisible(int layer, boolean visible);
-    public boolean LoadGerber(File file);
-    public boolean LoadDrill(File file);
-    public boolean Clear_DrawLayers();
-    public void setActiveLayer(int layer);
-    public int getActiveLayer();
-
-    public void registerObserver(DataSetObserver observer);
-    public void unregisterObserver(DataSetObserver observer);
+    public void Zoom_Automatique();
+    public boolean SetPreviousZoom();
+    public boolean SetNextZoom();
 }

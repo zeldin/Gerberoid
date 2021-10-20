@@ -17,11 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package se.pp.mc.android.Gerberoid;
+package se.pp.mc.android.Gerberoid.gerber;
 
-public interface Layer
+import android.os.Bundle;
+
+public interface GerberViewer
 {
-    public int GetColor();
-    public boolean IsVisible();
-    public String GetDisplayName();
+    public Layers getLayers();
+    public ViewPort getViewPort();
+    public DisplayOptions getDisplayOptions();
+
+    public void onCreate();
+    public void onDestroy();
+    public void onRestoreInstanceState(Bundle savedInstanceState);
+    public void onSaveInstanceState(Bundle savedInstanceState);
 }
