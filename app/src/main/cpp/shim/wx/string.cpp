@@ -23,6 +23,7 @@
 #include <locale>
 #include <cstdlib>
 #include <cstdarg>
+#include <cstring>
 
 const wxChar* wxEmptyString = "";
 
