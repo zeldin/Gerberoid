@@ -29,6 +29,8 @@ import android.Manifest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -246,9 +248,34 @@ public class MainActivity extends AppCompatActivity
 			       requestCode);
     }
 
+    private File getFile(Uri uri)
+    {
+	if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (uri != null && DocumentsContract.isDocumentUri(this, uri) &&
+                FileUtils.isDownloadsDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] { split[split.length-1] };
+                final String path =
+                    FileUtils.getDataColumn(this, MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                                            selection, selectionArgs);
+                if (path != null && FileUtils.isLocal(path))
+                    return new File(path);
+            }
+        }
+        try {
+            return FileUtils.getFile(this, uri);
+        } catch (Exception e) {
+            Toast.makeText(this, R.string.filechooser_internal_error,
+                           Toast.LENGTH_LONG).show();
+        }
+        return null;
+    }
+
     private boolean LoadThing(int requestCode, Uri uri)
     {
-	final File file = FileUtils.getFile(this, uri);
+	final File file = getFile(uri);
 	if (file == null)
 	    return false;
 

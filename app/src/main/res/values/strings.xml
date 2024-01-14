@@ -17,6 +17,7 @@
 
     <string name="no_more_empty_layers">No more empty available layers.\n
 The remaining gerber files will not be loaded.</string>
+    <string name="filechooser_internal_error">Internal error in aFileChooser</string>
 
     <string name="cancel">Cancel</string>
 
